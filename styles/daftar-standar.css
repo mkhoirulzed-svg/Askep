@@ -9,7 +9,9 @@
    global.css, layout.css, components.css, responsive.css
 ========================================================= */
 
-/* Tema hanya mengganti token warna global. */
+/* =========================
+   THEME
+========================= */
 .page-daftar-standar.theme-sdki{
   --primary:#2563eb;
   --primary-dark:#1d4ed8;
@@ -43,6 +45,9 @@
   --theme-shadow:rgba(245,158,11,.24);
 }
 
+/* =========================
+   PAGE
+========================= */
 .page-daftar-standar{
   overflow-x:hidden;
   background:var(--bg);
@@ -60,7 +65,9 @@
   );
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .page-daftar-standar .header{
   padding:18px 18px 14px;
 }
@@ -109,14 +116,18 @@
   white-space:nowrap;
 }
 
-/* CONTENT */
+/* =========================
+   CONTENT
+========================= */
 .page-daftar-standar .content{
   width:100%;
   min-width:0;
   padding:0 18px;
 }
 
-/* HERO */
+/* =========================
+   HERO
+========================= */
 .page-daftar-standar .hero-card{
   position:relative;
   margin-bottom:18px;
@@ -176,7 +187,9 @@
   opacity:.94;
 }
 
-/* SEARCH */
+/* =========================
+   SEARCH
+========================= */
 .page-daftar-standar .search-card{
   width:100%;
   min-width:0;
@@ -265,7 +278,9 @@
   font-weight:800;
 }
 
-/* CATEGORY */
+/* =========================
+   CATEGORY
+========================= */
 .page-daftar-standar .category-scroll{
   display:flex;
   width:100%;
@@ -303,16 +318,17 @@
   color:#fff;
 }
 
-/* SHARED LISTS */
+/* =========================
+   LISTS
+========================= */
 .page-daftar-standar .diagnosis-list,
 .page-daftar-standar .outcome-list,
 .page-daftar-standar .intervention-list{
-  grid-area:list;
-  display:grid;
-  grid-template-columns:1fr;
-  align-content:start;
+  display:flex;
+  flex-direction:column;
+  width:100%;
   min-width:0;
-  gap:16px;
+  gap:10px;
 }
 
 .page-daftar-standar .diagnosis-card,
@@ -425,7 +441,9 @@
   color:#94a3b8;
 }
 
-/* PAGINATION */
+/* =========================
+   PAGINATION
+========================= */
 .page-daftar-standar .pagination{
   display:flex;
   align-items:center;
@@ -477,7 +495,9 @@
   font-weight:800;
 }
 
-/* EMPTY + LOADING */
+/* =========================
+   EMPTY + LOADING
+========================= */
 .page-daftar-standar .empty-state{
   padding:42px 18px;
   text-align:center;
@@ -534,7 +554,31 @@
   }
 }
 
-/* TABLET */
+/* =========================
+   MOBILE
+   Selalu daftar satu kolom
+========================= */
+@media (max-width:599px){
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .page-daftar-standar .diagnosis-card,
+  .page-daftar-standar .outcome-card,
+  .page-daftar-standar .intervention-card{
+    min-height:auto;
+    padding:14px;
+    border-radius:18px;
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
 @media (min-width:600px) and (max-width:899px){
   .page-daftar-standar .app,
   .page-daftar-standar .bottom-nav{
@@ -566,14 +610,16 @@
   }
 }
 
-/* DESKTOP — DUA KOLOM BESAR */
+/* =========================
+   DESKTOP
+   Sidebar + satu area konten utama
+========================= */
 @media (min-width:900px){
-
   .page-daftar-standar .app{
     width:calc(100% - var(--desktop-sidebar-width));
     max-width:none;
     min-width:0;
-    margin-left:var(--desktop-sidebar-width);
+    margin:0 0 0 var(--desktop-sidebar-width);
     padding-bottom:48px;
   }
 
@@ -603,18 +649,18 @@
     display:block;
   }
 
- .page-daftar-standar .hero-card{
-  width:100%;
-  margin-bottom:24px;
-  padding:24px;
-}
+  .page-daftar-standar .hero-card{
+    width:100%;
+    margin-bottom:24px;
+    padding:24px;
+  }
 
- .page-daftar-standar .search-card{
-  position:static;
-  width:100%;
-  margin-bottom:16px;
-  padding:16px;
-}
+  .page-daftar-standar .search-card{
+    position:static;
+    width:100%;
+    margin-bottom:20px;
+    padding:16px;
+  }
 
   .page-daftar-standar .category-scroll{
     display:flex;
@@ -623,6 +669,10 @@
     margin-bottom:18px;
     padding-bottom:0;
     overflow:visible;
+  }
+
+  .page-daftar-standar .loading{
+    width:100%;
   }
 
   .page-daftar-standar .diagnosis-list,
@@ -640,80 +690,6 @@
   .page-daftar-standar .intervention-card{
     min-width:0;
     min-height:150px;
-    padding:16px;
-    border-radius:20px;
-  }
-
-  .page-daftar-standar .pagination{
-    width:100%;
-    margin-top:18px;
-  }
-
-  .page-daftar-standar .diagnosis-card:hover,
-  .page-daftar-standar .outcome-card:hover,
-  .page-daftar-standar .intervention-card:hover{
-    border-color:var(--primary-soft);
-    box-shadow:var(--shadow-md);
-    transform:translateY(-2px);
-  }
-}
-
-  /* Kolom kiri */
-  .page-daftar-standar .hero-card{
-    grid-area:hero;
-    width:100%;
-    margin:0;
-    padding:24px;
-  }
-
-  .page-daftar-standar .search-card{
-    grid-area:search;
-    position:static;
-    width:100%;
-    margin:0;
-    padding:16px;
-  }
-
-  .page-daftar-standar .category-scroll{
-    grid-area:category;
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
-    width:100%;
-    margin:0;
-    padding:0;
-    overflow:visible;
-  }
-
-  /* Kolom kanan */
-  .page-daftar-standar .loading{
-    grid-area:list;
-    min-width:0;
-  }
-
-  .page-daftar-standar .diagnosis-list,
-  .page-daftar-standar .outcome-list,
-  .page-daftar-standar .intervention-list{
-    grid-area:list;
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    align-content:start;
-    min-width:0;
-    gap:16px;
-  }
-
-  .page-daftar-standar .pagination{
-    grid-area:pagination;
-    width:100%;
-    margin:2px 0 0;
-  }
-
-  /* Kartu dibuat lebih lega */
-  .page-daftar-standar .diagnosis-card,
-  .page-daftar-standar .outcome-card,
-  .page-daftar-standar .intervention-card{
-    min-width:0;
-    min-height:156px;
     padding:16px;
     border-radius:20px;
   }
@@ -738,6 +714,11 @@
     font-size:12.5px;
   }
 
+  .page-daftar-standar .pagination{
+    width:100%;
+    margin-top:18px;
+  }
+
   .page-daftar-standar .diagnosis-card:hover,
   .page-daftar-standar .outcome-card:hover,
   .page-daftar-standar .intervention-card:hover{
@@ -747,25 +728,18 @@
   }
 }
 
-/* Laptop sedang */
+/* Laptop desktop yang lebih sempit */
 @media (min-width:900px) and (max-width:1100px){
-
-  .page-daftar-standar .content{
-    grid-template-columns:
-      minmax(320px,.9fr)
-      minmax(0,1.1fr);
-
-    column-gap:22px;
-  }
-
- .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .diagnosis-list,
   .page-daftar-standar .outcome-list,
   .page-daftar-standar .intervention-list{
     grid-template-columns:1fr;
   }
 }
 
-/* MOBILE KECIL */
+/* =========================
+   MOBILE KECIL
+========================= */
 @media (max-width:420px){
   .page-daftar-standar .header,
   .page-daftar-standar .content{
