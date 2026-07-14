@@ -1,0 +1,681 @@
+/* =========================================================
+   DAFTAR STANDAR: SDKI, SLKI, SIKI
+   Digunakan bersama oleh:
+   - pages/sdki.html
+   - pages/slki.html
+   - pages/siki.html
+
+   File global yang tetap digunakan:
+   global.css, layout.css, components.css, responsive.css
+========================================================= */
+
+/* Tema hanya mengganti token warna global. */
+.page-daftar-standar.theme-sdki{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --primary-light:#eff6ff;
+  --bg:#f8fafc;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --theme-shadow:rgba(37,99,235,.22);
+}
+
+.page-daftar-standar.theme-slki{
+  --primary:#16a34a;
+  --primary-dark:#15803d;
+  --primary-soft:#bbf7d0;
+  --primary-light:#f0fdf4;
+  --bg:#f7fee7;
+  --muted:#64748b;
+  --border:#dcfce7;
+  --theme-shadow:rgba(22,163,74,.22);
+}
+
+.page-daftar-standar.theme-siki{
+  --primary:#f59e0b;
+  --primary-dark:#d97706;
+  --primary-soft:#fde68a;
+  --primary-light:#fffbeb;
+  --bg:#fff7ed;
+  --muted:#78716c;
+  --border:#fed7aa;
+  --theme-shadow:rgba(245,158,11,.24);
+}
+
+.page-daftar-standar{
+  overflow-x:hidden;
+  background:var(--bg);
+}
+
+.page-daftar-standar .app{
+  width:100%;
+  max-width:520px;
+  min-width:0;
+  margin:0 auto;
+  background:linear-gradient(
+    180deg,
+    var(--primary-light) 0%,
+    var(--bg) 280px
+  );
+}
+
+/* HEADER */
+.page-daftar-standar .header{
+  padding:18px 18px 14px;
+}
+
+.page-daftar-standar .topbar{
+  display:flex;
+  align-items:center;
+  min-width:0;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.page-daftar-standar .nav-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  padding:0;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  color:var(--primary);
+}
+
+.page-daftar-standar .header-title{
+  min-width:0;
+  flex:1;
+}
+
+.page-daftar-standar .header-title h1{
+  margin:0;
+  font-size:19px;
+  font-weight:800;
+  line-height:1.2;
+}
+
+.page-daftar-standar .header-title p{
+  margin:4px 0 0;
+  overflow:hidden;
+  color:var(--muted);
+  font-size:12px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* CONTENT */
+.page-daftar-standar .content{
+  width:100%;
+  min-width:0;
+  padding:0 18px;
+}
+
+/* HERO */
+.page-daftar-standar .hero-card{
+  position:relative;
+  margin-bottom:14px;
+  padding:18px;
+  overflow:hidden;
+  border-radius:var(--radius-lg);
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-dark)
+  );
+  box-shadow:0 16px 32px var(--theme-shadow);
+  color:#fff;
+}
+
+.page-daftar-standar .hero-card::after{
+  content:"";
+  position:absolute;
+  top:-58px;
+  right:-52px;
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  pointer-events:none;
+}
+
+.page-daftar-standar .badge{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+}
+
+.page-daftar-standar .hero-title{
+  position:relative;
+  z-index:1;
+  margin-bottom:8px;
+  font-size:21px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.page-daftar-standar .hero-desc{
+  position:relative;
+  z-index:1;
+  font-size:13px;
+  line-height:1.55;
+  opacity:.94;
+}
+
+/* SEARCH */
+.page-daftar-standar .search-card{
+  width:100%;
+  min-width:0;
+  margin-bottom:14px;
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+}
+
+.page-daftar-standar .search-box{
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-width:0;
+  min-height:48px;
+  gap:10px;
+  margin:0;
+  padding:0 13px;
+  border:1px solid var(--primary-soft);
+  border-radius:18px;
+  background:var(--primary-light);
+  box-shadow:none;
+}
+
+.page-daftar-standar .search-box i{
+  flex:0 0 auto;
+  color:var(--primary);
+  font-size:15px;
+}
+
+.page-daftar-standar .search-box input{
+  width:100%;
+  min-width:0;
+  height:46px;
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+  font-size:14px;
+  font-weight:600;
+}
+
+.page-daftar-standar .search-box input::placeholder{
+  color:#94a3b8;
+  font-weight:600;
+}
+
+.page-daftar-standar .clear-btn{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  padding:0;
+  border:0;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(15,23,42,.08);
+  color:var(--muted);
+}
+
+.page-daftar-standar .info-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-width:0;
+  gap:10px;
+  margin:12px 2px 4px;
+}
+
+.page-daftar-standar .result-count{
+  min-width:0;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+
+.page-daftar-standar .page-count{
+  flex:0 0 auto;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:800;
+}
+
+/* CATEGORY */
+.page-daftar-standar .category-scroll{
+  display:flex;
+  width:100%;
+  min-width:0;
+  gap:8px;
+  margin-bottom:4px;
+  padding:2px 2px 12px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.page-daftar-standar .category-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+.page-daftar-standar .category-chip{
+  position:relative;
+  flex:0 0 auto;
+  padding:9px 13px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.page-daftar-standar .category-chip.active{
+  border-color:var(--primary);
+  background:var(--primary);
+  box-shadow:0 10px 22px var(--theme-shadow);
+  color:#fff;
+}
+
+/* SHARED LISTS */
+.page-daftar-standar .diagnosis-list,
+.page-daftar-standar .outcome-list,
+.page-daftar-standar .intervention-list{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  min-width:0;
+  gap:10px;
+}
+
+.page-daftar-standar .diagnosis-card,
+.page-daftar-standar .outcome-card,
+.page-daftar-standar .intervention-card{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  width:100%;
+  min-width:0;
+  gap:12px;
+  padding:14px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease;
+}
+
+.page-daftar-standar .diagnosis-icon,
+.page-daftar-standar .outcome-icon,
+.page-daftar-standar .intervention-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  border-radius:16px;
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+.page-daftar-standar .diagnosis-body,
+.page-daftar-standar .outcome-body,
+.page-daftar-standar .intervention-body{
+  min-width:0;
+  flex:1;
+}
+
+.page-daftar-standar .diagnosis-top,
+.page-daftar-standar .outcome-top,
+.page-daftar-standar .intervention-top{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:5px;
+}
+
+.page-daftar-standar .diagnosis-code,
+.page-daftar-standar .outcome-code,
+.page-daftar-standar .intervention-code{
+  display:inline-flex;
+  align-items:center;
+  max-width:100%;
+  padding:4px 8px;
+  overflow:hidden;
+  border-radius:999px;
+  background:var(--primary-light);
+  color:var(--primary-dark);
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.page-daftar-standar .diagnosis-category,
+.page-daftar-standar .outcome-category,
+.page-daftar-standar .intervention-category{
+  max-width:100%;
+  overflow:hidden;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.page-daftar-standar .diagnosis-title,
+.page-daftar-standar .outcome-title,
+.page-daftar-standar .intervention-title{
+  margin-bottom:5px;
+  overflow-wrap:anywhere;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.page-daftar-standar .diagnosis-desc,
+.page-daftar-standar .outcome-desc,
+.page-daftar-standar .intervention-desc{
+  display:-webkit-box;
+  overflow:hidden;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+
+.page-daftar-standar .chevron{
+  flex:0 0 auto;
+  margin-top:14px;
+  color:#94a3b8;
+}
+
+/* PAGINATION */
+.page-daftar-standar .pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  min-width:0;
+  gap:10px;
+  margin:16px 0 4px;
+}
+
+.page-daftar-standar .page-btn{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:44px;
+  flex:1;
+  gap:8px;
+  padding:0 12px;
+  overflow:hidden;
+  border:0;
+  border-radius:16px;
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  color:var(--primary);
+  font-size:13px;
+  font-weight:800;
+}
+
+.page-daftar-standar .page-btn:disabled{
+  opacity:.45;
+  color:var(--muted);
+  cursor:not-allowed;
+}
+
+.page-daftar-standar .page-number{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:78px;
+  min-height:44px;
+  flex:0 0 auto;
+  border-radius:16px;
+  background:var(--primary);
+  box-shadow:0 10px 20px var(--theme-shadow);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+}
+
+/* EMPTY + LOADING */
+.page-daftar-standar .empty-state{
+  padding:42px 18px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.page-daftar-standar .empty-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:70px;
+  height:70px;
+  margin:0 auto 14px;
+  border-radius:24px;
+  background:var(--primary-light);
+  color:var(--primary);
+  font-size:28px;
+}
+
+.page-daftar-standar .empty-title{
+  margin-bottom:6px;
+  color:var(--text);
+  font-size:15px;
+  font-weight:800;
+}
+
+.page-daftar-standar .empty-desc{
+  font-size:12px;
+  line-height:1.55;
+}
+
+.page-daftar-standar .loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:40px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.page-daftar-standar .spinner{
+  width:18px;
+  height:18px;
+  border:3px solid var(--primary-soft);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:daftar-spin .8s linear infinite;
+}
+
+@keyframes daftar-spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* TABLET */
+@media (min-width:600px) and (max-width:899px){
+  .page-daftar-standar .app,
+  .page-daftar-standar .bottom-nav{
+    max-width:760px;
+  }
+
+  .page-daftar-standar .header,
+  .page-daftar-standar .content{
+    padding-right:28px;
+    padding-left:28px;
+  }
+
+  .page-daftar-standar .hero-card{
+    padding:24px;
+  }
+
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+
+  .page-daftar-standar .diagnosis-card,
+  .page-daftar-standar .outcome-card,
+  .page-daftar-standar .intervention-card{
+    min-height:132px;
+  }
+}
+
+/* DESKTOP */
+@media (min-width:900px){
+  .page-daftar-standar .app{
+    width:calc(100% - var(--desktop-sidebar-width));
+    max-width:none;
+    min-width:0;
+    margin:0 0 0 var(--desktop-sidebar-width);
+    padding-bottom:48px;
+  }
+
+  .page-daftar-standar .header,
+  .page-daftar-standar .content{
+    width:min(calc(100% - 48px),var(--content-max-width));
+    max-width:100%;
+    margin-right:auto;
+    margin-left:auto;
+    padding-right:0;
+    padding-left:0;
+  }
+
+  .page-daftar-standar .header{
+    padding-top:32px;
+    padding-bottom:18px;
+  }
+
+  .page-daftar-standar .topbar{
+    margin-bottom:0;
+  }
+
+  .page-daftar-standar .content{
+    display:grid;
+    grid-template-columns:minmax(280px,360px) minmax(0,1fr);
+    align-items:start;
+    gap:24px;
+  }
+
+  .page-daftar-standar .hero-card,
+  .page-daftar-standar .search-card,
+  .page-daftar-standar .category-scroll{
+    grid-column:1;
+  }
+
+  .page-daftar-standar .hero-card{
+    margin-bottom:0;
+  }
+
+  .page-daftar-standar .search-card{
+    position:sticky;
+    top:24px;
+    margin-bottom:0;
+  }
+
+  .page-daftar-standar .category-scroll{
+    align-self:start;
+    flex-wrap:wrap;
+    overflow:visible;
+    padding-bottom:0;
+  }
+
+  .page-daftar-standar .loading,
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list,
+  .page-daftar-standar .pagination{
+    grid-column:2;
+  }
+
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+
+  .page-daftar-standar .diagnosis-card,
+  .page-daftar-standar .outcome-card,
+  .page-daftar-standar .intervention-card{
+    min-height:132px;
+  }
+
+  .page-daftar-standar .diagnosis-card:hover,
+  .page-daftar-standar .outcome-card:hover,
+  .page-daftar-standar .intervention-card:hover{
+    border-color:#cbd5e1;
+    box-shadow:var(--shadow-md);
+    transform:translateY(-2px);
+  }
+}
+
+/* MOBILE KECIL */
+@media (max-width:420px){
+  .page-daftar-standar .header,
+  .page-daftar-standar .content{
+    padding-right:12px;
+    padding-left:12px;
+  }
+
+  .page-daftar-standar .hero-card{
+    padding:16px;
+  }
+
+  .page-daftar-standar .hero-title{
+    font-size:19px;
+  }
+
+  .page-daftar-standar .page-btn span{
+    display:none;
+  }
+
+  .page-daftar-standar .page-number{
+    min-width:68px;
+  }
+}
