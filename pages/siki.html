@@ -601,7 +601,7 @@ button{
 
 <script>
 /* =========================
-   CONFIG PATH
+   CONFIG API
 ========================= */
 const API_BASE = "https://askep.mkhoirulzed.workers.dev";
 
@@ -651,24 +651,50 @@ function normalizeText(text){
 
 function pick(obj, keys){
   for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+    if(
+      obj &&
+      obj[key] !== undefined &&
+      obj[key] !== null &&
+      obj[key] !== ""
+    ){
       return obj[key];
     }
   }
+
   return "";
 }
 
 function toArray(data){
-  if(Array.isArray(data)) return data;
+  if(Array.isArray(data)){
+    return data;
+  }
 
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.intervensi)) return data.intervensi;
-  if(data && Array.isArray(data.interventions)) return data.interventions;
-  if(data && Array.isArray(data.siki)) return data.siki;
+  if(data && Array.isArray(data.data)){
+    return data.data;
+  }
+
+  if(data && Array.isArray(data.items)){
+    return data.items;
+  }
+
+  if(data && Array.isArray(data.intervensi)){
+    return data.intervensi;
+  }
+
+  if(data && Array.isArray(data.interventions)){
+    return data.interventions;
+  }
+
+  if(data && Array.isArray(data.siki)){
+    return data.siki;
+  }
 
   if(data && typeof data === "object"){
-    return Object.values(data);
+    const values = Object.values(data);
+
+    if(values.every(item => item && typeof item === "object")){
+      return values;
+    }
   }
 
   return [];
@@ -676,27 +702,53 @@ function toArray(data){
 
 function escapeHtml(text){
   return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function stringifyDeep(value){
-  if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+  if(value === null || value === undefined){
+    return "";
+  }
+
+  if(typeof value === "string" || typeof value === "number"){
+    return String(value);
+  }
+
+  if(Array.isArray(value)){
+    return value.map(stringifyDeep).join(" ");
+  }
+
+  if(typeof value === "object"){
+    return Object.values(value).map(stringifyDeep).join(" ");
+  }
+
   return "";
 }
 
 function getInterventionId(item){
-  return pick(item, ["id", "slug", "kode", "code", "nomor", "no"]);
+  return pick(item, [
+    "id",
+    "slug",
+    "kode",
+    "code",
+    "nomor",
+    "no",
+    "kodeSiki"
+  ]);
 }
 
 function getInterventionCode(item){
-  return pick(item, ["kode", "code", "nomor", "no"]);
+  return pick(item, [
+    "kode",
+    "code",
+    "nomor",
+    "no",
+    "kodeSiki"
+  ]);
 }
 
 function getInterventionTitle(item){
@@ -707,7 +759,8 @@ function getInterventionTitle(item){
     "judul",
     "title",
     "label",
-    "name"
+    "name",
+    "judulSiki"
   ]);
 }
 
@@ -752,18 +805,41 @@ function makeSearchText(item){
 }
 
 function makeDetailUrl(item){
-  const id = getInterventionId(item) || getInterventionCode(item) || getInterventionTitle(item);
+  const id =
+    getInterventionId(item) ||
+    getInterventionCode(item) ||
+    getInterventionTitle(item);
+
   return "siki-detail.html?id=" + encodeURIComponent(id);
 }
 
-async function fetchJsonSafe(path){
+async function fetchJsonSafe(url){
+  const separator = url.includes("?") ? "&" : "?";
+
+  const response = await fetch(
+    `${url}${separator}v=${Date.now()}`,
+    {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      },
+      cache: "no-store"
+    }
+  );
+
+  const responseText = await response.text();
+
+  if(!response.ok){
+    throw new Error(
+      `HTTP ${response.status}: ${responseText || "Gagal memuat data"}`
+    );
+  }
+
   try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
-  }catch(err){
-    console.warn(err.message);
-    return [];
+    return JSON.parse(responseText);
+  }catch(error){
+    console.error("Respons API:", responseText);
+    throw new Error("Respons API bukan JSON yang valid.");
   }
 }
 
@@ -776,21 +852,39 @@ function renderEmpty(title, desc){
       <div class="empty-icon">
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
-      <div class="empty-title">${escapeHtml(title)}</div>
-      <div class="empty-desc">${escapeHtml(desc)}</div>
+
+      <div class="empty-title">
+        ${escapeHtml(title)}
+      </div>
+
+      <div class="empty-desc">
+        ${escapeHtml(desc)}
+      </div>
     </div>
   `;
 }
 
 function renderList(){
   const totalItems = filteredInterventions.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalItems / PER_PAGE)
+  );
 
-  if(currentPage > totalPages) currentPage = totalPages;
-  if(currentPage < 1) currentPage = 1;
+  if(currentPage > totalPages){
+    currentPage = totalPages;
+  }
+
+  if(currentPage < 1){
+    currentPage = 1;
+  }
 
   const startIndex = (currentPage - 1) * PER_PAGE;
-  const pageItems = filteredInterventions.slice(startIndex, startIndex + PER_PAGE);
+
+  const pageItems = filteredInterventions.slice(
+    startIndex,
+    startIndex + PER_PAGE
+  );
 
   resultCount.textContent = totalItems
     ? `${totalItems} intervensi ditemukan`
@@ -802,41 +896,65 @@ function renderList(){
   prevBtn.disabled = currentPage <= 1;
   nextBtn.disabled = currentPage >= totalPages;
 
-  paginationEl.style.display = totalItems > PER_PAGE ? "flex" : "none";
+  paginationEl.style.display =
+    totalItems > PER_PAGE ? "flex" : "none";
 
   if(!totalItems){
     renderEmpty(
       "Intervensi tidak ditemukan",
       "Coba gunakan kata kunci lain, misalnya nyeri, napas, edukasi, monitor, atau kode intervensi."
     );
+
     return;
   }
 
   listArea.innerHTML = pageItems.map(item => {
     const id = getInterventionId(item);
     const code = getInterventionCode(item);
-    const title = getInterventionTitle(item) || "Intervensi SIKI";
-    const desc = getInterventionDesc(item) || "Ketuk untuk melihat detail intervensi.";
+
+    const title =
+      getInterventionTitle(item) ||
+      "Intervensi SIKI";
+
+    const desc =
+      getInterventionDesc(item) ||
+      "Ketuk untuk melihat detail intervensi.";
+
     const category = getInterventionCategory(item);
     const subCategory = getInterventionSubCategory(item);
     const url = makeDetailUrl(item);
 
     return `
-      <a href="${url}" class="intervention-card native-click">
+      <a
+        href="${escapeHtml(url)}"
+        class="intervention-card native-click"
+      >
         <div class="intervention-icon">
           <i class="fa-solid fa-clipboard-list"></i>
         </div>
 
         <div class="intervention-body">
           <div class="intervention-top">
-            <span class="intervention-code">${escapeHtml(code || id || "-")}</span>
+            <span class="intervention-code">
+              ${escapeHtml(code || id || "-")}
+            </span>
+
             <span class="intervention-category">
-              ${escapeHtml([category, subCategory].filter(Boolean).join(" • ") || "SIKI")}
+              ${escapeHtml(
+                [category, subCategory]
+                  .filter(Boolean)
+                  .join(" • ") || "SIKI"
+              )}
             </span>
           </div>
 
-          <div class="intervention-title">${escapeHtml(title)}</div>
-          <div class="intervention-desc">${escapeHtml(desc)}</div>
+          <div class="intervention-title">
+            ${escapeHtml(title)}
+          </div>
+
+          <div class="intervention-desc">
+            ${escapeHtml(desc)}
+          </div>
         </div>
 
         <i class="fa-solid fa-chevron-right chevron"></i>
@@ -864,23 +982,45 @@ function applySearch(){
   filteredInterventions = allInterventions
     .map(item => {
       const text = makeSearchText(item);
-      const title = normalizeText(getInterventionTitle(item));
-      const code = normalizeText(getInterventionCode(item));
+      const title = normalizeText(
+        getInterventionTitle(item)
+      );
+      const code = normalizeText(
+        getInterventionCode(item)
+      );
+
       let score = 0;
 
-      for(const key of keywords){
-        if(code === key) score += 50;
-        if(code.includes(key)) score += 30;
-        if(title.includes(key)) score += 25;
-        if(text.includes(key)) score += 10;
+      for(const keyword of keywords){
+        if(code === keyword){
+          score += 50;
+        }
+
+        if(code.includes(keyword)){
+          score += 30;
+        }
+
+        if(title.includes(keyword)){
+          score += 25;
+        }
+
+        if(text.includes(keyword)){
+          score += 10;
+        }
       }
 
-      const matched = keywords.every(key => text.includes(key));
+      const matched = keywords.every(keyword =>
+        text.includes(keyword)
+      );
 
-      return { item, score, matched };
+      return {
+        item,
+        score,
+        matched
+      };
     })
     .filter(row => row.matched)
-    .sort((a,b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score)
     .map(row => row.item);
 
   currentPage = 1;
@@ -893,28 +1033,53 @@ function applySearch(){
 async function loadSiki(){
   loadingEl.style.display = "flex";
   listArea.innerHTML = "";
+  paginationEl.style.display = "none";
 
-  const sikiJson = await fetchJsonSafe(DATA_PATHS.siki);
-  allInterventions = toArray(sikiJson).filter(item => item && typeof item === "object");
-  filteredInterventions = [...allInterventions];
-
-  loadingEl.style.display = "none";
-
-  headerSub.textContent = allInterventions.length
-    ? `${allInterventions.length} intervensi tersedia`
-    : "Standar Intervensi Keperawatan Indonesia";
-
-  if(!allInterventions.length){
-    resultCount.textContent = "Data kosong";
-    pageCount.textContent = "Halaman 1";
-    renderEmpty(
-      "Data SIKI belum terbaca",
-      "Pastikan file ../data/sdkislki/siki.json tersedia dan format JSON benar."
+  try{
+    const sikiJson = await fetchJsonSafe(
+      API_ENDPOINTS.siki
     );
-    return;
-  }
 
-  renderList();
+    console.log("Respons API SIKI:", sikiJson);
+
+    allInterventions = toArray(sikiJson)
+      .filter(item => item && typeof item === "object");
+
+    filteredInterventions = [...allInterventions];
+
+    loadingEl.style.display = "none";
+
+    headerSub.textContent = allInterventions.length
+      ? `${allInterventions.length} intervensi tersedia`
+      : "Standar Intervensi Keperawatan Indonesia";
+
+    if(!allInterventions.length){
+      resultCount.textContent = "Data kosong";
+      pageCount.textContent = "Halaman 1";
+
+      renderEmpty(
+        "Data SIKI belum terbaca",
+        "Endpoint API berhasil diakses, tetapi data intervensi tidak ditemukan."
+      );
+
+      return;
+    }
+
+    renderList();
+  }catch(error){
+    console.error("Gagal memuat SIKI:", error);
+
+    loadingEl.style.display = "none";
+    resultCount.textContent = "Gagal memuat data";
+    pageCount.textContent = "Halaman 1";
+    headerSub.textContent =
+      "Standar Intervensi Keperawatan Indonesia";
+
+    renderEmpty(
+      "Terjadi kesalahan",
+      error.message || "Data SIKI gagal dimuat."
+    );
+  }
 }
 
 /* =========================
@@ -929,66 +1094,93 @@ clearSearch.addEventListener("click", function(){
 });
 
 prevBtn.addEventListener("click", function(){
-  if(currentPage <= 1) return;
+  if(currentPage <= 1){
+    return;
+  }
+
   currentPage--;
   renderList();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 });
 
 nextBtn.addEventListener("click", function(){
-  const totalPages = Math.max(1, Math.ceil(filteredInterventions.length / PER_PAGE));
-  if(currentPage >= totalPages) return;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      filteredInterventions.length / PER_PAGE
+    )
+  );
+
+  if(currentPage >= totalPages){
+    return;
+  }
+
   currentPage++;
   renderList();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 });
 
 /* =========================
    RIPPLE EFFECT
 ========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el || el.disabled) return;
+document.addEventListener("click", function(event){
+  const element = event.target.closest(".native-click");
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+  if(!element || element.disabled){
+    return;
+  }
+
+  const oldRipple = element.querySelector(".ripple");
+
+  if(oldRipple){
+    oldRipple.remove();
+  }
 
   const ripple = document.createElement("span");
   ripple.className = "ripple";
 
-  const rect = el.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
   const size = Math.max(rect.width, rect.height);
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
+  ripple.style.left =
+    `${event.clientX - rect.left - size / 2}px`;
+  ripple.style.top =
+    `${event.clientY - rect.top - size / 2}px`;
 
-  el.appendChild(ripple);
+  element.appendChild(ripple);
 
-  setTimeout(() => ripple.remove(), 600);
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
 });
 
 /* =========================
    BLOKIR SELECT
 ========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
+document.addEventListener("selectstart", function(event){
+  const allowedElement = event.target.closest(
+    "input, textarea, select"
+  );
+
+  if(!allowedElement){
+    event.preventDefault();
+  }
 });
 
 /* =========================
    INIT
 ========================= */
-loadSiki().catch(err => {
-  console.error(err);
-  loadingEl.style.display = "none";
-  resultCount.textContent = "Gagal memuat data";
-  renderEmpty(
-    "Terjadi kesalahan",
-    "Data SIKI gagal dimuat. Cek path file JSON dan console browser."
-  );
-});
+loadSiki();
 </script>
-
 </body>
 </html>
