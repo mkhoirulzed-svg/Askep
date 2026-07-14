@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Daftar SDKI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --primary-light:#eff6ff;
+
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+
+  --radius-sm:12px;
+  --radius-md:18px;
+  --radius-lg:24px;
+
+  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
+  --shadow-md:0 10px 28px rgba(15,23,42,.10);
+
+  --bottom-nav-height:76px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overscroll-behavior:none;
+}
+
+body,
+button,
+a,
+.card,
+ diagnosis-card,
+.bottom-item,
+.native-click{
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+
+input,
+textarea,
+select{
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 280px);
+  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 20px);
+}
+
+.header{
+  padding:18px 18px 14px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.nav-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.header-title{
+  flex:1;
+  min-width:0;
+}
+
+.header-title h1{
+  font-size:19px;
+  font-weight:800;
+  margin:0;
+  line-height:1.2;
+}
+
+.header-title p{
+  font-size:12px;
+  color:var(--muted);
+  margin:4px 0 0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.content{
+  padding:0 18px;
+}
+
+.hero-card{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:18px;
+  box-shadow:0 16px 32px rgba(37,99,235,.22);
+  margin-bottom:14px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:800;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  margin-bottom:10px;
+}
+
+.hero-title{
+  font-size:21px;
+  font-weight:800;
+  line-height:1.25;
+  margin-bottom:8px;
+}
+
+.hero-desc{
+  font-size:13px;
+  line-height:1.55;
+  opacity:.94;
+}
+
+.search-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:13px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:14px;
+}
+
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--primary-light);
+  border:1px solid var(--primary-soft);
+  border-radius:18px;
+  padding:0 13px;
+  min-height:48px;
+}
+
+.search-box i{
+  color:var(--primary);
+  font-size:15px;
+}
+
+.search-box input{
+  flex:1;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+  font-size:14px;
+  font-weight:600;
+  height:46px;
+}
+
+.search-box input::placeholder{
+  color:#94a3b8;
+  font-weight:600;
+}
+
+.clear-btn{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:999px;
+  background:#fff;
+  color:var(--muted);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 8px rgba(15,23,42,.08);
+}
+
+.info-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:12px 2px 4px;
+}
+
+.result-count{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.page-count{
+  font-size:12px;
+  color:var(--primary);
+  font-weight:800;
+}
+
+.category-scroll{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:2px 2px 12px;
+  margin-bottom:4px;
+  scrollbar-width:none;
+}
+
+.category-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+.category-chip{
+  flex:0 0 auto;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  border-radius:999px;
+  padding:9px 13px;
+  font-size:12px;
+  font-weight:800;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.category-chip.active{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+  box-shadow:0 10px 22px rgba(37,99,235,.22);
+}  
+  
+.diagnosis-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.diagnosis-card{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:14px;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.diagnosis-icon{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.diagnosis-body{
+  flex:1;
+  min-width:0;
+}
+
+.diagnosis-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:5px;
+}
+
+.diagnosis-code{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:4px 8px;
+  background:var(--primary-light);
+  color:var(--primary-dark);
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+}
+
+.diagnosis-category{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.diagnosis-title{
+  font-size:14px;
+  font-weight:800;
+  line-height:1.35;
+  margin-bottom:5px;
+}
+
+.diagnosis-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.55;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.chevron{
+  color:#94a3b8;
+  margin-top:14px;
+}
+
+.pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:16px 0 4px;
+}
+
+.page-btn{
+  flex:1;
+  min-height:44px;
+  border:0;
+  border-radius:16px;
+  background:var(--card);
+  color:var(--primary);
+  font-size:13px;
+  font-weight:800;
+  box-shadow:var(--shadow-sm);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  position:relative;
+  overflow:hidden;
+}
+
+.page-btn:disabled{
+  opacity:.45;
+  color:var(--muted);
+  cursor:not-allowed;
+}
+
+.page-number{
+  min-width:78px;
+  min-height:44px;
+  border-radius:16px;
+  background:var(--primary);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 10px 20px rgba(37,99,235,.20);
+}
+
+.empty-state{
+  text-align:center;
+  padding:42px 18px;
+  color:var(--muted);
+}
+
+.empty-icon{
+  width:70px;
+  height:70px;
+  border-radius:24px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 14px;
+  font-size:28px;
+}
+
+.empty-title{
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:6px;
+}
+
+.empty-desc{
+  font-size:12px;
+  line-height:1.55;
+}
+
+.loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+  padding:40px 0;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:3px solid var(--primary-soft);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+.native-click{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.native-click:active{
+  transform:scale(.985);
+}
+
+.ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .55s linear;
+  background:rgba(37,99,235,.18);
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+
+.bottom-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:700;
+  position:relative;
+  overflow:hidden;
+}
+
+.bottom-item i{
+  font-size:18px;
+}
+
+.bottom-item.active{
+  color:var(--primary);
+  background:var(--primary-light);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="topbar">
+      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>Daftar SDKI</h1>
+        <p id="headerSub">Standar Diagnosis Keperawatan Indonesia</p>
+      </div>
+
+      <a href="../index.html" class="nav-btn native-click" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="hero-card">
+      <div class="badge">
+        <i class="fa-solid fa-stethoscope"></i>
+        <span>SDKI</span>
+      </div>
+      <div class="hero-title">Diagnosis Keperawatan</div>
+    </section>
+
+    <section class="search-card">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="search" placeholder="Cari diagnosis, kode, kategori..." autocomplete="off" />
+        <button id="clearSearch" class="clear-btn native-click" type="button" aria-label="Hapus pencarian">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="info-row">
+        <div id="resultCount" class="result-count">Memuat data...</div>
+        <div id="pageCount" class="page-count">Halaman 1</div>
+      </div>
+    </section>
+    <section id="categoryTags" class="category-scroll"></section>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <span>Memuat daftar diagnosis...</span>
+    </div>
+
+    <section id="listArea" class="diagnosis-list"></section>
+
+    <section id="pagination" class="pagination" style="display:none;">
+      <button id="prevBtn" class="page-btn native-click" type="button">
+        <i class="fa-solid fa-chevron-left"></i>
+        <span>Sebelumnya</span>
+      </button>
+
+      <div id="pageNumber" class="page-number">1 / 1</div>
+
+      <button id="nextBtn" class="page-btn native-click" type="button">
+        <span>Berikutnya</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </section>
+  </main>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="../index.html" class="bottom-item native-click">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="search.html" class="bottom-item native-click">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Cari</span>
+  </a>
+
+  <a href="quick-askep.html" class="bottom-item native-click">
+    <i class="fa-solid fa-notes-medical"></i>
+    <span>Askep</span>
+  </a>
+
+  <a href="profil.html" class="bottom-item native-click">
+    <i class="fa-solid fa-user-nurse"></i>
+    <span>Profil</span>
+  </a>
+</nav>
+<script>
+/* =========================
+   CONFIG PATH
+========================= */
+const DATA_PATHS = {
+  sdki: "../data/sdkislki/sdki.json"
+};
+
+const PER_PAGE = 20;
+
+/* =========================
+   ELEMENTS
+========================= */
+const loadingEl = document.getElementById("loading");
+const listArea = document.getElementById("listArea");
+const paginationEl = document.getElementById("pagination");
+const searchInput = document.getElementById("searchInput");
+const clearSearch = document.getElementById("clearSearch");
+const resultCount = document.getElementById("resultCount");
+const pageCount = document.getElementById("pageCount");
+const pageNumber = document.getElementById("pageNumber");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const headerSub = document.getElementById("headerSub");
+const categoryTags = document.getElementById("categoryTags");
+  
+/* =========================
+   STATE
+========================= */
+let allDiagnoses = [];
+let filteredDiagnoses = [];
+let currentPage = 1;
+let activeCategory = "Semua";
+
+/* =========================
+   HELPERS
+========================= */
+function normalizeText(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pick(obj, keys){
+  for(const key of keys){
+    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+      return obj[key];
+    }
+  }
+  return "";
+}
+
+function toArray(data){
+  if(Array.isArray(data)) return data;
+
+  if(data && Array.isArray(data.data)) return data.data;
+  if(data && Array.isArray(data.items)) return data.items;
+  if(data && Array.isArray(data.diagnosis)) return data.diagnosis;
+  if(data && Array.isArray(data.diagnosa)) return data.diagnosa;
+  if(data && Array.isArray(data.sdki)) return data.sdki;
+
+  if(data && typeof data === "object"){
+    return Object.values(data);
+  }
+
+  return [];
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function stringifyDeep(value){
+  if(value === null || value === undefined) return "";
+  if(typeof value === "string" || typeof value === "number") return String(value);
+  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
+  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+  return "";
+}
+
+function getDiagnosisId(item){
+  return pick(item, ["id", "slug", "kode", "code", "nomor", "no"]);
+}
+
+function getDiagnosisCode(item){
+  return pick(item, ["kode", "code", "nomor", "no"]);
+}
+
+function getDiagnosisTitle(item){
+  return pick(item, [
+    "nama",
+    "diagnosis",
+    "diagnosa",
+    "judul",
+    "title",
+    "label",
+    "name"
+  ]);
+}
+
+function getDiagnosisDesc(item){
+  return pick(item, [
+    "definisi",
+    "deskripsi",
+    "description",
+    "keterangan"
+  ]);
+}
+
+function getDiagnosisCategory(item){
+  return pick(item, [
+    "kategori",
+    "category",
+    "domain",
+    "kelompok"
+  ]);
+}
+
+function getDiagnosisSubCategory(item){
+  return pick(item, [
+    "subkategori",
+    "sub_category",
+    "subCategory",
+    "kelas",
+    "class"
+  ]);
+}
+
+function makeSearchText(item){
+  return normalizeText([
+    getDiagnosisId(item),
+    getDiagnosisCode(item),
+    getDiagnosisTitle(item),
+    getDiagnosisDesc(item),
+    getDiagnosisCategory(item),
+    getDiagnosisSubCategory(item),
+    stringifyDeep(item)
+  ].join(" "));
+}
+
+function makeDetailUrl(item){
+  const id = getDiagnosisId(item) || getDiagnosisCode(item) || getDiagnosisTitle(item);
+  return "diagnosis-detail.html?id=" + encodeURIComponent(id);
+}
+
+async function fetchJsonSafe(path){
+  try{
+    const res = await fetch(path + "?v=" + Date.now());
+    if(!res.ok) throw new Error("Gagal memuat " + path);
+    return await res.json();
+  }catch(err){
+    console.warn(err.message);
+    return [];
+  }
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderEmpty(title, desc){
+  listArea.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </div>
+      <div class="empty-title">${escapeHtml(title)}</div>
+      <div class="empty-desc">${escapeHtml(desc)}</div>
+    </div>
+  `;
+}
+
+function getUniqueCategories(){
+  const categories = allDiagnoses
+    .map(item => getDiagnosisCategory(item))
+    .filter(Boolean)
+    .map(item => String(item).trim())
+    .filter(Boolean);
+
+  return ["Semua", ...Array.from(new Set(categories)).sort((a,b) => a.localeCompare(b))];
+}
+
+function renderCategoryTags(){
+  const categories = getUniqueCategories();
+
+  categoryTags.innerHTML = categories.map(category => `
+    <button
+      type="button"
+      class="category-chip native-click ${category === activeCategory ? "active" : ""}"
+      data-category="${escapeHtml(category)}"
+    >
+      ${escapeHtml(category)}
+    </button>
+  `).join("");
+}  
+
+function renderList(){
+  const totalItems = filteredDiagnoses.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PER_PAGE));
+
+  if(currentPage > totalPages) currentPage = totalPages;
+  if(currentPage < 1) currentPage = 1;
+
+  const startIndex = (currentPage - 1) * PER_PAGE;
+  const pageItems = filteredDiagnoses.slice(startIndex, startIndex + PER_PAGE);
+
+  resultCount.textContent = totalItems
+    ? `${totalItems} diagnosis ditemukan`
+    : "Tidak ada diagnosis";
+
+  pageCount.textContent = `Halaman ${currentPage}`;
+  pageNumber.textContent = `${currentPage} / ${totalPages}`;
+
+  prevBtn.disabled = currentPage <= 1;
+  nextBtn.disabled = currentPage >= totalPages;
+
+  paginationEl.style.display = totalItems > PER_PAGE ? "flex" : "none";
+
+  if(!totalItems){
+    renderEmpty(
+      "Diagnosis tidak ditemukan",
+      "Coba gunakan kata kunci lain, misalnya nyeri, napas, perfusi, D.0004, atau kategori."
+    );
+    return;
+  }
+
+  listArea.innerHTML = pageItems.map(item => {
+    const id = getDiagnosisId(item);
+    const code = getDiagnosisCode(item);
+    const title = getDiagnosisTitle(item) || "Diagnosis SDKI";
+    const desc = getDiagnosisDesc(item) || "Ketuk untuk melihat detail diagnosis.";
+    const category = getDiagnosisCategory(item);
+    const subCategory = getDiagnosisSubCategory(item);
+    const url = makeDetailUrl(item);
+
+    return `
+      <a href="${url}" class="diagnosis-card native-click">
+        <div class="diagnosis-icon">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+
+        <div class="diagnosis-body">
+          <div class="diagnosis-top">
+            <span class="diagnosis-code">${escapeHtml(code || id || "-")}</span>
+            <span class="diagnosis-category">
+              ${escapeHtml([category, subCategory].filter(Boolean).join(" • ") || "SDKI")}
+            </span>
+          </div>
+
+          <div class="diagnosis-title">${escapeHtml(title)}</div>
+          <div class="diagnosis-desc">${escapeHtml(desc)}</div>
+        </div>
+
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </a>
+    `;
+  }).join("");
+}
+
+function applySearch(){
+  const q = normalizeText(searchInput.value);
+
+  clearSearch.style.display = q ? "flex" : "none";
+
+  const categoryFiltered = activeCategory === "Semua"
+    ? [...allDiagnoses]
+    : allDiagnoses.filter(item => {
+        return normalizeText(getDiagnosisCategory(item)) === normalizeText(activeCategory);
+      });
+
+  if(!q){
+    filteredDiagnoses = categoryFiltered;
+    currentPage = 1;
+    renderList();
+    return;
+  }
+
+  const keywords = q
+    .split(/\s+/)
+    .filter(Boolean);
+
+  filteredDiagnoses = categoryFiltered
+    .map(item => {
+      const text = makeSearchText(item);
+      const title = normalizeText(getDiagnosisTitle(item));
+      const code = normalizeText(getDiagnosisCode(item));
+      let score = 0;
+
+      for(const key of keywords){
+        if(code === key) score += 50;
+        if(code.includes(key)) score += 30;
+        if(title.includes(key)) score += 25;
+        if(text.includes(key)) score += 10;
+      }
+
+      const matched = keywords.every(key => text.includes(key));
+
+      return { item, score, matched };
+    })
+    .filter(row => row.matched)
+    .sort((a,b) => b.score - a.score)
+    .map(row => row.item);
+
+  currentPage = 1;
+  renderList();
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+async function loadSdki(){
+  loadingEl.style.display = "flex";
+  listArea.innerHTML = "";
+
+  const sdkiJson = await fetchJsonSafe(DATA_PATHS.sdki);
+  allDiagnoses = toArray(sdkiJson).filter(item => item && typeof item === "object");
+  filteredDiagnoses = [...allDiagnoses];
+  
+  renderCategoryTags();
+
+  loadingEl.style.display = "none";
+
+  headerSub.textContent = allDiagnoses.length
+    ? `${allDiagnoses.length} diagnosis tersedia`
+    : "Standar Diagnosis Keperawatan Indonesia";
+
+  if(!allDiagnoses.length){
+    resultCount.textContent = "Data kosong";
+    pageCount.textContent = "Halaman 1";
+    renderEmpty(
+      "Data SDKI belum terbaca",
+      "Pastikan file ../data/sdkislki/sdki.json tersedia dan format JSON benar."
+    );
+    return;
+  }
+
+  renderList();
+}
+
+/* =========================
+   EVENTS
+========================= */
+searchInput.addEventListener("input", applySearch);
+
+clearSearch.addEventListener("click", function(){
+  searchInput.value = "";
+  searchInput.focus();
+  applySearch();
+});
+
+prevBtn.addEventListener("click", function(){
+  if(currentPage <= 1) return;
+  currentPage--;
+  renderList();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+nextBtn.addEventListener("click", function(){
+  const totalPages = Math.max(1, Math.ceil(filteredDiagnoses.length / PER_PAGE));
+  if(currentPage >= totalPages) return;
+  currentPage++;
+  renderList();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+categoryTags.addEventListener("click", function(e){
+  const btn = e.target.closest(".category-chip");
+  if(!btn) return;
+
+  activeCategory = btn.dataset.category || "Semua";
+
+  categoryTags.querySelectorAll(".category-chip").forEach(chip => {
+    chip.classList.toggle("active", chip.dataset.category === activeCategory);
+  });
+
+  currentPage = 1;
+  applySearch();
+});  
+/* =========================
+   RIPPLE EFFECT
+========================= */
+document.addEventListener("click", function(e){
+  const el = e.target.closest(".native-click");
+  if(!el || el.disabled) return;
+
+  const oldRipple = el.querySelector(".ripple");
+  if(oldRipple) oldRipple.remove();
+
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  ripple.style.width = ripple.style.height = size + "px";
+  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+  el.appendChild(ripple);
+
+  setTimeout(() => ripple.remove(), 600);
+});
+
+/* =========================
+   BLOKIR SELECT
+========================= */
+document.addEventListener("selectstart", function(e){
+  const allow = e.target.closest("input, textarea, select");
+  if(!allow) e.preventDefault();
+});
+
+/* =========================
+   INIT
+========================= */
+loadSdki().catch(err => {
+  console.error(err);
+  loadingEl.style.display = "none";
+  resultCount.textContent = "Gagal memuat data";
+  renderEmpty(
+    "Terjadi kesalahan",
+    "Data SDKI gagal dimuat. Cek path file JSON dan console browser."
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Paket Kasus Askep</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --primary-light:#eff6ff;
+
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+
+  --radius-sm:12px;
+  --radius-md:18px;
+  --radius-lg:24px;
+
+  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
+  --shadow-md:0 10px 28px rgba(15,23,42,.10);
+
+  --bottom-nav-height:76px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overscroll-behavior:none;
+}
+
+body,
+button,
+a,
+.case-list-item,
+.diagnosis-card,
+.bottom-item,
+.native-click{
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+
+input,
+textarea,
+select{
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 300px);
+  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px);
+}
+
+.header{
+  padding:18px 18px 14px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.nav-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.header-title{
+  flex:1;
+  min-width:0;
+}
+
+.header-title h1{
+  font-size:19px;
+  font-weight:800;
+  margin:0;
+  line-height:1.2;
+}
+
+.header-title p{
+  font-size:12px;
+  color:var(--muted);
+  margin:4px 0 0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.hero-card{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:16px;
+  box-shadow:0 16px 32px rgba(37,99,235,.22);
+}
+
+.hero-title{
+  font-size:16px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.hero-desc{
+  font-size:12px;
+  line-height:1.55;
+  opacity:.92;
+}
+
+.content{
+  padding:0 18px;
+}
+
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px 14px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:12px;
+}
+
+.search-box i{
+  color:var(--primary);
+}
+
+.search-box input{
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:13px;
+  color:var(--text);
+  min-width:0;
+}
+
+.search-box input::placeholder{
+  color:#94a3b8;
+}
+
+.category-row{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:2px 0 12px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity;
+}
+
+.category-row::-webkit-scrollbar{
+  display:none;
+}
+
+.category-chip{
+  flex:0 0 auto;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  border-radius:999px;
+  padding:8px 13px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+  box-shadow:var(--shadow-sm);
+  scroll-snap-align:start;
+}
+
+.category-chip.active{
+  border-color:var(--primary);
+  background:var(--primary);
+  color:#fff;
+}
+
+.category-row::-webkit-scrollbar{
+  display:none;
+}
+
+.category-chip{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+  box-shadow:var(--shadow-sm);
+}
+
+.category-chip.active{
+  border-color:var(--primary);
+  background:var(--primary);
+  color:#fff;
+}
+
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  margin:14px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.section-title span:first-child{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.section-title i{
+  color:var(--primary);
+}
+
+.count{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.case-list{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+
+.case-list-item{
+  width:100%;
+  border:0;
+  border-bottom:1px solid var(--border);
+  background:var(--card);
+  padding:13px 14px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  overflow:hidden;
+}
+
+.case-list-item:last-child{
+  border-bottom:0;
+}
+
+.case-list-item.active{
+  background:var(--primary-light);
+}
+
+.case-main{
+  flex:1;
+  min-width:0;
+}
+
+.case-title-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+
+.case-title{
+  font-size:14px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.case-category{
+  font-size:10px;
+  font-weight:800;
+  color:var(--primary);
+  background:var(--primary-light);
+  border-radius:999px;
+  padding:4px 7px;
+  white-space:nowrap;
+}
+
+
+.case-meta{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:800;
+  flex-shrink:0;
+}
+
+.detail-panel{
+  margin-top:16px;
+}
+
+.panel-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+
+.panel-head{
+  padding:16px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+}
+
+.panel-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.16);
+  padding:5px 9px;
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:9px;
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.panel-body{
+  padding:14px;
+}
+
+.diagnosis-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.diagnosis-card{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+  position:relative;
+  overflow:hidden;
+}
+
+.diagnosis-number{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  font-size:12px;
+  font-weight:800;
+}
+
+.diagnosis-body{
+  flex:1;
+  min-width:0;
+}
+
+.diagnosis-title{
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.diagnosis-desc{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+  line-height:1.45;
+}
+
+.chevron{
+  color:#94a3b8;
+  margin-top:7px;
+  flex-shrink:0;
+}
+
+.action-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 14px 14px;
+}
+
+.btn{
+  border:0;
+  border-radius:16px;
+  min-height:46px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+  box-shadow:0 10px 20px rgba(37,99,235,.18);
+}
+
+.btn-soft{
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+.empty-state{
+  text-align:center;
+  padding:32px 16px;
+  color:var(--muted);
+}
+
+.empty-icon{
+  width:64px;
+  height:64px;
+  border-radius:23px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 13px;
+  font-size:26px;
+}
+
+.empty-title{
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:6px;
+}
+
+.empty-desc{
+  font-size:12px;
+  line-height:1.55;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 18px);
+  transform:translateX(-50%) translateY(20px);
+  max-width:calc(520px - 36px);
+  width:calc(100% - 36px);
+  background:#0f172a;
+  color:#fff;
+  border-radius:18px;
+  padding:13px 15px;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:var(--shadow-md);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s ease;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.native-click{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.native-click:active{
+  transform:scale(.985);
+}
+
+.ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .55s linear;
+  background:rgba(37,99,235,.18);
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+
+.bottom-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:700;
+  position:relative;
+  overflow:hidden;
+}
+
+.bottom-item i{
+  font-size:18px;
+}
+
+.bottom-item.active{
+  color:var(--primary);
+  background:var(--primary-light);
+}
+  .case-list.is-hidden,
+.category-row.is-hidden,
+.search-box.is-hidden,
+.case-section-title.is-hidden{
+  display:none;
+}
+
+.focus-note{
+  margin-bottom:12px;
+  background:var(--primary-light);
+  color:var(--primary);
+  border:1px solid var(--primary-soft);
+  border-radius:16px;
+  padding:11px 12px;
+  font-size:12px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.action-row.three{
+  grid-template-columns:1fr 1fr;
+}
+
+.btn-outline{
+  background:#fff;
+  color:var(--primary);
+  border:1px solid var(--primary-soft);
+}
+ .case-list.is-hidden,
+.category-row.is-hidden,
+.search-box.is-hidden,
+#caseSectionTitle.is-hidden{
+  display:none;
+}
+
+  .case-list.is-hidden,
+.category-row.is-hidden,
+.search-box.is-hidden,
+#caseSectionTitle.is-hidden{
+  display:none;
+}
+
+.diagnosis-list{
+  padding-bottom:92px;
+}
+
+.floating-action{
+  position:fixed;
+  left:50%;
+  bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 12px);
+  transform:translateX(-50%);
+  width:calc(100% - 36px);
+  max-width:484px;
+  z-index:45;
+
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:var(--shadow-md);
+  padding:10px;
+
+  display:grid;
+  grid-template-columns:1fr 1fr 1.15fr;
+  gap:8px;
+}
+
+.floating-action .btn{
+  min-height:44px;
+  padding:10px 8px;
+  border-radius:15px;
+  font-size:12px;
+}
+
+.btn-outline{
+  background:#fff;
+  color:var(--primary);
+  border:1px solid var(--primary-soft);
+}
+
+.floating-action.is-hidden{
+  display:none;
+}
+  
+.sticky-action .btn{
+  min-height:44px;
+  padding:10px 8px;
+  border-radius:15px;
+  font-size:12px;
+}
+
+.btn-outline{
+  background:#fff;
+  color:var(--primary);
+  border:1px solid var(--primary-soft);
+} 
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="topbar">
+      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>Paket Kasus</h1>
+        <p>Diagnosis yang sering muncul berdasarkan kasus</p>
+      </div>
+
+      <a href="search.html" class="nav-btn native-click" aria-label="Cari">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </a>
+    </div>
+
+    <section class="hero-card">
+      <div class="hero-title">Bantu Mahasiswa Lebih Cepat Menyusun Askep</div>
+      <div class="hero-desc">
+        Pilih kasus, lihat diagnosis keperawatan yang sering digunakan, lalu buka pencarian atau lanjutkan ke Quick Askep.
+      </div>
+    </section>
+  </header>
+
+  <main class="content">
+
+    <label class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="caseSearch" type="search" placeholder="Cari kasus: stroke, sepsis, DM, sesak..." autocomplete="off">
+    </label>
+
+    <div class="category-row" id="categoryRow"></div>
+
+    <div class="section-title" id="caseSectionTitle">
+      <span>
+        <i class="fa-solid fa-layer-group"></i>
+        Paket Kasus
+      </span>
+      <span class="count" id="caseCount">0 kasus</span>
+    </div>
+
+    <section class="case-list" id="caseList"></section>
+
+    <section class="detail-panel" id="detailPanel"></section>
+<div class="floating-action is-hidden" id="floatingAction">
+  <button class="btn btn-outline native-click" type="button" id="lihatKasusBtn">
+    <i class="fa-solid fa-layer-group"></i>
+    Kasus
+  </button>
+
+  <button class="btn btn-soft native-click" type="button" id="cariKasusBtn">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    Cari
+  </button>
+
+  <button class="btn btn-primary native-click" type="button" id="quickAskepBtn">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    Askep
+  </button>
+</div>
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <a href="../index.html" class="bottom-item native-click">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="search.html" class="bottom-item native-click">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Cari</span>
+  </a>
+
+  <a href="quick-askep.html" class="bottom-item native-click">
+    <i class="fa-solid fa-notes-medical"></i>
+    <span>Askep</span>
+  </a>
+
+  <a href="profil.html" class="bottom-item native-click">
+    <i class="fa-solid fa-user-nurse"></i>
+    <span>Profil</span>
+  </a>
+</nav>
+
+<div id="toast" class="toast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="toastText">Berhasil</span>
+</div>
+
+<script>
+const DATA_PATH = "../data/sdkislki/kasus.json";
+
+let CASE_PACKAGES = [];
+let activeCaseId = "";
+let activeCategory = "Semua";
+let focusDiagnosisMode = false;
+
+const caseSearch = document.getElementById("caseSearch");
+const categoryRow = document.getElementById("categoryRow");
+const caseList = document.getElementById("caseList");
+const detailPanel = document.getElementById("detailPanel");
+  const floatingAction = document.getElementById("floatingAction");
+const caseCount = document.getElementById("caseCount");
+const toast = document.getElementById("toast");
+const toastText = document.getElementById("toastText");
+
+const caseSectionTitle = document.getElementById("caseSectionTitle");
+
+function normalizeText(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function showToast(message, icon = "fa-circle-check"){
+  toastText.textContent = message;
+  toast.querySelector("i").className = "fa-solid " + icon;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+function setFocusDiagnosisMode(value){
+  focusDiagnosisMode = value;
+
+  caseList.classList.toggle("is-hidden", focusDiagnosisMode);
+  categoryRow.classList.toggle("is-hidden", focusDiagnosisMode);
+  document.querySelector(".search-box").classList.toggle("is-hidden", focusDiagnosisMode);
+
+  if(caseSectionTitle){
+    caseSectionTitle.classList.toggle("is-hidden", focusDiagnosisMode);
+  }
+
+  if(floatingAction){
+    floatingAction.classList.toggle("is-hidden", !focusDiagnosisMode);
+  }
+}
+
+function scrollToDiagnosis(){
+  setTimeout(() => {
+    detailPanel.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }, 80);
+}
+
+function showCaseList(){
+  setFocusDiagnosisMode(false);
+
+  setTimeout(() => {
+    caseList.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }, 80);
+}
+
+function focusCaseSearch(){
+  setFocusDiagnosisMode(false);
+
+  setTimeout(() => {
+    caseSearch.focus();
+    caseSearch.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+  }, 80);
+}
+
+function getCategories(){
+  const categories = CASE_PACKAGES
+    .map(item => item.kategori || "Lainnya")
+    .filter(Boolean);
+
+  return ["Semua", ...new Set(categories)];
+}
+
+function getFilteredCases(){
+  const q = normalizeText(caseSearch.value);
+
+  return CASE_PACKAGES.filter(item => {
+    const matchCategory =
+      activeCategory === "Semua" ||
+      normalizeText(item.kategori || "Lainnya") === normalizeText(activeCategory);
+
+    const text = normalizeText([
+      item.title,
+      item.kategori,
+      Array.isArray(item.diagnoses) ? item.diagnoses.join(" ") : ""
+    ].join(" "));
+
+    const matchSearch = !q || text.includes(q);
+
+    return matchCategory && matchSearch;
+  });
+}
+
+function getActiveCase(){
+  return CASE_PACKAGES.find(item => item.id === activeCaseId) || CASE_PACKAGES[0] || null;
+}
+
+function openSearchDiagnosis(diagnosis){
+  location.href = `search.html?q=${encodeURIComponent(diagnosis)}`;
+}
+
+function openQuickAskep(){
+  const active = getActiveCase();
+  const firstDiagnosis = active?.diagnoses?.[0] || "";
+  location.href = `quick-askep.html?q=${encodeURIComponent(firstDiagnosis)}`;
+}
+
+function copyDiagnosisList(){
+  const active = getActiveCase();
+  if(!active) return;
+
+  const diagnoses = Array.isArray(active.diagnoses) ? active.diagnoses : [];
+
+  const text = `Paket Kasus: ${active.title}
+Kategori: ${active.kategori || "-"}
+
+Diagnosis yang sering:
+${diagnoses.map(item => `- ${item}`).join("\n")}`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Daftar diagnosis disalin");
+  }).catch(() => {
+    showToast("Gagal menyalin", "fa-circle-exclamation");
+  });
+}
+
+function renderCategories(){
+  const categories = getCategories();
+
+  categoryRow.innerHTML = categories.map(category => `
+    <button class="category-chip native-click ${category === activeCategory ? "active" : ""}" type="button" data-category="${escapeHtml(category)}">
+      ${escapeHtml(category)}
+    </button>
+  `).join("");
+
+  categoryRow.querySelectorAll(".category-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeCategory = btn.dataset.category;
+      setFocusDiagnosisMode(false);
+      renderCategories();
+      renderCases();
+    });
+  });
+}
+
+function renderCases(){
+  const items = getFilteredCases();
+  caseCount.textContent = `${items.length} kasus`;
+
+  if(!items.length){
+    caseList.innerHTML = "";
+    detailPanel.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="empty-title">Kasus tidak ditemukan</div>
+        <div class="empty-desc">Coba kata kunci lain seperti stroke, DM, pneumonia, atau sesak.</div>
+      </div>
+    `;
+    return;
+  }
+
+  if(!items.some(item => item.id === activeCaseId)){
+    activeCaseId = items[0].id;
+  }
+
+  caseList.innerHTML = items.map(item => `
+    <button class="case-list-item native-click ${item.id === activeCaseId ? "active" : ""}" type="button" data-id="${escapeHtml(item.id)}">
+      <div class="case-main">
+        <div class="case-title-row">
+          <div class="case-title">${escapeHtml(item.title)}</div>
+          <div class="case-category">${escapeHtml(item.kategori || "Lainnya")}</div>
+        </div>
+      </div>
+      <div class="case-meta">${Array.isArray(item.diagnoses) ? item.diagnoses.length : 0}</div>
+    </button>
+  `).join("");
+
+  caseList.querySelectorAll(".case-list-item").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeCaseId = btn.dataset.id;
+      setFocusDiagnosisMode(true);
+      renderCases();
+      renderDetail();
+      scrollToDiagnosis();
+      showToast("Diagnosis kasus ditampilkan");
+    });
+  });
+
+  renderDetail();
+}
+
+function renderDetail(){
+  const item = getActiveCase();
+
+  if(!item){
+    detailPanel.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-file-circle-xmark"></i>
+        </div>
+        <div class="empty-title">Data kasus belum tersedia</div>
+        <div class="empty-desc">Pastikan file kasus.json berada di data/sdkislki/kasus.json.</div>
+      </div>
+    `;
+    return;
+  }
+
+  const diagnoses = Array.isArray(item.diagnoses) ? item.diagnoses : [];
+
+  detailPanel.innerHTML = `
+    <div class="panel-card">
+      <div class="panel-head">
+        <div class="panel-badge">
+          <span>${escapeHtml(item.kategori || "Paket Kasus")}</span>
+        </div>
+        <div class="panel-title">${escapeHtml(item.title)}</div>
+      </div>
+
+      <div class="panel-body">
+        <div class="section-title" style="margin-top:0;">
+          <span>
+            <i class="fa-solid fa-stethoscope"></i>
+            Diagnosis yang sering
+          </span>
+          <span class="count">${diagnoses.length} item</span>
+        </div>
+
+        <div class="diagnosis-list">
+          ${diagnoses.map((diagnosis, index) => `
+            <button class="diagnosis-card native-click" type="button" data-diagnosis="${escapeHtml(diagnosis)}">
+              <div class="diagnosis-number">${index + 1}</div>
+              <div class="diagnosis-body">
+                <div class="diagnosis-title">${escapeHtml(diagnosis)}</div>
+                <div class="diagnosis-desc">Ketuk untuk membuka pencarian diagnosis ini.</div>
+              </div>
+              <i class="fa-solid fa-chevron-right chevron"></i>
+            </button>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  detailPanel.querySelectorAll(".diagnosis-card").forEach(btn => {
+    btn.addEventListener("click", () => {
+      openSearchDiagnosis(btn.dataset.diagnosis);
+    });
+  });
+}
+
+async function loadCases(){
+  try{
+    const res = await fetch(DATA_PATH, { cache:"no-store" });
+
+    if(!res.ok){
+      throw new Error("Gagal memuat kasus.json");
+    }
+
+    const data = await res.json();
+
+    CASE_PACKAGES = Array.isArray(data) ? data : [];
+    activeCaseId = CASE_PACKAGES[0]?.id || "";
+
+    renderCategories();
+    renderCases();
+
+  }catch(error){
+    console.error(error);
+
+    caseCount.textContent = "0 kasus";
+    categoryRow.innerHTML = "";
+    caseList.innerHTML = "";
+
+    detailPanel.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="empty-title">Gagal memuat data kasus</div>
+        <div class="empty-desc">
+          Pastikan file <b>data/sdkislki/kasus.json</b> tersedia dan format JSON valid.
+        </div>
+      </div>
+    `;
+  }
+}
+
+let searchTimer = null;
+
+caseSearch.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  setFocusDiagnosisMode(false);
+  searchTimer = setTimeout(renderCases, 150);
+});
+
+document.addEventListener("click", function(e){
+  const el = e.target.closest(".native-click");
+  if(!el) return;
+
+  const oldRipple = el.querySelector(".ripple");
+  if(oldRipple) oldRipple.remove();
+
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  ripple.style.width = ripple.style.height = size + "px";
+  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+  el.appendChild(ripple);
+
+  setTimeout(() => ripple.remove(), 600);
+});
+
+document.addEventListener("selectstart", function(e){
+  const allow = e.target.closest("input, textarea, select");
+  if(!allow) e.preventDefault();
+});
+ document.getElementById("lihatKasusBtn").addEventListener("click", showCaseList);
+  document.getElementById("cariKasusBtn").addEventListener("click", focusCaseSearch);
+  document.getElementById("quickAskepBtn").addEventListener("click", openQuickAskep);
+loadCases();
+</script>
+
+</body>
+</html>

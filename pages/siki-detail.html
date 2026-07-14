@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Detail SIKI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#f59e0b;
+  --primary-dark:#d97706;
+  --primary-soft:#fde68a;
+  --primary-light:#fffbeb;
+
+  --bg:#fff7ed;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#78716c;
+  --border:#fed7aa;
+
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+
+  --radius-sm:12px;
+  --radius-md:18px;
+  --radius-lg:24px;
+
+  --shadow-sm:0 4px 14px rgba(120,53,15,.08);
+  --shadow-md:0 10px 28px rgba(120,53,15,.12);
+
+  --bottom-nav-height:76px;
+}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overscroll-behavior:none;
+}
+
+body,
+button,
+a,
+.card,
+.detail-card,
+.action-card,
+.bottom-item,
+.native-click{
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+
+input,
+textarea,
+select{
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 280px);
+  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 20px);
+}
+
+.header{
+  padding:18px 18px 14px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.nav-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.header-title{
+  flex:1;
+  min-width:0;
+}
+
+.header-title h1{
+  font-size:19px;
+  font-weight:800;
+  margin:0;
+  line-height:1.2;
+}
+
+.header-title p{
+  font-size:12px;
+  color:var(--muted);
+  margin:4px 0 0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.content{
+  padding:0 18px;
+}
+
+.hero-card{
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:18px;
+  box-shadow:0 16px 32px rgba(245,158,11,.24);
+  margin-bottom:14px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:800;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  margin-bottom:10px;
+}
+
+.hero-title{
+  font-size:21px;
+  font-weight:800;
+  line-height:1.25;
+  margin-bottom:8px;
+}
+
+.hero-desc{
+  font-size:13px;
+  line-height:1.55;
+  opacity:.94;
+}
+
+.meta-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:14px 0;
+}
+
+.meta-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:13px;
+  box-shadow:var(--shadow-sm);
+}
+
+.meta-label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+  margin-bottom:5px;
+}
+
+.meta-value{
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.section-title{
+  font-size:14px;
+  font-weight:800;
+  margin:18px 0 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.section-title i{
+  color:var(--primary);
+}
+
+.detail-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:15px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:12px;
+}
+
+.detail-text{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.65;
+}
+
+.action-group{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.action-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:14px;
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+
+.action-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.action-icon{
+  width:38px;
+  height:38px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.action-icon.observasi{
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+.action-icon.terapeutik{
+  background:#ecfdf5;
+  color:var(--success);
+}
+
+.action-icon.edukasi{
+  background:#fffbeb;
+  color:#b45309;
+}
+
+.action-icon.kolaborasi{
+  background:#fef2f2;
+  color:var(--danger);
+}
+
+.action-title{
+  font-size:14px;
+  font-weight:800;
+}
+
+.action-list{
+  margin:0;
+  padding-left:18px;
+}
+
+.action-list li{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.6;
+  margin:6px 0;
+}
+
+.simple-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.simple-item{
+  background:var(--primary-light);
+  color:var(--primary-dark);
+  border-radius:14px;
+  padding:11px 12px;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.45;
+}
+
+.related-card{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:14px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:10px;
+  position:relative;
+  overflow:hidden;
+}
+
+.related-icon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.related-body{
+  flex:1;
+  min-width:0;
+}
+
+.related-title{
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.related-desc{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.chevron{
+  color:#94a3b8;
+  margin-top:12px;
+}
+
+.empty-state{
+  text-align:center;
+  padding:42px 18px;
+  color:var(--muted);
+}
+
+.empty-icon{
+  width:70px;
+  height:70px;
+  border-radius:24px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 14px;
+  font-size:28px;
+}
+
+.empty-title{
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:6px;
+}
+
+.empty-desc{
+  font-size:12px;
+  line-height:1.55;
+}
+
+.loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+  padding:40px 0;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:3px solid var(--primary-soft);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+.native-click{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.native-click:active{
+  transform:scale(.985);
+}
+
+.ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .55s linear;
+  background:rgba(245,158,11,.20);
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+
+.bottom-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:700;
+  position:relative;
+  overflow:hidden;
+}
+
+.bottom-item i{
+  font-size:18px;
+}
+
+.bottom-item.active{
+  color:var(--primary);
+  background:var(--primary-light);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="topbar">
+      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>Detail SIKI</h1>
+        <p id="headerSub">Standar Intervensi Keperawatan Indonesia</p>
+      </div>
+
+      <a href="search.html" class="nav-btn native-click" aria-label="Cari">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </a>
+    </div>
+  </header>
+
+  <main class="content">
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <span>Memuat detail intervensi...</span>
+    </div>
+
+    <div id="detailArea"></div>
+  </main>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="../index.html" class="bottom-item native-click">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="search.html" class="bottom-item native-click">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Cari</span>
+  </a>
+
+  <a href="quick-askep.html" class="bottom-item native-click">
+    <i class="fa-solid fa-notes-medical"></i>
+    <span>Askep</span>
+  </a>
+
+  <a href="profil.html" class="bottom-item native-click">
+    <i class="fa-solid fa-user-nurse"></i>
+    <span>Profil</span>
+  </a>
+</nav>
+
+<script>
+/* =========================
+   CONFIG PATH
+========================= */
+const DATA_PATHS = {
+  siki: "../data/sdkislki/siki.json",
+  tautanSiki: "../data/tautansiki.json"
+};
+
+/* =========================
+   ELEMENTS
+========================= */
+const loadingEl = document.getElementById("loading");
+const detailArea = document.getElementById("detailArea");
+const headerSub = document.getElementById("headerSub");
+
+/* =========================
+   PARAMS
+========================= */
+const params = new URLSearchParams(location.search);
+const detailId = params.get("id") || params.get("kode") || params.get("q") || "";
+
+/* =========================
+   HELPERS
+========================= */
+function normalizeText(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pick(obj, keys){
+  for(const key of keys){
+    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+      return obj[key];
+    }
+  }
+  return "";
+}
+
+function toArray(data){
+  if(Array.isArray(data)) return data;
+
+  if(data && Array.isArray(data.data)) return data.data;
+  if(data && Array.isArray(data.items)) return data.items;
+  if(data && Array.isArray(data.intervensi)) return data.intervensi;
+  if(data && Array.isArray(data.siki)) return data.siki;
+
+  if(data && typeof data === "object"){
+    return Object.values(data);
+  }
+
+  return [];
+}
+
+function stringifyDeep(value){
+  if(value === null || value === undefined) return "";
+  if(typeof value === "string" || typeof value === "number") return String(value);
+  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
+  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+  return "";
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function getItemId(item){
+  return pick(item, ["id", "kode", "code", "nomor", "no"]);
+}
+
+function getItemTitle(item){
+  return pick(item, [
+    "title",
+    "judul",
+    "nama",
+    "intervensi",
+    "label",
+    "name"
+  ]);
+}
+
+function getItemDesc(item){
+  return pick(item, [
+    "definisi",
+    "deskripsi",
+    "description",
+    "keterangan"
+  ]);
+}
+
+function getItemCategory(item){
+  return pick(item, [
+    "kategori",
+    "category",
+    "kelompok",
+    "domain"
+  ]);
+}
+
+function getItemSubCategory(item){
+  return pick(item, [
+    "subkategori",
+    "sub_category",
+    "subCategory",
+    "kelas",
+    "class"
+  ]);
+}
+
+function arrayFromUnknown(value){
+  if(!value) return [];
+
+  if(Array.isArray(value)){
+    return value
+      .map(item => {
+        if(typeof item === "string" || typeof item === "number") return String(item);
+        return stringifyDeep(item);
+      })
+      .filter(Boolean);
+  }
+
+  if(typeof value === "string"){
+    return value
+      .split(/\n|;|\|/g)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  if(typeof value === "object"){
+    return Object.values(value)
+      .map(stringifyDeep)
+      .filter(Boolean);
+  }
+
+  return [String(value)];
+}
+
+function getNestedAction(item, keys){
+  for(const key of keys){
+    if(item && item[key]) return arrayFromUnknown(item[key]);
+  }
+
+  const tindakan = item.tindakan || item.aktivitas || item.activities || item.action || null;
+
+  if(tindakan && typeof tindakan === "object"){
+    for(const key of keys){
+      if(tindakan[key]) return arrayFromUnknown(tindakan[key]);
+    }
+  }
+
+  return [];
+}
+
+function findSikiItem(list, id){
+  const target = normalizeText(id);
+
+  if(!target) return null;
+
+  return list.find(item => {
+    const itemId = normalizeText(getItemId(item));
+    const title = normalizeText(getItemTitle(item));
+
+    return itemId === target || title === target;
+  }) || list.find(item => {
+    const itemId = normalizeText(getItemId(item));
+    const title = normalizeText(getItemTitle(item));
+
+    return itemId.includes(target) || title.includes(target);
+  });
+}
+
+function findRelatedDiagnoses(tautanList, sikiItem){
+  const sikiId = normalizeText(getItemId(sikiItem));
+  const sikiTitle = normalizeText(getItemTitle(sikiItem));
+
+  if(!sikiId && !sikiTitle) return [];
+
+  return tautanList.filter(row => {
+    const text = normalizeText(stringifyDeep(row));
+    return (sikiId && text.includes(sikiId)) || (sikiTitle && text.includes(sikiTitle));
+  }).slice(0, 8);
+}
+
+async function fetchJsonSafe(path){
+  try{
+    const res = await fetch(path + "?v=" + Date.now());
+    if(!res.ok) throw new Error("Gagal memuat " + path);
+    return await res.json();
+  }catch(err){
+    console.warn(err.message);
+    return [];
+  }
+}
+
+/* =========================
+   RENDER
+========================= */
+function renderEmpty(title, desc){
+  detailArea.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </div>
+      <div class="empty-title">${escapeHtml(title)}</div>
+      <div class="empty-desc">${escapeHtml(desc)}</div>
+    </div>
+  `;
+}
+
+function renderTextSection(title, icon, text){
+  if(!text) return "";
+
+  return `
+    <section>
+      <div class="section-title">
+        <i class="fa-solid ${icon}"></i>
+        <span>${escapeHtml(title)}</span>
+      </div>
+      <div class="detail-card">
+        <div class="detail-text">${escapeHtml(text)}</div>
+      </div>
+    </section>
+  `;
+}
+
+function renderSimpleList(title, icon, items){
+  if(!items || !items.length) return "";
+
+  return `
+    <section>
+      <div class="section-title">
+        <i class="fa-solid ${icon}"></i>
+        <span>${escapeHtml(title)}</span>
+      </div>
+      <div class="simple-list">
+        ${items.map(item => `
+          <div class="simple-item">${escapeHtml(item)}</div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderActionSection(title, icon, className, items){
+  if(!items || !items.length) return "";
+
+  return `
+    <div class="action-card">
+      <div class="action-head">
+        <div class="action-icon ${className}">
+          <i class="fa-solid ${icon}"></i>
+        </div>
+        <div class="action-title">${escapeHtml(title)}</div>
+      </div>
+      <ol class="action-list">
+        ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+      </ol>
+    </div>
+  `;
+}
+
+function getRelatedTitle(row){
+  return pick(row, [
+    "diagnosis",
+    "diagnosa",
+    "namaDiagnosis",
+    "nama_diagnosis",
+    "judul",
+    "nama",
+    "sdki",
+    "label"
+  ]) || "Diagnosis terkait";
+}
+
+function getRelatedCode(row){
+  return pick(row, [
+    "kodeDiagnosis",
+    "kode_diagnosis",
+    "kodeSdki",
+    "kode_sdki",
+    "idDiagnosis",
+    "id_diagnosis",
+    "kode",
+    "id"
+  ]);
+}
+
+function renderRelatedDiagnoses(items){
+  if(!items.length) return "";
+
+  return `
+    <section>
+      <div class="section-title">
+        <i class="fa-solid fa-link"></i>
+        <span>Tautan Diagnosis SDKI</span>
+      </div>
+
+      ${items.map(row => {
+        const title = getRelatedTitle(row);
+        const code = getRelatedCode(row);
+        const url = code ? `diagnosis-detail.html?id=${encodeURIComponent(code)}` : "#";
+
+        return `
+          <a href="${url}" class="related-card native-click">
+            <div class="related-icon">
+              <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <div class="related-body">
+              <div class="related-title">${escapeHtml(title)}</div>
+              <div class="related-desc">
+                ${code ? `Kode: ${escapeHtml(code)}` : "Ketuk untuk melihat diagnosis terkait"}
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right chevron"></i>
+          </a>
+        `;
+      }).join("")}
+    </section>
+  `;
+}
+
+function renderDetail(item, relatedDiagnoses){
+  const id = getItemId(item);
+  const title = getItemTitle(item) || "Intervensi SIKI";
+  const desc = getItemDesc(item);
+  const category = getItemCategory(item);
+  const subCategory = getItemSubCategory(item);
+
+  const tujuan = pick(item, ["tujuan", "goal", "target"]);
+  const kriteria = arrayFromUnknown(pick(item, [
+    "kriteria",
+    "kriteriaHasil",
+    "kriteria_hasil",
+    "outcome",
+    "indikator"
+  ]));
+
+  const observasi = getNestedAction(item, [
+    "observasi",
+    "observation",
+    "observations"
+  ]);
+
+  const terapeutik = getNestedAction(item, [
+    "terapeutik",
+    "therapeutic",
+    "terapi",
+    "therapy"
+  ]);
+
+  const edukasi = getNestedAction(item, [
+    "edukasi",
+    "education",
+    "pendidikan"
+  ]);
+
+  const kolaborasi = getNestedAction(item, [
+    "kolaborasi",
+    "collaboration",
+    "kolaboratif"
+  ]);
+
+  const aktivitas = getNestedAction(item, [
+    "aktivitas",
+    "tindakan",
+    "intervensi_tindakan",
+    "actions",
+    "activities"
+  ]);
+
+  document.title = title + " - Detail SIKI";
+  headerSub.textContent = "Standar Intervensi Keperawatan Indonesia";
+
+  detailArea.innerHTML = `
+    <section class="hero-card">
+      <div class="badge">
+        <i class="fa-solid fa-hand-holding-medical"></i>
+        <span>SIKI</span>
+      </div>
+      <div class="hero-title">${escapeHtml(title)}</div>
+    </section>
+
+   <section class="meta-grid">
+  <div class="meta-card">
+    <div class="meta-label">Kode</div>
+    <div class="meta-value">${escapeHtml(id || "-")}</div>
+  </div>
+
+  <div class="meta-card">
+    <div class="meta-label">Jenis</div>
+    <div class="meta-value">Intervensi</div>
+  </div>
+</section>
+
+    ${renderTextSection("Definisi", "fa-circle-info", desc)}
+
+    ${renderTextSection("Tujuan", "fa-bullseye", tujuan)}
+
+    ${renderSimpleList("Kriteria / Indikator", "fa-list-check", kriteria)}
+
+    <section>
+      <div class="section-title">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>Tindakan Keperawatan</span>
+      </div>
+
+      <div class="action-group">
+        ${renderActionSection("Observasi", "fa-eye", "observasi", observasi)}
+        ${renderActionSection("Terapeutik", "fa-hand-holding-heart", "terapeutik", terapeutik)}
+        ${renderActionSection("Edukasi", "fa-person-chalkboard", "edukasi", edukasi)}
+        ${renderActionSection("Kolaborasi", "fa-user-doctor", "kolaborasi", kolaborasi)}
+        ${
+          (!observasi.length && !terapeutik.length && !edukasi.length && !kolaborasi.length)
+            ? renderActionSection("Aktivitas / Tindakan", "fa-list-ul", "observasi", aktivitas)
+            : ""
+        }
+      </div>
+    </section>
+
+    ${renderRelatedDiagnoses(relatedDiagnoses)}
+  `;
+}
+
+/* =========================
+   LOAD DETAIL
+========================= */
+async function loadDetail(){
+  loadingEl.style.display = "flex";
+
+  if(!detailId){
+    loadingEl.style.display = "none";
+    renderEmpty(
+      "ID intervensi tidak ditemukan",
+      "Halaman ini membutuhkan parameter id. Contoh: siki-detail.html?id=I.12345"
+    );
+    return;
+  }
+
+  const [sikiJson, tautanJson] = await Promise.all([
+    fetchJsonSafe(DATA_PATHS.siki),
+    fetchJsonSafe(DATA_PATHS.tautanSiki)
+  ]);
+
+  const sikiList = toArray(sikiJson);
+  const tautanList = toArray(tautanJson);
+
+  const item = findSikiItem(sikiList, detailId);
+
+  loadingEl.style.display = "none";
+
+  if(!item){
+    renderEmpty(
+      "Intervensi tidak ditemukan",
+      `Data SIKI dengan kata kunci "${detailId}" belum ditemukan. Coba kembali ke halaman pencarian.`
+    );
+    return;
+  }
+
+  const relatedDiagnoses = findRelatedDiagnoses(tautanList, item);
+
+  renderDetail(item, relatedDiagnoses);
+}
+
+/* =========================
+   RIPPLE EFFECT
+========================= */
+document.addEventListener("click", function(e){
+  const el = e.target.closest(".native-click");
+  if(!el) return;
+
+  const oldRipple = el.querySelector(".ripple");
+  if(oldRipple) oldRipple.remove();
+
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  ripple.style.width = ripple.style.height = size + "px";
+  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+  el.appendChild(ripple);
+
+  setTimeout(() => ripple.remove(), 600);
+});
+
+/* =========================
+   BLOKIR SELECT
+========================= */
+document.addEventListener("selectstart", function(e){
+  const allow = e.target.closest("input, textarea, select");
+  if(!allow) e.preventDefault();
+});
+
+/* =========================
+   INIT
+========================= */
+loadDetail().catch(err => {
+  console.error(err);
+  loadingEl.style.display = "none";
+  renderEmpty(
+    "Terjadi kesalahan",
+    "Data gagal dimuat atau format JSON tidak sesuai. Cek console browser."
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Quick Askep</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --primary-light:#eff6ff;
+
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+
+  --radius-sm:12px;
+  --radius-md:18px;
+  --radius-lg:24px;
+
+  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
+  --shadow-md:0 10px 28px rgba(15,23,42,.10);
+
+  --bottom-nav-height:76px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overscroll-behavior:none;
+}
+
+body,
+button,
+a,
+.card,
+.step-card,
+.option-card,
+.output-card,
+.bottom-item,
+.native-click{
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+
+input,
+textarea,
+select{
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 300px);
+  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px);
+}
+
+.header{
+  padding:18px 18px 14px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.nav-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.header-title{
+  flex:1;
+  min-width:0;
+}
+
+.header-title h1{
+  font-size:19px;
+  font-weight:800;
+  margin:0;
+  line-height:1.2;
+}
+
+.header-title p{
+  font-size:12px;
+  color:var(--muted);
+  margin:4px 0 0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.hero-card{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:16px;
+  box-shadow:0 16px 32px rgba(37,99,235,.22);
+}
+
+.hero-title{
+  font-size:16px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.hero-desc{
+  font-size:12px;
+  line-height:1.55;
+  opacity:.92;
+}
+
+.content{
+  padding:0 18px;
+}
+
+.progress-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:14px;
+}
+
+.progress-line{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.progress-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  text-align:center;
+}
+
+.progress-dot{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:#f1f5f9;
+  border:1px solid var(--border);
+  color:#94a3b8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+}
+
+.progress-item.active .progress-dot,
+.progress-item.done .progress-dot{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+}
+
+.progress-item.active,
+.progress-item.done{
+  color:var(--primary);
+}
+
+.step-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:15px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:14px;
+}
+
+.step-head{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.step-icon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  font-size:17px;
+}
+
+.step-icon.sdki{
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+.step-icon.slki{
+  background:#ecfdf5;
+  color:var(--success);
+}
+
+.step-icon.siki{
+  background:#fffbeb;
+  color:#b45309;
+}
+
+.step-icon.output{
+  background:#fef2f2;
+  color:var(--danger);
+}
+
+.step-title{
+  font-size:15px;
+  font-weight:800;
+  line-height:1.3;
+}
+
+.step-desc{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+  line-height:1.45;
+}
+
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px 13px;
+  margin-bottom:12px;
+}
+
+.search-box i{
+  color:var(--primary);
+}
+
+.search-box input{
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:13px;
+  color:var(--text);
+  min-width:0;
+}
+
+.search-box input::placeholder{
+  color:#94a3b8;
+}
+
+.option-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  max-height:330px;
+  overflow:auto;
+  padding-right:2px;
+}
+
+.option-list::-webkit-scrollbar{
+  width:0;
+}
+
+.option-card{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  position:relative;
+  overflow:hidden;
+}
+
+.option-card.active{
+  border-color:var(--primary);
+  background:var(--primary-light);
+}
+
+.option-check{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#f1f5f9;
+  color:#94a3b8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  font-size:12px;
+  margin-top:1px;
+}
+
+.option-card.active .option-check{
+  background:var(--primary);
+  color:#fff;
+}
+
+.option-body{
+  flex:1;
+  min-width:0;
+}
+
+.option-title{
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.option-desc{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.45;
+  margin-top:4px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.option-meta{
+  font-size:10px;
+  color:#94a3b8;
+  font-weight:700;
+  margin-top:6px;
+}
+
+.selected-box{
+  background:#f8fafc;
+  border:1px dashed #bfdbfe;
+  border-radius:16px;
+  padding:12px;
+  margin-top:12px;
+}
+
+.selected-label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.selected-value{
+  font-size:13px;
+  color:var(--primary-dark);
+  font-weight:800;
+  line-height:1.4;
+}
+
+.btn-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+
+.btn{
+  border:0;
+  border-radius:16px;
+  min-height:46px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+  box-shadow:0 10px 20px rgba(37,99,235,.18);
+}
+
+.btn-soft{
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+.btn-success{
+  background:var(--success);
+  color:#fff;
+  box-shadow:0 10px 20px rgba(22,163,74,.16);
+}
+
+.btn-danger-soft{
+  background:#fef2f2;
+  color:var(--danger);
+}
+
+.btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.output-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:15px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:14px;
+}
+
+.output-text{
+  width:100%;
+  min-height:280px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  outline:0;
+  resize:vertical;
+  background:#f8fafc;
+  color:var(--text);
+  font-size:13px;
+  line-height:1.65;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+}
+
+.empty-state{
+  text-align:center;
+  padding:24px 12px;
+  color:var(--muted);
+}
+
+.empty-icon{
+  width:58px;
+  height:58px;
+  border-radius:22px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 12px;
+  font-size:24px;
+}
+
+.empty-title{
+  font-size:14px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:5px;
+}
+
+.empty-desc{
+  font-size:12px;
+  line-height:1.55;
+}
+
+.loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+  padding:26px 0;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:3px solid var(--primary-soft);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 18px);
+  transform:translateX(-50%) translateY(20px);
+  max-width:calc(520px - 36px);
+  width:calc(100% - 36px);
+  background:#0f172a;
+  color:#fff;
+  border-radius:18px;
+  padding:13px 15px;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:var(--shadow-md);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s ease;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.native-click{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.native-click:active{
+  transform:scale(.985);
+}
+
+.ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .55s linear;
+  background:rgba(37,99,235,.18);
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+
+.bottom-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:700;
+  position:relative;
+  overflow:hidden;
+}
+
+.bottom-item i{
+  font-size:18px;
+}
+
+.bottom-item.active{
+  color:var(--primary);
+  background:var(--primary-light);
+}
+
+ .option-card{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;   /* <-- tambahkan ini */
+}
+
+.option-title{
+  word-break:break-word;
+}
+
+.option-desc{
+  line-height:1.45;
+}
+
+.option-list{
+  gap:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="topbar">
+      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <div class="header-title">
+        <h1>Quick Askep</h1>
+        <p>Buat askep SDKI, SLKI, SIKI lebih cepat</p>
+      </div>
+
+      <a href="search.html" class="nav-btn native-click" aria-label="Cari">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </a>
+    </div>
+
+    <section class="hero-card">
+      <div class="hero-title">Asuhan Keperawatan Instan</div>
+      <div class="hero-desc">
+        Pilih diagnosis, luaran, dan intervensi. Sistem akan membantu menyusun format askep sederhana yang bisa langsung disalin.
+      </div>
+    </section>
+  </header>
+
+  <main class="content">
+
+    <section class="progress-card">
+      <div class="progress-line">
+        <div class="progress-item active" id="progress1">
+          <div class="progress-dot">1</div>
+          <span>Diagnosis</span>
+        </div>
+        <div class="progress-item" id="progress2">
+          <div class="progress-dot">2</div>
+          <span>Luaran</span>
+        </div>
+        <div class="progress-item" id="progress3">
+          <div class="progress-dot">3</div>
+          <span>Intervensi</span>
+        </div>
+        <div class="progress-item" id="progress4">
+          <div class="progress-dot">4</div>
+          <span>Copy</span>
+        </div>
+      </div>
+    </section>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <span>Memuat data...</span>
+    </div>
+
+    <section class="step-card" id="stepSdki" style="display:none;">
+      <div class="step-head">
+        <div class="step-icon sdki">
+          <i class="fa-solid fa-stethoscope"></i>
+        </div>
+        <div>
+          <div class="step-title">1. Pilih Diagnosis Keperawatan</div>
+          <div class="step-desc">Cari berdasarkan nama diagnosis, gejala, atau kata kunci klinis.</div>
+        </div>
+      </div>
+
+      <label class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="sdkiSearch" type="search" placeholder="Contoh: ansietas, nyeri, bersihan jalan napas..." autocomplete="off">
+      </label>
+
+      <div id="sdkiList" class="option-list"></div>
+
+      <div id="selectedSdki" class="selected-box" style="display:none;">
+        <div class="selected-label">Diagnosis dipilih</div>
+        <div class="selected-value" id="selectedSdkiText"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-danger-soft native-click" id="resetBtn1" type="button">
+          <i class="fa-solid fa-rotate-left"></i>
+          Reset
+        </button>
+        <button class="btn btn-primary native-click" id="toSlkiBtn" type="button" disabled>
+          Lanjut
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <section class="step-card" id="stepSlki" style="display:none;">
+      <div class="step-head">
+        <div class="step-icon slki">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div>
+          <div class="step-title">2. Pilih Luaran Keperawatan</div>
+          <div class="step-desc">Pilih luaran yang sesuai dengan target kondisi pasien.</div>
+        </div>
+      </div>
+
+      <label class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="slkiSearch" type="search" placeholder="Contoh: tingkat ansietas, kontrol nyeri..." autocomplete="off">
+      </label>
+
+      <div id="slkiList" class="option-list"></div>
+
+      <div id="selectedSlki" class="selected-box" style="display:none;">
+        <div class="selected-label">Luaran dipilih</div>
+        <div class="selected-value" id="selectedSlkiText"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-soft native-click" id="backToSdkiBtn" type="button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Kembali
+        </button>
+        <button class="btn btn-primary native-click" id="toSikiBtn" type="button" disabled>
+          Lanjut
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <section class="step-card" id="stepSiki" style="display:none;">
+      <div class="step-head">
+        <div class="step-icon siki">
+          <i class="fa-solid fa-hand-holding-medical"></i>
+        </div>
+        <div>
+          <div class="step-title">3. Pilih Intervensi Keperawatan</div>
+          <div class="step-desc">Pilih intervensi utama, lalu sistem mengambil tindakan implementasi yang tersedia.</div>
+        </div>
+      </div>
+
+      <label class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="sikiSearch" type="search" placeholder="Contoh: reduksi ansietas, manajemen nyeri..." autocomplete="off">
+      </label>
+
+      <div id="sikiList" class="option-list"></div>
+
+      <div id="selectedSiki" class="selected-box" style="display:none;">
+        <div class="selected-label">Intervensi dipilih</div>
+        <div class="selected-value" id="selectedSikiText"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-soft native-click" id="backToSlkiBtn" type="button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Kembali
+        </button>
+        <button class="btn btn-success native-click" id="generateBtn" type="button" disabled>
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          Generate
+        </button>
+      </div>
+    </section>
+
+    <section class="output-card" id="stepOutput" style="display:none;">
+      <div class="step-head">
+        <div class="step-icon output">
+          <i class="fa-solid fa-file-lines"></i>
+        </div>
+        <div>
+          <div class="step-title">4. Hasil Askep</div>
+          <div class="step-desc">Silakan cek hasilnya, lalu salin untuk tugas atau dokumentasi akademik.</div>
+        </div>
+      </div>
+
+      <textarea id="askepOutput" class="output-text" readonly></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-soft native-click" id="editAgainBtn" type="button">
+          <i class="fa-solid fa-pen-to-square"></i>
+          Ubah
+        </button>
+        <button class="btn btn-primary native-click" id="copyBtn" type="button">
+          <i class="fa-solid fa-copy"></i>
+          Copy
+        </button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-danger-soft native-click" id="resetAllBtn" type="button">
+          <i class="fa-solid fa-trash"></i>
+          Reset Semua
+        </button>
+        <button class="btn btn-success native-click" id="shareBtn" type="button">
+          <i class="fa-solid fa-share-nodes"></i>
+          Share
+        </button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <a href="../index.html" class="bottom-item native-click">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="search.html" class="bottom-item native-click">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Cari</span>
+  </a>
+
+  <a href="quick-askep.html" class="bottom-item active native-click">
+    <i class="fa-solid fa-notes-medical"></i>
+    <span>Askep</span>
+  </a>
+
+  <a href="profil.html" class="bottom-item native-click">
+    <i class="fa-solid fa-user-nurse"></i>
+    <span>Profil</span>
+  </a>
+</nav>
+
+<div id="toast" class="toast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="toastText">Berhasil</span>
+</div>
+
+<script>
+/* =========================
+   CONFIG PATH
+========================= */
+const DATA_PATHS = {
+  sdki: "../data/sdkislki/sdki.json",
+  slki: "../data/sdkislki/slki.json",
+  siki: "../data/sdkislki/siki.json",
+  tautanSiki: "../data/tautansiki.json"
+};
+
+/* =========================
+   STATE
+========================= */
+let DB = {
+  sdki: [],
+  slki: [],
+  siki: [],
+  tautanSiki: []
+};
+
+let selected = {
+  sdki: null,
+  slki: null,
+  siki: null
+};
+
+let currentStep = 1;
+
+/* =========================
+   ELEMENTS
+========================= */
+const loadingEl = document.getElementById("loading");
+
+const stepSdki = document.getElementById("stepSdki");
+const stepSlki = document.getElementById("stepSlki");
+const stepSiki = document.getElementById("stepSiki");
+const stepOutput = document.getElementById("stepOutput");
+
+const sdkiSearch = document.getElementById("sdkiSearch");
+const slkiSearch = document.getElementById("slkiSearch");
+const sikiSearch = document.getElementById("sikiSearch");
+
+const sdkiList = document.getElementById("sdkiList");
+const slkiList = document.getElementById("slkiList");
+const sikiList = document.getElementById("sikiList");
+
+const selectedSdki = document.getElementById("selectedSdki");
+const selectedSlki = document.getElementById("selectedSlki");
+const selectedSiki = document.getElementById("selectedSiki");
+
+const selectedSdkiText = document.getElementById("selectedSdkiText");
+const selectedSlkiText = document.getElementById("selectedSlkiText");
+const selectedSikiText = document.getElementById("selectedSikiText");
+
+const toSlkiBtn = document.getElementById("toSlkiBtn");
+const toSikiBtn = document.getElementById("toSikiBtn");
+const generateBtn = document.getElementById("generateBtn");
+
+const backToSdkiBtn = document.getElementById("backToSdkiBtn");
+const backToSlkiBtn = document.getElementById("backToSlkiBtn");
+const resetBtn1 = document.getElementById("resetBtn1");
+const resetAllBtn = document.getElementById("resetAllBtn");
+const editAgainBtn = document.getElementById("editAgainBtn");
+
+const askepOutput = document.getElementById("askepOutput");
+const copyBtn = document.getElementById("copyBtn");
+const shareBtn = document.getElementById("shareBtn");
+
+const toast = document.getElementById("toast");
+const toastText = document.getElementById("toastText");
+
+/* =========================
+   HELPERS
+========================= */
+function normalizeText(text){
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s.-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pick(obj, keys){
+  for(const key of keys){
+    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+      return obj[key];
+    }
+  }
+  return "";
+}
+
+function toArray(data){
+  if(Array.isArray(data)) return data;
+
+  if(data && Array.isArray(data.data)) return data.data;
+  if(data && Array.isArray(data.items)) return data.items;
+  if(data && Array.isArray(data.diagnosis)) return data.diagnosis;
+  if(data && Array.isArray(data.diagnosa)) return data.diagnosa;
+  if(data && Array.isArray(data.luaran)) return data.luaran;
+  if(data && Array.isArray(data.intervensi)) return data.intervensi;
+  if(data && Array.isArray(data.sdki)) return data.sdki;
+  if(data && Array.isArray(data.slki)) return data.slki;
+  if(data && Array.isArray(data.siki)) return data.siki;
+
+  if(data && typeof data === "object"){
+    return Object.values(data);
+  }
+
+  return [];
+}
+
+function stringifyDeep(value){
+  if(value === null || value === undefined) return "";
+  if(typeof value === "string" || typeof value === "number") return String(value);
+  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
+  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+  return "";
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function getId(item){
+  return pick(item, ["id", "kode", "code", "nomor", "no"]);
+}
+
+function getTitle(item, type){
+  if(type === "sdki"){
+    return pick(item, [
+      "title",
+      "judul",
+      "nama",
+      "diagnosis",
+      "diagnosa",
+      "label",
+      "name"
+    ]);
+  }
+
+  if(type === "slki"){
+    return pick(item, [
+      "title",
+      "judul",
+      "nama",
+      "luaran",
+      "outcome",
+      "label",
+      "name"
+    ]);
+  }
+
+  if(type === "siki"){
+    return pick(item, [
+      "title",
+      "judul",
+      "nama",
+      "intervensi",
+      "label",
+      "name"
+    ]);
+  }
+
+  return pick(item, ["title", "judul", "nama", "label", "name"]);
+}
+
+function getDesc(item){
+  return pick(item, [
+    "definisi",
+    "deskripsi",
+    "description",
+    "keterangan",
+    "tujuan",
+    "ekspektasi"
+  ]);
+}
+
+function arrayFromUnknown(value){
+  if(!value) return [];
+
+  if(Array.isArray(value)){
+    return value
+      .map(item => {
+        if(typeof item === "string" || typeof item === "number") return String(item).trim();
+        return stringifyDeep(item).trim();
+      })
+      .filter(Boolean);
+  }
+
+  if(typeof value === "string"){
+    return value
+      .split(/\n|;|\|/g)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  if(typeof value === "object"){
+    return Object.values(value)
+      .map(stringifyDeep)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  return [String(value)];
+}
+
+function getNestedAction(item, keys){
+  for(const key of keys){
+    if(item && item[key]) return arrayFromUnknown(item[key]);
+  }
+
+  const tindakan = item.tindakan || item.aktivitas || item.activities || item.action || null;
+
+  if(tindakan && typeof tindakan === "object"){
+    for(const key of keys){
+      if(tindakan[key]) return arrayFromUnknown(tindakan[key]);
+    }
+  }
+
+  return [];
+}
+
+function getSikiImplementations(item){
+  const observasi = getNestedAction(item, [
+    "observasi",
+    "observation",
+    "observations"
+  ]);
+
+  const terapeutik = getNestedAction(item, [
+    "terapeutik",
+    "therapeutic",
+    "terapi",
+    "therapy"
+  ]);
+
+  const edukasi = getNestedAction(item, [
+    "edukasi",
+    "education",
+    "pendidikan"
+  ]);
+
+  const kolaborasi = getNestedAction(item, [
+    "kolaborasi",
+    "collaboration",
+    "kolaboratif"
+  ]);
+
+  const aktivitas = getNestedAction(item, [
+    "aktivitas",
+    "tindakan",
+    "intervensi_tindakan",
+    "actions",
+    "activities"
+  ]);
+
+  let all = [
+    ...observasi,
+    ...terapeutik,
+    ...edukasi,
+    ...kolaborasi
+  ];
+
+  if(!all.length) all = aktivitas;
+
+  return all
+    .map(cleanActionText)
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function cleanActionText(text){
+  return String(text || "")
+    .replace(/^\s*[-–—•\d.)]+\s*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function itemToSearchObject(item, type){
+  const id = getId(item);
+  const title = getTitle(item, type);
+  const desc = getDesc(item);
+
+  return {
+    id,
+    title,
+    desc,
+    raw:item,
+    haystack:normalizeText([
+      id,
+      title,
+      desc,
+      stringifyDeep(item)
+    ].join(" "))
+  };
+}
+
+function scoreItem(item, keywords, query){
+  let score = 0;
+  const title = normalizeText(item.title);
+  const id = normalizeText(item.id);
+  const desc = normalizeText(item.desc);
+  const haystack = item.haystack;
+
+  if(title === query) score += 100;
+  if(title.includes(query)) score += 60;
+  if(id.includes(query)) score += 40;
+  if(desc.includes(query)) score += 18;
+
+  keywords.forEach(word => {
+    if(title.includes(word)) score += 22;
+    if(id.includes(word)) score += 12;
+    if(desc.includes(word)) score += 8;
+    if(haystack.includes(word)) score += 4;
+  });
+
+  return score;
+}
+
+function searchItems(list, type, query, limit = 40){
+  const q = normalizeText(query);
+  const stopwords = ["dan", "atau", "yang", "dengan", "pada", "di", "ke", "dari", "untuk"];
+  const keywords = q
+    .split(" ")
+    .filter(word => word.length > 1 && !stopwords.includes(word));
+
+  const mapped = list.map(item => itemToSearchObject(item, type));
+
+  if(!q){
+    return mapped.slice(0, limit);
+  }
+
+  return mapped
+    .map(item => ({
+      ...item,
+      score:scoreItem(item, keywords, q)
+    }))
+    .filter(item => item.score > 0)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, limit);
+}
+
+function showToast(message, icon = "fa-circle-check"){
+  toastText.textContent = message;
+  toast.querySelector("i").className = "fa-solid " + icon;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+function scrollTopApp(){
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+async function fetchJsonSafe(path){
+  try{
+    const res = await fetch(path + "?v=" + Date.now());
+    if(!res.ok) throw new Error("Gagal memuat " + path);
+    return await res.json();
+  }catch(err){
+    console.warn(err.message);
+    return [];
+  }
+}
+
+async function loadAllData(){
+  loadingEl.style.display = "flex";
+
+  const [sdki, slki, siki, tautanSiki] = await Promise.all([
+    fetchJsonSafe(DATA_PATHS.sdki),
+    fetchJsonSafe(DATA_PATHS.slki),
+    fetchJsonSafe(DATA_PATHS.siki),
+    fetchJsonSafe(DATA_PATHS.tautanSiki)
+  ]);
+
+  DB.sdki = toArray(sdki);
+  DB.slki = toArray(slki);
+  DB.siki = toArray(siki);
+  DB.tautanSiki = toArray(tautanSiki);
+
+  loadingEl.style.display = "none";
+
+  renderSdkiList();
+  showStep(1);
+}
+
+/* =========================
+   SMART RELATED
+========================= */
+function getRelatedFromTautan(type){
+  if(!selected.sdki || !DB.tautanSiki.length) return [];
+
+  const sdkiId = normalizeText(getId(selected.sdki.raw));
+  const sdkiTitle = normalizeText(selected.sdki.title);
+
+  const rows = DB.tautanSiki.filter(row => {
+    const text = normalizeText(stringifyDeep(row));
+    return (sdkiId && text.includes(sdkiId)) || (sdkiTitle && text.includes(sdkiTitle));
+  });
+
+  if(type === "siki"){
+    const candidates = [];
+
+    rows.forEach(row => {
+      const possibleNames = [
+        "intervensi",
+        "siki",
+        "namaIntervensi",
+        "nama_intervensi",
+        "judulIntervensi",
+        "judul_intervensi"
+      ];
+
+      const possibleCodes = [
+        "kodeIntervensi",
+        "kode_intervensi",
+        "kodeSiki",
+        "kode_siki",
+        "idIntervensi",
+        "id_intervensi"
+      ];
+
+      const name = pick(row, possibleNames);
+      const code = pick(row, possibleCodes);
+
+      if(name || code){
+        candidates.push({ name, code });
+      }
+
+      const deep = stringifyDeep(row);
+      DB.siki.forEach(item => {
+        const itemTitle = normalizeText(getTitle(item, "siki"));
+        const itemId = normalizeText(getId(item));
+
+        if(
+          (itemTitle && normalizeText(deep).includes(itemTitle)) ||
+          (itemId && normalizeText(deep).includes(itemId))
+        ){
+          candidates.push({
+            name:getTitle(item, "siki"),
+            code:getId(item)
+          });
+        }
+      });
+    });
+
+    const unique = [];
+    const seen = new Set();
+
+    candidates.forEach(c => {
+      const key = normalizeText(c.code || c.name);
+      if(key && !seen.has(key)){
+        seen.add(key);
+        unique.push(c);
+      }
+    });
+
+    return unique;
+  }
+
+  return [];
+}
+
+function getSuggestedSiki(){
+  const related = getRelatedFromTautan("siki");
+
+  if(!related.length) return [];
+
+  const matched = [];
+
+  related.forEach(rel => {
+    const relCode = normalizeText(rel.code);
+    const relName = normalizeText(rel.name);
+
+    const found = DB.siki.find(item => {
+      const id = normalizeText(getId(item));
+      const title = normalizeText(getTitle(item, "siki"));
+
+      return (
+        (relCode && id && id === relCode) ||
+        (relName && title && title === relName) ||
+        (relName && title && title.includes(relName)) ||
+        (relName && title && relName.includes(title))
+      );
+    });
+
+    if(found) matched.push(found);
+  });
+
+  const seen = new Set();
+
+  return matched.filter(item => {
+    const key = normalizeText(getId(item) || getTitle(item, "siki"));
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/* =========================
+   RENDER OPTIONS
+========================= */
+function renderOptionList(container, items, type, selectedItem, onSelect){
+  if(!items.length){
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="empty-title">Tidak ditemukan</div>
+        <div class="empty-desc">Coba gunakan kata kunci lain.</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = items.map((item, index) => {
+    const activeKey = selectedItem ? normalizeText(selectedItem.id || selectedItem.title) : "";
+    const thisKey = normalizeText(item.id || item.title);
+    const isActive = activeKey && activeKey === thisKey;
+
+    return `
+      <button class="option-card native-click ${isActive ? "active" : ""}" type="button" data-index="${index}">
+        <div class="option-check">
+          <i class="fa-solid ${isActive ? "fa-check" : "fa-plus"}"></i>
+        </div>
+        <div class="option-body">
+          <div class="option-title">${escapeHtml(item.title || "Tanpa Judul")}</div>
+          <div class="option-desc">${escapeHtml(item.desc || "Ketuk untuk memilih item ini.")}</div>
+          ${item.id ? `<div class="option-meta">Kode: ${escapeHtml(item.id)}</div>` : ""}
+        </div>
+      </button>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".option-card").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const index = Number(btn.dataset.index);
+      onSelect(items[index]);
+    });
+  });
+}
+
+function renderSdkiList(){
+  const query = sdkiSearch.value.trim();
+
+  // Kalau belum mencari, tampilkan sedikit saja supaya tidak numpuk
+  const limit = query ? 50 : 20;
+
+  const items = searchItems(DB.sdki, "sdki", query, limit);
+
+  renderOptionList(sdkiList, items, "sdki", selected.sdki, item => {
+    selected.sdki = item;
+    selected.slki = null;
+    selected.siki = null;
+
+    selectedSdki.style.display = "block";
+    selectedSdkiText.textContent = item.title || "-";
+    toSlkiBtn.disabled = false;
+
+    selectedSlki.style.display = "none";
+    selectedSiki.style.display = "none";
+    toSikiBtn.disabled = true;
+    generateBtn.disabled = true;
+
+    renderSdkiList();
+    renderSlkiList();
+    renderSikiList();
+
+    showToast("Diagnosis dipilih");
+  });
+}
+  
+function renderSlkiList(){
+  const items = searchItems(DB.slki, "slki", slkiSearch.value, 50);
+
+  renderOptionList(slkiList, items, "slki", selected.slki, item => {
+    selected.slki = item;
+
+    selectedSlki.style.display = "block";
+    selectedSlkiText.textContent = item.title || "-";
+    toSikiBtn.disabled = false;
+
+    renderSlkiList();
+
+    showToast("Luaran dipilih");
+  });
+}
+
+function renderSikiList(){
+  const q = sikiSearch.value;
+  let source = DB.siki;
+
+  const suggested = getSuggestedSiki();
+
+  if(!q && suggested.length){
+    source = suggested;
+  }
+
+  const items = searchItems(source, "siki", q, 50);
+
+  renderOptionList(sikiList, items, "siki", selected.siki, item => {
+    selected.siki = item;
+
+    selectedSiki.style.display = "block";
+    selectedSikiText.textContent = item.title || "-";
+    generateBtn.disabled = false;
+
+    renderSikiList();
+
+    showToast("Intervensi dipilih");
+  });
+}
+
+/* =========================
+   STEP
+========================= */
+function showStep(step){
+  currentStep = step;
+
+  stepSdki.style.display = step === 1 ? "block" : "none";
+  stepSlki.style.display = step === 2 ? "block" : "none";
+  stepSiki.style.display = step === 3 ? "block" : "none";
+  stepOutput.style.display = step === 4 ? "block" : "none";
+
+  updateProgress();
+  scrollTopApp();
+}
+
+function updateProgress(){
+  [1,2,3,4].forEach(num => {
+    const el = document.getElementById("progress" + num);
+    el.classList.remove("active", "done");
+
+    if(num < currentStep) el.classList.add("done");
+    if(num === currentStep) el.classList.add("active");
+  });
+}
+
+/* =========================
+   GENERATE
+========================= */
+function buildAskepText(){
+  const diagnosis = selected.sdki?.title || "-";
+  const luaran = selected.slki?.title || "-";
+  const intervensi = selected.siki?.title || "-";
+
+  const implementasi = getSikiImplementations(selected.siki?.raw || {});
+
+  const implementationText = implementasi.length
+    ? implementasi.map((item, index) => `${index + 1}. ${item}`).join("\n")
+    : [
+        "1. Monitor kondisi pasien sesuai masalah keperawatan",
+        "2. Berikan tindakan keperawatan sesuai kebutuhan pasien",
+        "3. Edukasi pasien dan keluarga sesuai kondisi klinis"
+      ].join("\n");
+
+  return `Diagnosis Keperawatan:
+${diagnosis}
+
+Luaran Keperawatan:
+${luaran}
+
+Intervensi Keperawatan:
+${intervensi}
+
+Implementasi:
+${implementationText}`;
+}
+
+function generateAskep(){
+  if(!selected.sdki || !selected.slki || !selected.siki){
+    showToast("Lengkapi pilihan dulu", "fa-circle-exclamation");
+    return;
+  }
+
+  askepOutput.value = buildAskepText();
+  showStep(4);
+  showToast("Askep berhasil dibuat");
+}
+
+async function copyAskep(){
+  const text = askepOutput.value.trim();
+
+  if(!text){
+    showToast("Belum ada teks untuk disalin", "fa-circle-exclamation");
+    return;
+  }
+
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("Askep berhasil disalin");
+  }catch(err){
+    askepOutput.removeAttribute("readonly");
+    askepOutput.select();
+    document.execCommand("copy");
+    askepOutput.setAttribute("readonly", "readonly");
+    showToast("Askep berhasil disalin");
+  }
+}
+
+async function shareAskep(){
+  const text = askepOutput.value.trim();
+
+  if(!text){
+    showToast("Belum ada teks untuk dibagikan", "fa-circle-exclamation");
+    return;
+  }
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title:"Quick Askep",
+        text
+      });
+    }catch(err){
+      console.warn(err);
+    }
+  }else{
+    await copyAskep();
+  }
+}
+
+function resetAll(){
+  selected = {
+    sdki:null,
+    slki:null,
+    siki:null
+  };
+
+  sdkiSearch.value = "";
+  slkiSearch.value = "";
+  sikiSearch.value = "";
+
+  selectedSdki.style.display = "none";
+  selectedSlki.style.display = "none";
+  selectedSiki.style.display = "none";
+
+  toSlkiBtn.disabled = true;
+  toSikiBtn.disabled = true;
+  generateBtn.disabled = true;
+
+  askepOutput.value = "";
+
+  renderSdkiList();
+  renderSlkiList();
+  renderSikiList();
+
+  showStep(1);
+  showToast("Pilihan direset");
+}
+
+/* =========================
+   EVENTS
+========================= */
+let sdkiTimer = null;
+let slkiTimer = null;
+let sikiTimer = null;
+
+sdkiSearch.addEventListener("input", () => {
+  clearTimeout(sdkiTimer);
+  sdkiTimer = setTimeout(renderSdkiList, 150);
+});
+
+slkiSearch.addEventListener("input", () => {
+  clearTimeout(slkiTimer);
+  slkiTimer = setTimeout(renderSlkiList, 150);
+});
+
+sikiSearch.addEventListener("input", () => {
+  clearTimeout(sikiTimer);
+  sikiTimer = setTimeout(renderSikiList, 150);
+});
+
+toSlkiBtn.addEventListener("click", () => {
+  renderSlkiList();
+  showStep(2);
+});
+
+toSikiBtn.addEventListener("click", () => {
+  renderSikiList();
+  showStep(3);
+});
+
+backToSdkiBtn.addEventListener("click", () => showStep(1));
+backToSlkiBtn.addEventListener("click", () => showStep(2));
+editAgainBtn.addEventListener("click", () => showStep(3));
+
+generateBtn.addEventListener("click", generateAskep);
+copyBtn.addEventListener("click", copyAskep);
+shareBtn.addEventListener("click", shareAskep);
+
+resetBtn1.addEventListener("click", resetAll);
+resetAllBtn.addEventListener("click", resetAll);
+
+/* =========================
+   RIPPLE EFFECT
+========================= */
+document.addEventListener("click", function(e){
+  const el = e.target.closest(".native-click");
+  if(!el) return;
+
+  const oldRipple = el.querySelector(".ripple");
+  if(oldRipple) oldRipple.remove();
+
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+
+  const rect = el.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  ripple.style.width = ripple.style.height = size + "px";
+  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+  el.appendChild(ripple);
+
+  setTimeout(() => ripple.remove(), 600);
+});
+
+/* =========================
+   BLOKIR SELECT
+========================= */
+document.addEventListener("selectstart", function(e){
+  const allow = e.target.closest("input, textarea, select");
+  if(!allow) e.preventDefault();
+});
+
+/* =========================
+   INIT
+========================= */
+loadAllData().catch(err => {
+  console.error(err);
+  loadingEl.style.display = "none";
+
+  stepSdki.style.display = "block";
+  sdkiList.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </div>
+      <div class="empty-title">Data gagal dimuat</div>
+      <div class="empty-desc">Cek path JSON atau format data SDKI, SLKI, dan SIKI.</div>
+    </div>
+  `;
+});
+</script>
+
+</body>
+</html>
