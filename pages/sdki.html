@@ -637,7 +637,7 @@ button{
    CONFIG PATH
 ========================= */
 const DATA_PATHS = {
-  sdki: "../data/sdkislki/sdki.json"
+  sdki: "https://askep.mkhoirulzed.workers.dev/api/sdki"
 };
 
 const PER_PAGE = 20;
@@ -971,7 +971,7 @@ async function loadSdki(){
     pageCount.textContent = "Halaman 1";
     renderEmpty(
       "Data SDKI belum terbaca",
-      "Pastikan file ../data/sdkislki/sdki.json tersedia dan format JSON benar."
+     "Data SDKI belum tersedia atau gagal dimuat dari server."
     );
     return;
   }
