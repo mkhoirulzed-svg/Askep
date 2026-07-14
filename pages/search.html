@@ -575,11 +575,13 @@ button{
 /* =========================
    CONFIG PATH
 ========================= */
-const DATA_PATHS = {
-  sdki: "../data/sdkislki/sdki.json",
-  slki: "../data/sdkislki/slki.json",
-  siki: "../data/sdkislki/siki.json",
-  masterRelations: "../data/sdkislki/master-relations.json"
+const API_BASE = "https://askep.mkhoirulzed.workers.dev";
+
+const API_ENDPOINTS = {
+  sdki: `${API_BASE}/api/sdki`,
+  slki: `${API_BASE}/api/slki`,
+  siki: `${API_BASE}/api/siki`,
+  relations: `${API_BASE}/api/relations`
 };
 
 /* =========================
