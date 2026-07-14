@@ -307,11 +307,12 @@
 .page-daftar-standar .diagnosis-list,
 .page-daftar-standar .outcome-list,
 .page-daftar-standar .intervention-list{
-  display:flex;
-  flex-direction:column;
-  width:100%;
+  grid-area:list;
+  display:grid;
+  grid-template-columns:1fr;
+  align-content:start;
   min-width:0;
-  gap:10px;
+  gap:16px;
 }
 
 .page-daftar-standar .diagnosis-card,
