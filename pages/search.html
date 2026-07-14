@@ -659,24 +659,57 @@ function pick(obj, keys){
 }
 
 function toArray(data){
-  if(Array.isArray(data)) return data;
-
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.diagnosis)) return data.diagnosis;
-  if(data && Array.isArray(data.diagnosa)) return data.diagnosa;
-  if(data && Array.isArray(data.luaran)) return data.luaran;
-  if(data && Array.isArray(data.intervensi)) return data.intervensi;
-  if(data && Array.isArray(data.relations)) return data.relations;
-  if(data && Array.isArray(data.relation)) return data.relation;
-
-  if(data && typeof data === "object"){
-    return Object.values(data);
+  if(Array.isArray(data)){
+    return data;
   }
 
-  return [];
-}
+  if(!data || typeof data !== "object"){
+    return [];
+  }
 
+  const candidates = [
+    data.data,
+    data.items,
+    data.diagnosis,
+    data.diagnosa,
+    data.luaran,
+    data.intervensi,
+    data.relations,
+    data.relation
+  ];
+
+  for(const candidate of candidates){
+    if(Array.isArray(candidate)){
+      return candidate;
+    }
+
+    if(candidate && typeof candidate === "object"){
+      const nested = toArray(candidate);
+
+      if(nested.length){
+        return nested;
+      }
+    }
+  }
+
+  /*
+    Hindari mengubah objek respons seperti
+    { success: true, message: "...", data: ... }
+    menjadi array yang tidak valid.
+  */
+  if(
+    "success" in data ||
+    "message" in data ||
+    "error" in data
+  ){
+    return [];
+  }
+
+  return Object.values(data).filter(item => {
+    return item && typeof item === "object";
+  });
+}
+  
 function stringifyDeep(value){
   if(value === null || value === undefined) return "";
 
@@ -703,9 +736,9 @@ function stringifyDeep(value){
 
 function getItemKey(item){
   return pick(item, [
-    "id",
     "kode",
     "code",
+    "id",
     "nomor",
     "no"
   ]);
@@ -1044,27 +1077,44 @@ function uniqueReferences(items){
    LOAD DATA
 ========================= */
 async function fetchJsonSafe(path){
-  try{
-    const separator = path.includes("?") ? "&" : "?";
+  const separator = path.includes("?") ? "&" : "?";
 
-    const response = await fetch(
-      path + separator + "v=" + Date.now(),
-      {
-        cache: "no-store"
+  const response = await fetch(
+    `${path}${separator}v=${Date.now()}`,
+    {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Accept": "application/json"
       }
-    );
-
-    if(!response.ok){
-      throw new Error(
-        `Gagal memuat ${path}. Status HTTP: ${response.status}`
-      );
     }
+  );
 
-    return await response.json();
-  }catch(error){
-    console.warn(error.message);
-    return [];
+  let payload = null;
+
+  try{
+    payload = await response.json();
+  }catch{
+    throw new Error(
+      `Respons dari ${path} bukan JSON yang valid.`
+    );
   }
+
+  if(!response.ok){
+    throw new Error(
+      payload?.message ||
+      `Gagal memuat ${path}. Status HTTP: ${response.status}`
+    );
+  }
+
+  if(payload?.success === false){
+    throw new Error(
+      payload.message ||
+      `API ${path} mengembalikan status gagal.`
+    );
+  }
+
+  return payload;
 }
 
 async function loadAllData(){
@@ -1076,10 +1126,10 @@ async function loadAllData(){
     sikiData,
     masterRelationsData
   ] = await Promise.all([
-    fetchJsonSafe(DATA_PATHS.sdki),
-    fetchJsonSafe(DATA_PATHS.slki),
-    fetchJsonSafe(DATA_PATHS.siki),
-    fetchJsonSafe(DATA_PATHS.masterRelations)
+    fetchJsonSafe(API_ENDPOINTS.sdki),
+    fetchJsonSafe(API_ENDPOINTS.slki),
+    fetchJsonSafe(API_ENDPOINTS.siki),
+    fetchJsonSafe(API_ENDPOINTS.relations)
   ]);
 
   DB.sdki = toArray(sdkiData);
@@ -1297,15 +1347,15 @@ function getRelatedSdkiText(type, itemCode, itemTitle){
       ];
     }
 
-    const matched = references.some(reference => {
-      const referenceCode = normalizeCode(reference.kode);
-      const referenceTitle = normalizeText(reference.judul);
+   const matched = references.some(reference => {
+  const referenceCode = normalizeCode(reference.kode);
+  const referenceTitle = normalizeText(reference.judul);
 
-      return (
-        (targetCode && referenceCode === targetCode) ||
-        (targetTitle && referenceTitle === targetTitle)
-      );
-    });
+  return (
+    (targetCode && referenceCode === targetCode) ||
+    (targetTitle && referenceTitle === targetTitle)
+  );
+});
 
     if(matched){
       relatedDiagnoses.push(
@@ -1493,7 +1543,7 @@ function renderGroup(title, items){
 
 function renderCard(item){
   const type = item.type;
-  const id = item.id || item.kode || "";
+  const id = item.kode || item.id || "";
   const kode = item.kode || "";
   const title = item.title || "Tanpa Judul";
   const desc = item.desc || "Ketuk untuk melihat detail lengkap.";
