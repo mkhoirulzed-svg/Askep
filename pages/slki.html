@@ -637,7 +637,7 @@ button{
 
 <script>
 /* =========================
-   CONFIG PATH
+   KONFIGURASI API
 ========================= */
 const API_BASE = "https://askep.mkhoirulzed.workers.dev";
 
@@ -651,7 +651,7 @@ const API_ENDPOINTS = {
 const PER_PAGE = 20;
 
 /* =========================
-   ELEMENTS
+   ELEMENT
 ========================= */
 const loadingEl = document.getElementById("loading");
 const listArea = document.getElementById("listArea");
@@ -675,9 +675,9 @@ let currentPage = 1;
 let activeCategory = "Semua";
 
 /* =========================
-   HELPERS
+   HELPER
 ========================= */
-function normalizeText(text){
+function normalizeText(text) {
   return String(text || "")
     .toLowerCase()
     .normalize("NFD")
@@ -687,59 +687,129 @@ function normalizeText(text){
     .trim();
 }
 
-function pick(obj, keys){
-  for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+function pick(obj, keys) {
+  for (const key of keys) {
+    if (
+      obj &&
+      obj[key] !== undefined &&
+      obj[key] !== null &&
+      obj[key] !== ""
+    ) {
       return obj[key];
     }
   }
+
   return "";
 }
 
-function toArray(data){
-  if(Array.isArray(data)) return data;
+function toArray(data) {
+  if (Array.isArray(data)) {
+    return data;
+  }
 
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.luaran)) return data.luaran;
-  if(data && Array.isArray(data.outcomes)) return data.outcomes;
-  if(data && Array.isArray(data.slki)) return data.slki;
+  if (!data || typeof data !== "object") {
+    return [];
+  }
 
-  if(data && typeof data === "object"){
-    return Object.values(data);
+  const possibleArrays = [
+    data.data,
+    data.items,
+    data.luaran,
+    data.outcomes,
+    data.slki,
+    data.result,
+    data.results
+  ];
+
+  for (const value of possibleArrays) {
+    if (Array.isArray(value)) {
+      return value;
+    }
+  }
+
+  /*
+   * Jangan langsung memakai Object.values(data) jika respons API
+   * memiliki properti seperti success, message, dan data.
+   */
+  const values = Object.values(data);
+
+  if (
+    values.length &&
+    values.every(
+      value =>
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    )
+  ) {
+    return values;
   }
 
   return [];
 }
 
-function escapeHtml(text){
+function escapeHtml(text) {
   return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-function stringifyDeep(value){
-  if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+function stringifyDeep(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(stringifyDeep).join(" ");
+  }
+
+  if (typeof value === "object") {
+    return Object.values(value)
+      .map(stringifyDeep)
+      .join(" ");
+  }
+
   return "";
 }
 
-function getOutcomeId(item){
-  return pick(item, ["id", "slug", "kode", "code", "nomor", "no"]);
+function getOutcomeId(item) {
+  return pick(item, [
+    "id",
+    "slug",
+    "kode",
+    "kodeSlki",
+    "code",
+    "nomor",
+    "no"
+  ]);
 }
 
-function getOutcomeCode(item){
-  return pick(item, ["kode", "code", "nomor", "no"]);
+function getOutcomeCode(item) {
+  return pick(item, [
+    "kode",
+    "kodeSlki",
+    "code",
+    "nomor",
+    "no"
+  ]);
 }
 
-function getOutcomeTitle(item){
+function getOutcomeTitle(item) {
   return pick(item, [
     "nama",
+    "namaLuaran",
+    "judulSlki",
     "luaran",
     "outcome",
     "judul",
@@ -749,7 +819,7 @@ function getOutcomeTitle(item){
   ]);
 }
 
-function getOutcomeDesc(item){
+function getOutcomeDesc(item) {
   return pick(item, [
     "definisi",
     "deskripsi",
@@ -759,7 +829,7 @@ function getOutcomeDesc(item){
   ]);
 }
 
-function getOutcomeCategory(item){
+function getOutcomeCategory(item) {
   return pick(item, [
     "kategori",
     "category",
@@ -768,9 +838,10 @@ function getOutcomeCategory(item){
   ]);
 }
 
-function getOutcomeSubCategory(item){
+function getOutcomeSubCategory(item) {
   return pick(item, [
     "subkategori",
+    "subKategori",
     "sub_category",
     "subCategory",
     "kelas",
@@ -778,7 +849,7 @@ function getOutcomeSubCategory(item){
   ]);
 }
 
-function getOutcomeExpectation(item){
+function getOutcomeExpectation(item) {
   return pick(item, [
     "ekspektasi",
     "harapan",
@@ -787,83 +858,160 @@ function getOutcomeExpectation(item){
   ]);
 }
 
-function makeSearchText(item){
-  return normalizeText([
-    getOutcomeId(item),
-    getOutcomeCode(item),
-    getOutcomeTitle(item),
-    getOutcomeDesc(item),
-    getOutcomeCategory(item),
-    getOutcomeSubCategory(item),
-    getOutcomeExpectation(item),
-    stringifyDeep(item)
-  ].join(" "));
+function makeSearchText(item) {
+  return normalizeText(
+    [
+      getOutcomeId(item),
+      getOutcomeCode(item),
+      getOutcomeTitle(item),
+      getOutcomeDesc(item),
+      getOutcomeCategory(item),
+      getOutcomeSubCategory(item),
+      getOutcomeExpectation(item),
+      stringifyDeep(item)
+    ].join(" ")
+  );
 }
 
-function makeDetailUrl(item){
-  const id = getOutcomeId(item) || getOutcomeCode(item) || getOutcomeTitle(item);
-  return "slki-detail.html?id=" + encodeURIComponent(id);
+function makeDetailUrl(item) {
+  const id =
+    getOutcomeId(item) ||
+    getOutcomeCode(item) ||
+    getOutcomeTitle(item);
+
+  return `slki-detail.html?id=${encodeURIComponent(id)}`;
 }
 
-async function fetchJsonSafe(path){
-  try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
-  }catch(err){
-    console.warn(err.message);
-    return [];
+async function fetchJsonSafe(url) {
+  try {
+    const separator = url.includes("?") ? "&" : "?";
+
+    const response = await fetch(
+      `${url}${separator}v=${Date.now()}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        },
+        cache: "no-store"
+      }
+    );
+
+    const rawText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}: ${rawText || response.statusText}`
+      );
+    }
+
+    if (!rawText.trim()) {
+      throw new Error("Respons API kosong.");
+    }
+
+    let json;
+
+    try {
+      json = JSON.parse(rawText);
+    } catch {
+      throw new Error("Respons API bukan JSON yang valid.");
+    }
+
+    if (
+      json &&
+      typeof json === "object" &&
+      json.success === false
+    ) {
+      throw new Error(
+        json.message || "API mengembalikan status gagal."
+      );
+    }
+
+    return json;
+  } catch (error) {
+    console.error("Gagal mengambil data SLKI:", error);
+    throw error;
   }
 }
 
 /* =========================
    RENDER
 ========================= */
-function renderEmpty(title, desc){
+function renderEmpty(title, description) {
   listArea.innerHTML = `
     <div class="empty-state">
       <div class="empty-icon">
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
-      <div class="empty-title">${escapeHtml(title)}</div>
-      <div class="empty-desc">${escapeHtml(desc)}</div>
+
+      <div class="empty-title">
+        ${escapeHtml(title)}
+      </div>
+
+      <div class="empty-desc">
+        ${escapeHtml(description)}
+      </div>
     </div>
   `;
 }
 
-function getUniqueCategories(){
+function getUniqueCategories() {
   const categories = allOutcomes
     .map(item => getOutcomeCategory(item))
     .filter(Boolean)
-    .map(item => String(item).trim())
+    .map(category => String(category).trim())
     .filter(Boolean);
 
-  return ["Semua", ...Array.from(new Set(categories)).sort((a,b) => a.localeCompare(b))];
+  return [
+    "Semua",
+    ...Array.from(new Set(categories)).sort((a, b) =>
+      a.localeCompare(b, "id")
+    )
+  ];
 }
 
-function renderCategoryTags(){
+function renderCategoryTags() {
   const categories = getUniqueCategories();
 
-  categoryTags.innerHTML = categories.map(category => `
-    <button
-      type="button"
-      class="category-chip native-click ${category === activeCategory ? "active" : ""}"
-      data-category="${escapeHtml(category)}"
-    >
-      ${escapeHtml(category)}
-    </button>
-  `).join("");
+  categoryTags.innerHTML = categories
+    .map(category => {
+      const isActive = category === activeCategory;
+
+      return `
+        <button
+          type="button"
+          class="category-chip native-click ${
+            isActive ? "active" : ""
+          }"
+          data-category="${escapeHtml(category)}"
+        >
+          ${escapeHtml(category)}
+        </button>
+      `;
+    })
+    .join("");
 }
 
-function renderList(){
+function renderList() {
   const totalItems = filteredOutcomes.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalItems / PER_PAGE)
+  );
 
-  if(currentPage > totalPages) currentPage = totalPages;
-  if(currentPage < 1) currentPage = 1;
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+
+  if (currentPage < 1) {
+    currentPage = 1;
+  }
 
   const startIndex = (currentPage - 1) * PER_PAGE;
-  const pageItems = filteredOutcomes.slice(startIndex, startIndex + PER_PAGE);
+  const pageItems = filteredOutcomes.slice(
+    startIndex,
+    startIndex + PER_PAGE
+  );
 
   resultCount.textContent = totalItems
     ? `${totalItems} luaran ditemukan`
@@ -875,99 +1023,153 @@ function renderList(){
   prevBtn.disabled = currentPage <= 1;
   nextBtn.disabled = currentPage >= totalPages;
 
-  paginationEl.style.display = totalItems > PER_PAGE ? "flex" : "none";
+  paginationEl.style.display =
+    totalItems > PER_PAGE ? "flex" : "none";
 
-  if(!totalItems){
+  if (!totalItems) {
     renderEmpty(
       "Luaran tidak ditemukan",
-      "Coba gunakan kata kunci lain, misalnya nyeri, mobilitas, perfusi, L.08066, atau kategori."
+      "Coba gunakan kata kunci lain seperti nyeri, mobilitas, perfusi, kode SLKI, atau kategori."
     );
+
     return;
   }
 
-  listArea.innerHTML = pageItems.map(item => {
-    const id = getOutcomeId(item);
-    const code = getOutcomeCode(item);
-    const title = getOutcomeTitle(item) || "Luaran SLKI";
-    const desc = getOutcomeDesc(item) || getOutcomeExpectation(item) || "Ketuk untuk melihat detail luaran.";
-    const category = getOutcomeCategory(item);
-    const subCategory = getOutcomeSubCategory(item);
-    const expectation = getOutcomeExpectation(item);
-    const url = makeDetailUrl(item);
+  listArea.innerHTML = pageItems
+    .map(item => {
+      const id = getOutcomeId(item);
+      const code = getOutcomeCode(item);
+      const title =
+        getOutcomeTitle(item) || "Luaran SLKI";
 
-    return `
-      <a href="${url}" class="outcome-card native-click">
-        <div class="outcome-icon">
-          <i class="fa-solid fa-chart-simple"></i>
-        </div>
+      const description =
+        getOutcomeDesc(item) ||
+        getOutcomeExpectation(item) ||
+        "Ketuk untuk melihat detail luaran.";
 
-        <div class="outcome-body">
-          <div class="outcome-top">
-            <span class="outcome-code">${escapeHtml(code || id || "-")}</span>
-            <span class="outcome-category">
-              ${escapeHtml([category, subCategory].filter(Boolean).join(" • ") || "SLKI")}
-            </span>
+      const category = getOutcomeCategory(item);
+      const subCategory = getOutcomeSubCategory(item);
+      const expectation = getOutcomeExpectation(item);
+      const url = makeDetailUrl(item);
+
+      const categoryText =
+        [category, subCategory]
+          .filter(Boolean)
+          .join(" • ") || "SLKI";
+
+      const descriptionText = [
+        expectation
+          ? `Ekspektasi: ${expectation}`
+          : "",
+        description
+      ]
+        .filter(Boolean)
+        .join(" — ");
+
+      return `
+        <a
+          href="${escapeHtml(url)}"
+          class="outcome-card native-click"
+        >
+          <div class="outcome-icon">
+            <i class="fa-solid fa-chart-simple"></i>
           </div>
 
-          <div class="outcome-title">${escapeHtml(title)}</div>
-          <div class="outcome-desc">
-            ${escapeHtml(
-              [
-                expectation ? "Ekspektasi: " + expectation : "",
-                desc
-              ].filter(Boolean).join(" — ")
-            )}
-          </div>
-        </div>
+          <div class="outcome-body">
+            <div class="outcome-top">
+              <span class="outcome-code">
+                ${escapeHtml(code || id || "-")}
+              </span>
 
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </a>
-    `;
-  }).join("");
+              <span class="outcome-category">
+                ${escapeHtml(categoryText)}
+              </span>
+            </div>
+
+            <div class="outcome-title">
+              ${escapeHtml(title)}
+            </div>
+
+            <div class="outcome-desc">
+              ${escapeHtml(descriptionText)}
+            </div>
+          </div>
+
+          <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+      `;
+    })
+    .join("");
 }
 
-function applySearch(){
-  const q = normalizeText(searchInput.value);
+function applySearch() {
+  const query = normalizeText(searchInput.value);
 
-  clearSearch.style.display = q ? "flex" : "none";
+  clearSearch.style.display = query ? "flex" : "none";
 
-  const categoryFiltered = activeCategory === "Semua"
-    ? [...allOutcomes]
-    : allOutcomes.filter(item => {
-        return normalizeText(getOutcomeCategory(item)) === normalizeText(activeCategory);
-      });
+  const categoryFiltered =
+    activeCategory === "Semua"
+      ? [...allOutcomes]
+      : allOutcomes.filter(item => {
+          return (
+            normalizeText(getOutcomeCategory(item)) ===
+            normalizeText(activeCategory)
+          );
+        });
 
-  if(!q){
+  if (!query) {
     filteredOutcomes = categoryFiltered;
     currentPage = 1;
     renderList();
     return;
   }
 
-  const keywords = q
+  const keywords = query
     .split(/\s+/)
     .filter(Boolean);
 
   filteredOutcomes = categoryFiltered
     .map(item => {
-      const text = makeSearchText(item);
-      const title = normalizeText(getOutcomeTitle(item));
-      const code = normalizeText(getOutcomeCode(item));
+      const searchText = makeSearchText(item);
+      const title = normalizeText(
+        getOutcomeTitle(item)
+      );
+      const code = normalizeText(
+        getOutcomeCode(item)
+      );
+
       let score = 0;
 
-      for(const key of keywords){
-        if(code === key) score += 50;
-        if(code.includes(key)) score += 30;
-        if(title.includes(key)) score += 25;
-        if(text.includes(key)) score += 10;
+      for (const keyword of keywords) {
+        if (code === keyword) {
+          score += 50;
+        }
+
+        if (code.includes(keyword)) {
+          score += 30;
+        }
+
+        if (title.includes(keyword)) {
+          score += 25;
+        }
+
+        if (searchText.includes(keyword)) {
+          score += 10;
+        }
       }
 
-      const matched = keywords.every(key => text.includes(key));
+      const matched = keywords.every(keyword =>
+        searchText.includes(keyword)
+      );
 
-      return { item, score, matched };
+      return {
+        item,
+        score,
+        matched
+      };
     })
     .filter(row => row.matched)
-    .sort((a,b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score)
     .map(row => row.item);
 
   currentPage = 1;
@@ -975,72 +1177,128 @@ function applySearch(){
 }
 
 /* =========================
-   LOAD DATA
+   LOAD DATA SLKI
 ========================= */
-async function loadSlki(){
+async function loadSlki() {
   loadingEl.style.display = "flex";
   listArea.innerHTML = "";
+  paginationEl.style.display = "none";
 
-  const slkiJson = await fetchJsonSafe(DATA_PATHS.slki);
-  allOutcomes = toArray(slkiJson).filter(item => item && typeof item === "object");
-  filteredOutcomes = [...allOutcomes];
-
-  renderCategoryTags();
-
-  loadingEl.style.display = "none";
-
-  headerSub.textContent = allOutcomes.length
-    ? `${allOutcomes.length} luaran tersedia`
-    : "Standar Luaran Keperawatan Indonesia";
-
-  if(!allOutcomes.length){
-    resultCount.textContent = "Data kosong";
-    pageCount.textContent = "Halaman 1";
-    renderEmpty(
-      "Data SLKI belum terbaca",
-      "Pastikan file ../data/sdkislki/slki.json tersedia dan format JSON benar."
+  try {
+    const slkiJson = await fetchJsonSafe(
+      API_ENDPOINTS.slki
     );
-    return;
-  }
 
-  renderList();
+    allOutcomes = toArray(slkiJson).filter(
+      item =>
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item)
+    );
+
+    filteredOutcomes = [...allOutcomes];
+
+    renderCategoryTags();
+
+    headerSub.textContent = allOutcomes.length
+      ? `${allOutcomes.length} luaran tersedia`
+      : "Standar Luaran Keperawatan Indonesia";
+
+    if (!allOutcomes.length) {
+      resultCount.textContent = "Data kosong";
+      pageCount.textContent = "Halaman 1";
+
+      renderEmpty(
+        "Data SLKI kosong",
+        "Endpoint API berhasil dibuka, tetapi tidak menemukan daftar data SLKI."
+      );
+
+      return;
+    }
+
+    renderList();
+  } catch (error) {
+    console.error(error);
+
+    resultCount.textContent = "Gagal memuat data";
+    pageCount.textContent = "Halaman 1";
+    headerSub.textContent =
+      "Standar Luaran Keperawatan Indonesia";
+
+    renderEmpty(
+      "Data SLKI gagal dimuat",
+      error.message ||
+        "Periksa endpoint API SLKI dan console browser."
+    );
+  } finally {
+    loadingEl.style.display = "none";
+  }
 }
 
 /* =========================
-   EVENTS
+   EVENT
 ========================= */
 searchInput.addEventListener("input", applySearch);
 
-clearSearch.addEventListener("click", function(){
+clearSearch.addEventListener("click", () => {
   searchInput.value = "";
   searchInput.focus();
   applySearch();
 });
 
-prevBtn.addEventListener("click", function(){
-  if(currentPage <= 1) return;
-  currentPage--;
+prevBtn.addEventListener("click", () => {
+  if (currentPage <= 1) {
+    return;
+  }
+
+  currentPage -= 1;
   renderList();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
 
-nextBtn.addEventListener("click", function(){
-  const totalPages = Math.max(1, Math.ceil(filteredOutcomes.length / PER_PAGE));
-  if(currentPage >= totalPages) return;
-  currentPage++;
-  renderList();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-categoryTags.addEventListener("click", function(e){
-  const btn = e.target.closest(".category-chip");
-  if(!btn) return;
-
-  activeCategory = btn.dataset.category || "Semua";
-
-  categoryTags.querySelectorAll(".category-chip").forEach(chip => {
-    chip.classList.toggle("active", chip.dataset.category === activeCategory);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
   });
+});
+
+nextBtn.addEventListener("click", () => {
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredOutcomes.length / PER_PAGE)
+  );
+
+  if (currentPage >= totalPages) {
+    return;
+  }
+
+  currentPage += 1;
+  renderList();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
+
+categoryTags.addEventListener("click", event => {
+  const button = event.target.closest(
+    ".category-chip"
+  );
+
+  if (!button) {
+    return;
+  }
+
+  activeCategory =
+    button.dataset.category || "Semua";
+
+  categoryTags
+    .querySelectorAll(".category-chip")
+    .forEach(chip => {
+      chip.classList.toggle(
+        "active",
+        chip.dataset.category === activeCategory
+      );
+    });
 
   currentPage = 1;
   applySearch();
@@ -1049,49 +1307,78 @@ categoryTags.addEventListener("click", function(e){
 /* =========================
    RIPPLE EFFECT
 ========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el || el.disabled) return;
+document.addEventListener("click", event => {
+  const element = event.target.closest(
+    ".native-click"
+  );
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+  if (!element || element.disabled) {
+    return;
+  }
 
-  const ripple = document.createElement("span");
+  const oldRipple =
+    element.querySelector(".ripple");
+
+  if (oldRipple) {
+    oldRipple.remove();
+  }
+
+  const ripple =
+    document.createElement("span");
+
   ripple.className = "ripple";
 
-  const rect = el.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
+  const rect =
+    element.getBoundingClientRect();
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+  const size = Math.max(
+    rect.width,
+    rect.height
+  );
 
-  el.appendChild(ripple);
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
 
-  setTimeout(() => ripple.remove(), 600);
+  ripple.style.left = `${
+    event.clientX -
+    rect.left -
+    size / 2
+  }px`;
+
+  ripple.style.top = `${
+    event.clientY -
+    rect.top -
+    size / 2
+  }px`;
+
+  element.appendChild(ripple);
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
 });
 
 /* =========================
    BLOKIR SELECT
 ========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
-});
+document.addEventListener(
+  "selectstart",
+  event => {
+    const allowed = event.target.closest(
+      "input, textarea, select"
+    );
+
+    if (!allowed) {
+      event.preventDefault();
+    }
+  }
+);
 
 /* =========================
    INIT
 ========================= */
-loadSlki().catch(err => {
-  console.error(err);
-  loadingEl.style.display = "none";
-  resultCount.textContent = "Gagal memuat data";
-  renderEmpty(
-    "Terjadi kesalahan",
-    "Data SLKI gagal dimuat. Cek path file JSON dan console browser."
-  );
-});
+loadSlki();
 </script>
-
+  
 </body>
 </html>
