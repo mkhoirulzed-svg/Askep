@@ -573,7 +573,7 @@
     width:calc(100% - var(--desktop-sidebar-width));
     max-width:none;
     min-width:0;
-    margin:0 0 0 var(--desktop-sidebar-width);
+    margin-left:var(--desktop-sidebar-width);
     padding-bottom:48px;
   }
 
@@ -600,21 +600,62 @@
   }
 
   .page-daftar-standar .content{
-    display:grid;
-    grid-template-columns:
-      minmax(360px,.82fr)
-      minmax(0,1.18fr);
-
-    grid-template-areas:
-      "hero list"
-      "search list"
-      "category list"
-      ". pagination";
-
-    align-items:start;
-    column-gap:30px;
-    row-gap:16px;
+    display:block;
   }
+
+  .page-daftar-standar .hero-card{
+    width:100%;
+    margin-bottom:16px;
+    padding:24px;
+  }
+
+  .page-daftar-standar .search-card{
+    width:100%;
+    margin-bottom:16px;
+    padding:16px;
+  }
+
+  .page-daftar-standar .category-scroll{
+    display:flex;
+    flex-wrap:wrap;
+    width:100%;
+    margin-bottom:18px;
+    padding-bottom:0;
+    overflow:visible;
+  }
+
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    min-width:0;
+    gap:16px;
+  }
+
+  .page-daftar-standar .diagnosis-card,
+  .page-daftar-standar .outcome-card,
+  .page-daftar-standar .intervention-card{
+    min-width:0;
+    min-height:150px;
+    padding:16px;
+    border-radius:20px;
+  }
+
+  .page-daftar-standar .pagination{
+    width:100%;
+    margin-top:18px;
+  }
+
+  .page-daftar-standar .diagnosis-card:hover,
+  .page-daftar-standar .outcome-card:hover,
+  .page-daftar-standar .intervention-card:hover{
+    border-color:var(--primary-soft);
+    box-shadow:var(--shadow-md);
+    transform:translateY(-2px);
+  }
+}
 
   /* Kolom kiri */
   .page-daftar-standar .hero-card{
@@ -706,7 +747,7 @@
 }
 
 /* Laptop sedang */
-@media (min-width:900px) and (max-width:1180px){
+@media (min-width:900px) and (max-width:1100px){
 
   .page-daftar-standar .content{
     grid-template-columns:
@@ -716,7 +757,7 @@
     column-gap:22px;
   }
 
-  .page-daftar-standar .diagnosis-list,
+ .page-daftar-standar .diagnosis-list,
   .page-daftar-standar .outcome-list,
   .page-daftar-standar .intervention-list{
     grid-template-columns:1fr;
