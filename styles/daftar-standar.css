@@ -565,25 +565,21 @@
   }
 }
 
-/* DESKTOP */
-/* =========================================================
-   DESKTOP
-========================================================= */
-
+/* DESKTOP — DUA KOLOM BESAR */
 @media (min-width:900px){
 
   .page-daftar-standar .app{
     width:calc(100% - var(--desktop-sidebar-width));
     max-width:none;
     min-width:0;
-    margin-left:var(--desktop-sidebar-width);
+    margin:0 0 0 var(--desktop-sidebar-width);
     padding-bottom:48px;
   }
 
   .page-daftar-standar .header,
   .page-daftar-standar .content{
     width:min(
-      calc(100% - 48px),
+      calc(100% - 56px),
       var(--content-max-width)
     );
     max-width:100%;
@@ -602,97 +598,101 @@
     margin-bottom:0;
   }
 
-  /*
-   * Kolom kiri:
-   * hero, pencarian, kategori
-   *
-   * Kolom kanan:
-   * daftar hasil
-   */
   .page-daftar-standar .content{
     display:grid;
     grid-template-columns:
-      minmax(300px,396px)
-      minmax(0,1fr);
+      minmax(360px,.82fr)
+      minmax(0,1.18fr);
 
-    grid-template-rows:
-      auto
-      auto
-      auto
-      auto;
+    grid-template-areas:
+      "hero list"
+      "search list"
+      "category list"
+      ". pagination";
 
-    column-gap:26px;
-    row-gap:16px;
     align-items:start;
+    column-gap:30px;
+    row-gap:16px;
   }
 
-  /* Hero di kiri atas */
+  /* Kolom kiri */
   .page-daftar-standar .hero-card{
-    grid-column:1;
-    grid-row:1;
+    grid-area:hero;
+    width:100%;
     margin:0;
+    padding:24px;
   }
 
-  /* Pencarian di bawah hero */
   .page-daftar-standar .search-card{
+    grid-area:search;
     position:static;
-    grid-column:1;
-    grid-row:2;
+    width:100%;
     margin:0;
+    padding:16px;
   }
 
-  /* Kategori di bawah pencarian */
   .page-daftar-standar .category-scroll{
-    grid-column:1;
-    grid-row:3;
-
+    grid-area:category;
     display:flex;
     flex-wrap:wrap;
     align-content:flex-start;
-
     width:100%;
     margin:0;
     padding:0;
     overflow:visible;
   }
 
-  /*
-   * Loading dan daftar dimulai dari kanan atas,
-   * sejajar dengan hero.
-   */
-  .page-daftar-standar .loading,
-  .page-daftar-standar .diagnosis-list,
-  .page-daftar-standar .outcome-list,
-  .page-daftar-standar .intervention-list{
-    grid-column:2;
-    grid-row:1 / 4;
-    align-self:start;
+  /* Kolom kanan */
+  .page-daftar-standar .loading{
+    grid-area:list;
     min-width:0;
   }
 
-  /* Dua kartu per baris */
   .page-daftar-standar .diagnosis-list,
   .page-daftar-standar .outcome-list,
   .page-daftar-standar .intervention-list{
+    grid-area:list;
     display:grid;
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-
-    gap:14px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-content:start;
+    min-width:0;
+    gap:16px;
   }
 
+  .page-daftar-standar .pagination{
+    grid-area:pagination;
+    width:100%;
+    margin:2px 0 0;
+  }
+
+  /* Kartu dibuat lebih lega */
   .page-daftar-standar .diagnosis-card,
   .page-daftar-standar .outcome-card,
   .page-daftar-standar .intervention-card{
     min-width:0;
-    min-height:146px;
+    min-height:156px;
+    padding:16px;
+    border-radius:20px;
   }
 
-  /* Pagination tetap di kanan bawah */
-  .page-daftar-standar .pagination{
-    grid-column:2;
-    grid-row:4;
-    margin:4px 0 0;
+  .page-daftar-standar .diagnosis-icon,
+  .page-daftar-standar .outcome-icon,
+  .page-daftar-standar .intervention-icon{
+    width:48px;
+    height:48px;
+    flex-basis:48px;
+  }
+
+  .page-daftar-standar .diagnosis-title,
+  .page-daftar-standar .outcome-title,
+  .page-daftar-standar .intervention-title{
+    font-size:15px;
+  }
+
+  .page-daftar-standar .diagnosis-desc,
+  .page-daftar-standar .outcome-desc,
+  .page-daftar-standar .intervention-desc{
+    font-size:12.5px;
   }
 
   .page-daftar-standar .diagnosis-card:hover,
@@ -701,6 +701,24 @@
     border-color:var(--primary-soft);
     box-shadow:var(--shadow-md);
     transform:translateY(-2px);
+  }
+}
+
+/* Laptop sedang */
+@media (min-width:900px) and (max-width:1180px){
+
+  .page-daftar-standar .content{
+    grid-template-columns:
+      minmax(320px,.9fr)
+      minmax(0,1.1fr);
+
+    column-gap:22px;
+  }
+
+  .page-daftar-standar .diagnosis-list,
+  .page-daftar-standar .outcome-list,
+  .page-daftar-standar .intervention-list{
+    grid-template-columns:1fr;
   }
 }
 
