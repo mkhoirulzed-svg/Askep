@@ -579,21 +579,39 @@ const DATA_PATHS = {
   sdki: "../data/sdkislki/sdki.json",
   slki: "../data/sdkislki/slki.json",
   siki: "../data/sdkislki/siki.json",
-  tautanSiki: "../data/tautansiki.json"
+  masterRelations: "../data/sdkislki/master-relations.json"
 };
 
 /* =========================
    STATE
 ========================= */
-let DB = {
+const DB = {
   sdki: [],
   slki: [],
   siki: [],
-  tautanSiki: []
+  masterRelations: []
 };
 
 let SEARCH_INDEX = [];
 let activeFilter = "all";
+
+/*
+  Lookup dipakai agar kode dari master-relations.json
+  dapat dipertemukan dengan data lengkap SDKI, SLKI, dan SIKI.
+*/
+const LOOKUP = {
+  sdkiByCode: new Map(),
+  sdkiByTitle: new Map(),
+
+  slkiByCode: new Map(),
+  slkiByTitle: new Map(),
+
+  sikiByCode: new Map(),
+  sikiByTitle: new Map(),
+
+  relationBySdkiCode: new Map(),
+  relationBySdkiTitle: new Map()
+};
 
 /* =========================
    ELEMENTS
@@ -616,12 +634,25 @@ function normalizeText(text){
     .trim();
 }
 
+function normalizeCode(value){
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "");
+}
+
 function pick(obj, keys){
   for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+    if(
+      obj &&
+      obj[key] !== undefined &&
+      obj[key] !== null &&
+      obj[key] !== ""
+    ){
       return obj[key];
     }
   }
+
   return "";
 }
 
@@ -631,8 +662,11 @@ function toArray(data){
   if(data && Array.isArray(data.data)) return data.data;
   if(data && Array.isArray(data.items)) return data.items;
   if(data && Array.isArray(data.diagnosis)) return data.diagnosis;
+  if(data && Array.isArray(data.diagnosa)) return data.diagnosa;
   if(data && Array.isArray(data.luaran)) return data.luaran;
   if(data && Array.isArray(data.intervensi)) return data.intervensi;
+  if(data && Array.isArray(data.relations)) return data.relations;
+  if(data && Array.isArray(data.relation)) return data.relation;
 
   if(data && typeof data === "object"){
     return Object.values(data);
@@ -643,19 +677,48 @@ function toArray(data){
 
 function stringifyDeep(value){
   if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+
+  if(
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ){
+    return String(value);
+  }
+
+  if(Array.isArray(value)){
+    return value.map(stringifyDeep).join(" ");
+  }
+
+  if(typeof value === "object"){
+    return Object.values(value)
+      .map(stringifyDeep)
+      .join(" ");
+  }
+
   return "";
 }
 
 function getItemKey(item){
-  return pick(item, ["id", "kode", "code", "nomor", "no"]);
+  return pick(item, [
+    "id",
+    "kode",
+    "code",
+    "nomor",
+    "no"
+  ]);
 }
 
 function getItemCode(item){
-  return pick(item, ["kode", "code", "nomor", "no", "id"]);
+  return pick(item, [
+    "kode",
+    "code",
+    "nomor",
+    "no",
+    "id"
+  ]);
 }
+
 function getItemTitle(item){
   return pick(item, [
     "title",
@@ -684,9 +747,17 @@ function getItemDesc(item){
 function getDetailUrl(type, id){
   const safeId = encodeURIComponent(id || "");
 
-  if(type === "sdki") return `diagnosis-detail.html?id=${safeId}`;
-  if(type === "slki") return `slki-detail.html?id=${safeId}`;
-  if(type === "siki") return `siki-detail.html?id=${safeId}`;
+  if(type === "sdki"){
+    return `diagnosis-detail.html?id=${safeId}`;
+  }
+
+  if(type === "slki"){
+    return `slki-detail.html?id=${safeId}`;
+  }
+
+  if(type === "siki"){
+    return `siki-detail.html?id=${safeId}`;
+  }
 
   return "#";
 }
@@ -695,6 +766,7 @@ function getIcon(type){
   if(type === "sdki") return "fa-stethoscope";
   if(type === "slki") return "fa-chart-line";
   if(type === "siki") return "fa-hand-holding-medical";
+
   return "fa-file-medical";
 }
 
@@ -702,7 +774,268 @@ function getTypeLabel(type){
   if(type === "sdki") return "SDKI";
   if(type === "slki") return "SLKI";
   if(type === "siki") return "SIKI";
-  return type.toUpperCase();
+
+  return String(type || "").toUpperCase();
+}
+
+/* =========================
+   RELATION HELPERS
+========================= */
+
+/*
+  Mengambil kode diagnosis dari master-relations.json.
+
+  Mendukung beberapa kemungkinan penamaan:
+  - kodeSdki
+  - kodeSDKI
+  - sdkiCode
+  - kode
+*/
+function getRelationSdkiCode(relation){
+  return pick(relation, [
+    "kodeSdki",
+    "kodeSDKI",
+    "sdkiCode",
+    "kodeDiagnosis",
+    "kodeDiagnosa",
+    "kode"
+  ]);
+}
+
+function getRelationSdkiTitle(relation){
+  return pick(relation, [
+    "judulSdki",
+    "judulSDKI",
+    "diagnosis",
+    "diagnosa",
+    "judulDiagnosis",
+    "judulDiagnosa",
+    "namaSdki",
+    "namaSDKI"
+  ]);
+}
+
+function getRelationSlki(relation){
+  return toReferenceArray(
+    pick(relation, [
+      "slki",
+      "luaran",
+      "luaranUtama",
+      "outcomes"
+    ])
+  );
+}
+
+function getRelationSikiUtama(relation){
+  return toReferenceArray(
+    pick(relation, [
+      "sikiUtama",
+      "intervensiUtama",
+      "utama",
+      "mainInterventions"
+    ])
+  );
+}
+
+function getRelationSikiPendukung(relation){
+  return toReferenceArray(
+    pick(relation, [
+      "sikiPendukung",
+      "intervensiPendukung",
+      "pendukung",
+      "supportingInterventions"
+    ])
+  );
+}
+
+/*
+  Master-relations bisa menyimpan relasi sebagai:
+
+  "L.01001"
+
+  atau:
+
+  {
+    "kode": "L.01001",
+    "judul": "Status Pernapasan"
+  }
+
+  atau array campuran keduanya.
+*/
+function toReferenceArray(value){
+  if(value === null || value === undefined || value === ""){
+    return [];
+  }
+
+  if(Array.isArray(value)){
+    return value.flatMap(item => toReferenceArray(item));
+  }
+
+  if(typeof value === "string" || typeof value === "number"){
+    return [{
+      kode: String(value),
+      judul: ""
+    }];
+  }
+
+  if(typeof value === "object"){
+    /*
+      Bila objek merupakan satu referensi.
+    */
+    const kode = pick(value, [
+      "kode",
+      "code",
+      "id",
+      "nomor",
+      "no",
+      "kodeSlki",
+      "kodeSLKI",
+      "kodeSiki",
+      "kodeSIKI"
+    ]);
+
+    const judul = pick(value, [
+      "judul",
+      "title",
+      "nama",
+      "name",
+      "luaran",
+      "intervensi"
+    ]);
+
+    if(kode || judul){
+      return [{
+        kode: String(kode || ""),
+        judul: String(judul || ""),
+        raw: value
+      }];
+    }
+
+    /*
+      Bila objek berisi daftar dengan key tertentu.
+    */
+    return Object.values(value)
+      .flatMap(item => toReferenceArray(item));
+  }
+
+  return [];
+}
+
+function resolveReference(reference, type){
+  const code = normalizeCode(reference?.kode);
+  const title = normalizeText(reference?.judul);
+
+  let item = null;
+
+  if(type === "slki"){
+    item =
+      LOOKUP.slkiByCode.get(code) ||
+      LOOKUP.slkiByTitle.get(title) ||
+      null;
+  }
+
+  if(type === "siki"){
+    item =
+      LOOKUP.sikiByCode.get(code) ||
+      LOOKUP.sikiByTitle.get(title) ||
+      null;
+  }
+
+  if(item){
+    return {
+      kode: getItemCode(item),
+      judul: getItemTitle(item),
+      item
+    };
+  }
+
+  return {
+    kode: reference?.kode || "",
+    judul: reference?.judul || "",
+    item: null
+  };
+}
+
+function getRelationForSdki(sdkiItem){
+  const code = normalizeCode(getItemCode(sdkiItem));
+  const title = normalizeText(getItemTitle(sdkiItem));
+
+  return (
+    LOOKUP.relationBySdkiCode.get(code) ||
+    LOOKUP.relationBySdkiTitle.get(title) ||
+    null
+  );
+}
+
+function getResolvedRelationData(relation){
+  if(!relation){
+    return {
+      slki: [],
+      sikiUtama: [],
+      sikiPendukung: []
+    };
+  }
+
+  return {
+    slki: getRelationSlki(relation)
+      .map(reference => resolveReference(reference, "slki")),
+
+    sikiUtama: getRelationSikiUtama(relation)
+      .map(reference => resolveReference(reference, "siki")),
+
+    sikiPendukung: getRelationSikiPendukung(relation)
+      .map(reference => resolveReference(reference, "siki"))
+  };
+}
+
+function getRelationSearchText(relation){
+  if(!relation) return "";
+
+  const resolved = getResolvedRelationData(relation);
+
+  return [
+    getRelationSdkiCode(relation),
+    getRelationSdkiTitle(relation),
+
+    ...resolved.slki.map(item => [
+      item.kode,
+      item.judul,
+      stringifyDeep(item.item)
+    ].join(" ")),
+
+    ...resolved.sikiUtama.map(item => [
+      item.kode,
+      item.judul,
+      "intervensi utama",
+      stringifyDeep(item.item)
+    ].join(" ")),
+
+    ...resolved.sikiPendukung.map(item => [
+      item.kode,
+      item.judul,
+      "intervensi pendukung",
+      stringifyDeep(item.item)
+    ].join(" "))
+  ].join(" ");
+}
+
+function uniqueReferences(items){
+  const seen = new Set();
+
+  return items.filter(item => {
+    const key = normalizeText(
+      item.kode ||
+      item.judul ||
+      stringifyDeep(item)
+    );
+
+    if(!key || seen.has(key)){
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
 }
 
 /* =========================
@@ -710,11 +1043,24 @@ function getTypeLabel(type){
 ========================= */
 async function fetchJsonSafe(path){
   try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
-  }catch(err){
-    console.warn(err.message);
+    const separator = path.includes("?") ? "&" : "?";
+
+    const response = await fetch(
+      path + separator + "v=" + Date.now(),
+      {
+        cache: "no-store"
+      }
+    );
+
+    if(!response.ok){
+      throw new Error(
+        `Gagal memuat ${path}. Status HTTP: ${response.status}`
+      );
+    }
+
+    return await response.json();
+  }catch(error){
+    console.warn(error.message);
     return [];
   }
 }
@@ -722,31 +1068,108 @@ async function fetchJsonSafe(path){
 async function loadAllData(){
   loadingEl.style.display = "flex";
 
-  const [sdki, slki, siki, tautanSiki] = await Promise.all([
+  const [
+    sdkiData,
+    slkiData,
+    sikiData,
+    masterRelationsData
+  ] = await Promise.all([
     fetchJsonSafe(DATA_PATHS.sdki),
     fetchJsonSafe(DATA_PATHS.slki),
     fetchJsonSafe(DATA_PATHS.siki),
-    fetchJsonSafe(DATA_PATHS.tautanSiki)
+    fetchJsonSafe(DATA_PATHS.masterRelations)
   ]);
 
-  DB.sdki = toArray(sdki);
-  DB.slki = toArray(slki);
-  DB.siki = toArray(siki);
-  DB.tautanSiki = toArray(tautanSiki);
+  DB.sdki = toArray(sdkiData);
+  DB.slki = toArray(slkiData);
+  DB.siki = toArray(sikiData);
+  DB.masterRelations = toArray(masterRelationsData);
 
+  buildLookups();
   buildSearchIndex();
 
   loadingEl.style.display = "none";
 
+  console.info("Data pencarian berhasil dimuat:", {
+    sdki: DB.sdki.length,
+    slki: DB.slki.length,
+    siki: DB.siki.length,
+    masterRelations: DB.masterRelations.length,
+    searchIndex: SEARCH_INDEX.length
+  });
+
   const params = new URLSearchParams(location.search);
-  const q = params.get("q") || "";
-  if(q){
-    searchInput.value = q;
+  const query = params.get("q") || "";
+
+  if(query){
+    searchInput.value = query;
     clearBtn.style.display = "flex";
     runSearch();
   }else{
-    renderEmpty("Mulai pencarian", "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi.");
+    renderEmpty(
+      "Mulai pencarian",
+      "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi."
+    );
   }
+}
+
+/* =========================
+   BUILD LOOKUPS
+========================= */
+function buildLookups(){
+  Object.values(LOOKUP).forEach(map => map.clear());
+
+  DB.sdki.forEach(item => {
+    const code = normalizeCode(getItemCode(item));
+    const title = normalizeText(getItemTitle(item));
+
+    if(code){
+      LOOKUP.sdkiByCode.set(code, item);
+    }
+
+    if(title){
+      LOOKUP.sdkiByTitle.set(title, item);
+    }
+  });
+
+  DB.slki.forEach(item => {
+    const code = normalizeCode(getItemCode(item));
+    const title = normalizeText(getItemTitle(item));
+
+    if(code){
+      LOOKUP.slkiByCode.set(code, item);
+    }
+
+    if(title){
+      LOOKUP.slkiByTitle.set(title, item);
+    }
+  });
+
+  DB.siki.forEach(item => {
+    const code = normalizeCode(getItemCode(item));
+    const title = normalizeText(getItemTitle(item));
+
+    if(code){
+      LOOKUP.sikiByCode.set(code, item);
+    }
+
+    if(title){
+      LOOKUP.sikiByTitle.set(title, item);
+    }
+  });
+
+  DB.masterRelations.forEach(relation => {
+    const code = normalizeCode(getRelationSdkiCode(relation));
+    const title = normalizeText(getRelationSdkiTitle(relation));
+
+    if(code){
+      LOOKUP.relationBySdkiCode.set(code, relation);
+    }
+
+    if(title){
+      LOOKUP.relationBySdkiTitle.set(title, relation);
+    }
+  });
 }
 
 /* =========================
@@ -755,65 +1178,142 @@ async function loadAllData(){
 function buildSearchIndex(){
   SEARCH_INDEX = [];
 
+  /*
+    SDKI:
+    Selain isi diagnosis, haystack juga berisi
+    SLKI dan SIKI yang berhubungan berdasarkan master-relations.
+  */
   DB.sdki.forEach(item => {
-   const id = getItemKey(item);
-const kode = getItemCode(item);
-const title = getItemTitle(item);
+    const id = getItemKey(item);
+    const kode = getItemCode(item);
+    const title = getItemTitle(item);
+    const relation = getRelationForSdki(item);
+    const resolvedRelation = getResolvedRelationData(relation);
 
     SEARCH_INDEX.push({
-      type:"sdki",
+      type: "sdki",
       id,
       kode,
       title,
-      desc:getItemDesc(item),
-      raw:item,
-      haystack:normalizeText([
+      desc: getItemDesc(item),
+      raw: item,
+      relation,
+      relatedSlki: resolvedRelation.slki,
+      relatedSikiUtama: resolvedRelation.sikiUtama,
+      relatedSikiPendukung: resolvedRelation.sikiPendukung,
+
+      haystack: normalizeText([
         id,
+        kode,
         title,
-        stringifyDeep(item)
+        stringifyDeep(item),
+        getRelationSearchText(relation)
       ].join(" "))
     });
   });
 
+  /*
+    SLKI:
+    Data lengkap SLKI tetap dapat dicari.
+  */
   DB.slki.forEach(item => {
     const id = getItemKey(item);
-const kode = getItemCode(item);
-const title = getItemTitle(item);
+    const kode = getItemCode(item);
+    const title = getItemTitle(item);
 
     SEARCH_INDEX.push({
-      type:"slki",
+      type: "slki",
       id,
       kode,
       title,
-      desc:getItemDesc(item),
-      raw:item,
-      haystack:normalizeText([
+      desc: getItemDesc(item),
+      raw: item,
+
+      haystack: normalizeText([
         id,
+        kode,
         title,
-        stringifyDeep(item)
+        stringifyDeep(item),
+        getRelatedSdkiText("slki", kode, title)
       ].join(" "))
     });
   });
 
+  /*
+    SIKI:
+    Data lengkap SIKI tetap dapat dicari.
+  */
   DB.siki.forEach(item => {
     const id = getItemKey(item);
-const kode = getItemCode(item);
-const title = getItemTitle(item);
+    const kode = getItemCode(item);
+    const title = getItemTitle(item);
 
     SEARCH_INDEX.push({
-      type:"siki",
+      type: "siki",
       id,
       kode,
       title,
-      desc:getItemDesc(item),
-      raw:item,
-      haystack:normalizeText([
+      desc: getItemDesc(item),
+      raw: item,
+
+      haystack: normalizeText([
         id,
+        kode,
         title,
-        stringifyDeep(item)
+        stringifyDeep(item),
+        getRelatedSdkiText("siki", kode, title)
       ].join(" "))
     });
   });
+}
+
+/*
+  Menambahkan nama diagnosis SDKI ke haystack SLKI/SIKI.
+
+  Contoh:
+  Saat pengguna mencari "bersihan jalan napas",
+  SLKI dan SIKI yang terhubung dengan diagnosis tersebut
+  juga dapat ditemukan.
+*/
+function getRelatedSdkiText(type, itemCode, itemTitle){
+  const targetCode = normalizeCode(itemCode);
+  const targetTitle = normalizeText(itemTitle);
+
+  const relatedDiagnoses = [];
+
+  DB.masterRelations.forEach(relation => {
+    let references = [];
+
+    if(type === "slki"){
+      references = getRelationSlki(relation);
+    }
+
+    if(type === "siki"){
+      references = [
+        ...getRelationSikiUtama(relation),
+        ...getRelationSikiPendukung(relation)
+      ];
+    }
+
+    const matched = references.some(reference => {
+      const referenceCode = normalizeCode(reference.kode);
+      const referenceTitle = normalizeText(reference.judul);
+
+      return (
+        (targetCode && referenceCode === targetCode) ||
+        (targetTitle && referenceTitle === targetTitle)
+      );
+    });
+
+    if(matched){
+      relatedDiagnoses.push(
+        getRelationSdkiCode(relation),
+        getRelationSdkiTitle(relation)
+      );
+    }
+  });
+
+  return relatedDiagnoses.join(" ");
 }
 
 /* =========================
@@ -828,16 +1328,23 @@ function scoreItem(item, keywords, query){
   const desc = normalizeText(item.desc);
   const haystack = item.haystack;
 
-  if(title === query) score += 100;
-  if(title.includes(query)) score += 50;
-  if(kode.includes(query)) score += 45;
-  if(id.includes(query)) score += 30;
-  if(desc.includes(query)) score += 20;
+  if(title === query) score += 120;
+  if(kode === query) score += 110;
+  if(id === query) score += 100;
+
+  if(title.startsWith(query)) score += 70;
+  if(title.includes(query)) score += 55;
+  if(kode.includes(query)) score += 48;
+  if(id.includes(query)) score += 35;
+  if(desc.includes(query)) score += 22;
+  if(haystack.includes(query)) score += 15;
 
   keywords.forEach(word => {
+    if(title === word) score += 30;
+    if(title.startsWith(word)) score += 24;
     if(title.includes(word)) score += 20;
-    if(kode.includes(word)) score += 14;
-    if(id.includes(word)) score += 10;
+    if(kode.includes(word)) score += 16;
+    if(id.includes(word)) score += 12;
     if(desc.includes(word)) score += 8;
     if(haystack.includes(word)) score += 4;
   });
@@ -846,39 +1353,69 @@ function scoreItem(item, keywords, query){
 }
 
 function runSearch(){
-  const q = searchInput.value.trim();
-  clearBtn.style.display = q ? "flex" : "none";
+  const rawQuery = searchInput.value.trim();
+
+  clearBtn.style.display = rawQuery ? "flex" : "none";
 
   const url = new URL(location.href);
-  if(q){
-    url.searchParams.set("q", q);
+
+  if(rawQuery){
+    url.searchParams.set("q", rawQuery);
   }else{
     url.searchParams.delete("q");
   }
+
   history.replaceState(null, "", url);
 
-  if(!q){
-    renderEmpty("Mulai pencarian", "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi.");
+  if(!rawQuery){
+    renderEmpty(
+      "Mulai pencarian",
+      "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi."
+    );
     return;
   }
 
-  const query = normalizeText(q);
-  const stopwords = ["dan", "atau", "yang", "dengan", "pada", "di", "ke", "dari"];
+  const query = normalizeText(rawQuery);
+
+  const stopwords = [
+    "dan",
+    "atau",
+    "yang",
+    "dengan",
+    "pada",
+    "di",
+    "ke",
+    "dari",
+    "untuk",
+    "dalam"
+  ];
+
   const keywords = query
     .split(" ")
-    .filter(word => word.length > 1 && !stopwords.includes(word));
+    .filter(word => {
+      return word.length > 1 && !stopwords.includes(word);
+    });
 
-  let results = SEARCH_INDEX
-    .filter(item => activeFilter === "all" || item.type === activeFilter)
+  const results = SEARCH_INDEX
+    .filter(item => {
+      return activeFilter === "all" || item.type === activeFilter;
+    })
     .map(item => ({
       ...item,
-      score:scoreItem(item, keywords, query)
+      score: scoreItem(item, keywords, query)
     }))
     .filter(item => item.score > 0)
-    .sort((a,b) => b.score - a.score)
+    .sort((a, b) => {
+      if(b.score !== a.score){
+        return b.score - a.score;
+      }
+
+      return String(a.title || "")
+        .localeCompare(String(b.title || ""), "id");
+    })
     .slice(0, 80);
 
-  renderResults(results, q);
+  renderResults(results, rawQuery);
 }
 
 /* =========================
@@ -890,15 +1427,24 @@ function renderEmpty(title, desc){
       <div class="empty-icon">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="empty-title">${title}</div>
-      <div class="empty-desc">${desc}</div>
+
+      <div class="empty-title">
+        ${escapeHtml(title)}
+      </div>
+
+      <div class="empty-desc">
+        ${escapeHtml(desc)}
+      </div>
     </div>
   `;
 }
 
-function renderResults(results, q){
+function renderResults(results, query){
   if(!results.length){
-    renderEmpty("Tidak ditemukan", `Belum ada hasil untuk kata kunci "${escapeHtml(q)}". Coba gunakan kata lain.`);
+    renderEmpty(
+      "Tidak ditemukan",
+      `Belum ada hasil untuk kata kunci "${query}". Coba gunakan kata lain.`
+    );
     return;
   }
 
@@ -915,7 +1461,10 @@ function renderResults(results, q){
     html += renderGroup("Luaran SLKI", grouped.slki);
     html += renderGroup("Intervensi SIKI", grouped.siki);
   }else{
-    html += renderGroup(getTypeLabel(activeFilter), results);
+    html += renderGroup(
+      getTypeLabel(activeFilter),
+      results
+    );
   }
 
   resultArea.innerHTML = html;
@@ -927,9 +1476,12 @@ function renderGroup(title, items){
   return `
     <section>
       <div class="section-title">
-        <span>${title}</span>
-        <span class="count">${items.length} hasil</span>
+        <span>${escapeHtml(title)}</span>
+        <span class="count">
+          ${items.length} hasil
+        </span>
       </div>
+
       <div class="result-list">
         ${items.map(renderCard).join("")}
       </div>
@@ -939,23 +1491,82 @@ function renderGroup(title, items){
 
 function renderCard(item){
   const type = item.type;
-  const id = item.id || "";
+  const id = item.id || item.kode || "";
   const kode = item.kode || "";
   const title = item.title || "Tanpa Judul";
   const desc = item.desc || "Ketuk untuk melihat detail lengkap.";
   const url = getDetailUrl(type, id);
 
+  let relationMeta = "";
+
+  if(type === "sdki"){
+    const slkiCount = uniqueReferences(
+      item.relatedSlki || []
+    ).length;
+
+    const sikiUtamaCount = uniqueReferences(
+      item.relatedSikiUtama || []
+    ).length;
+
+    const sikiPendukungCount = uniqueReferences(
+      item.relatedSikiPendukung || []
+    ).length;
+
+    const metaParts = [];
+
+    if(slkiCount){
+      metaParts.push(`${slkiCount} luaran`);
+    }
+
+    if(sikiUtamaCount){
+      metaParts.push(`${sikiUtamaCount} intervensi utama`);
+    }
+
+    if(sikiPendukungCount){
+      metaParts.push(`${sikiPendukungCount} intervensi pendukung`);
+    }
+
+    if(metaParts.length){
+      relationMeta = `
+        <div class="result-meta">
+          ${metaParts.map(escapeHtml).join(" • ")}
+        </div>
+      `;
+    }
+  }
+
   return `
-    <a href="${url}" class="result-card native-click">
-      <div class="result-icon ${type}">
+    <a href="${escapeHtml(url)}"
+       class="result-card native-click">
+
+      <div class="result-icon ${escapeHtml(type)}">
         <i class="fa-solid ${getIcon(type)}"></i>
       </div>
 
       <div class="result-body">
-        <div class="badge ${type}">${getTypeLabel(type)}</div>
-        <div class="result-title">${escapeHtml(title)}</div>
-        <div class="result-desc">${escapeHtml(desc)}</div>
-       ${kode ? `<div class="result-meta">Kode: ${escapeHtml(kode)}</div>` : ""}
+        <div class="badge ${escapeHtml(type)}">
+          ${escapeHtml(getTypeLabel(type))}
+        </div>
+
+        <div class="result-title">
+          ${escapeHtml(title)}
+        </div>
+
+        <div class="result-desc">
+          ${escapeHtml(desc)}
+        </div>
+
+        ${
+          kode
+            ? `
+              <div class="result-meta">
+                Kode: ${escapeHtml(kode)}
+              </div>
+            `
+            : ""
+        }
+
+        ${relationMeta}
       </div>
 
       <i class="fa-solid fa-chevron-right chevron"></i>
@@ -965,11 +1576,11 @@ function renderCard(item){
 
 function escapeHtml(text){
   return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 /* =========================
@@ -979,7 +1590,10 @@ let searchTimer = null;
 
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(runSearch, 180);
+
+  searchTimer = setTimeout(() => {
+    runSearch();
+  }, 180);
 });
 
 clearBtn.addEventListener("click", () => {
@@ -989,11 +1603,15 @@ clearBtn.addEventListener("click", () => {
   runSearch();
 });
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    activeFilter = btn.dataset.filter;
+document.querySelectorAll(".tab-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    activeFilter = button.dataset.filter || "all";
+
     runSearch();
   });
 });
@@ -1001,55 +1619,77 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 /* =========================
    RIPPLE EFFECT
 ========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el) return;
+document.addEventListener("click", event => {
+  const element = event.target.closest(".native-click");
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+  if(!element) return;
+
+  const oldRipple = element.querySelector(".ripple");
+
+  if(oldRipple){
+    oldRipple.remove();
+  }
 
   const ripple = document.createElement("span");
   ripple.className = "ripple";
 
-  const rect = el.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
   const size = Math.max(rect.width, rect.height);
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+  ripple.style.width = size + "px";
+  ripple.style.height = size + "px";
 
-  el.appendChild(ripple);
+  ripple.style.left =
+    event.clientX - rect.left - size / 2 + "px";
 
-  setTimeout(() => ripple.remove(), 600);
+  ripple.style.top =
+    event.clientY - rect.top - size / 2 + "px";
+
+  element.appendChild(ripple);
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
 });
 
 /* =========================
    BLOKIR SELECT
 ========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
+document.addEventListener("selectstart", event => {
+  const allowedElement = event.target.closest(
+    "input, textarea, select"
+  );
+
+  if(!allowedElement){
+    event.preventDefault();
+  }
 });
 
 /* =========================
    INIT
 ========================= */
-loadAllData().catch(err => {
-  console.error(err);
+loadAllData().catch(error => {
+  console.error(error);
+
   loadingEl.style.display = "none";
+
   resultArea.innerHTML = `
     <div class="empty-state">
       <div class="empty-icon">
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
-      <div class="empty-title">Terjadi kesalahan</div>
+
+      <div class="empty-title">
+        Terjadi kesalahan
+      </div>
+
       <div class="empty-desc">
-        Data gagal dimuat atau format JSON tidak sesuai. Cek console browser.
+        Data gagal dimuat atau format JSON tidak sesuai.
+        Periksa Console browser dan alamat file JSON.
       </div>
     </div>
   `;
 });
 </script>
-
 </body>
 </html>
