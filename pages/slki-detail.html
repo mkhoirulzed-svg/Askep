@@ -564,9 +564,6 @@ button{
 </nav>
 
 <script>
-/* =========================
-   CONFIG PATH
-========================= */
 const API_BASE = "https://askep.mkhoirulzed.workers.dev";
 
 const API_ENDPOINTS = {
@@ -577,22 +574,27 @@ const API_ENDPOINTS = {
 };
 
 /* =========================
-   ELEMENTS
+   ELEMENT
 ========================= */
 const loadingEl = document.getElementById("loading");
 const detailArea = document.getElementById("detailArea");
 const headerSub = document.getElementById("headerSub");
 
 /* =========================
-   PARAMS
+   PARAMETER URL
 ========================= */
-const params = new URLSearchParams(location.search);
-const detailId = params.get("id") || params.get("kode") || params.get("q") || "";
+const params = new URLSearchParams(window.location.search);
+
+const detailId =
+  params.get("id") ||
+  params.get("kode") ||
+  params.get("q") ||
+  "";
 
 /* =========================
    HELPERS
 ========================= */
-function normalizeText(text){
+function normalizeText(text) {
   return String(text || "")
     .toLowerCase()
     .normalize("NFD")
@@ -602,54 +604,116 @@ function normalizeText(text){
     .trim();
 }
 
-function pick(obj, keys){
-  for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+function pick(obj, keys) {
+  for (const key of keys) {
+    if (
+      obj &&
+      obj[key] !== undefined &&
+      obj[key] !== null &&
+      obj[key] !== ""
+    ) {
       return obj[key];
     }
   }
+
   return "";
 }
 
-function toArray(data){
-  if(Array.isArray(data)) return data;
+function toArray(data) {
+  if (Array.isArray(data)) {
+    return data;
+  }
 
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.luaran)) return data.luaran;
-  if(data && Array.isArray(data.slki)) return data.slki;
-  if(data && Array.isArray(data.outcomes)) return data.outcomes;
+  if (!data || typeof data !== "object") {
+    return [];
+  }
 
-  if(data && typeof data === "object"){
-    return Object.values(data);
+  const candidates = [
+    data.data,
+    data.items,
+    data.luaran,
+    data.slki,
+    data.outcomes,
+    data.result,
+    data.results
+  ];
+
+  for (const candidate of candidates) {
+    if (Array.isArray(candidate)) {
+      return candidate;
+    }
+  }
+
+  const values = Object.values(data);
+
+  if (
+    values.length &&
+    values.every(
+      value =>
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+    )
+  ) {
+    return values;
   }
 
   return [];
 }
 
-function stringifyDeep(value){
-  if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+function stringifyDeep(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(stringifyDeep).join(" ");
+  }
+
+  if (typeof value === "object") {
+    return Object.values(value)
+      .map(stringifyDeep)
+      .join(" ");
+  }
+
   return "";
 }
 
-function escapeHtml(text){
+function escapeHtml(text) {
   return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-function getItemId(item){
-  return pick(item, ["id", "kode", "code", "nomor", "no"]);
-}
-
-function getItemTitle(item){
+function getItemId(item) {
   return pick(item, [
+    "id",
+    "kode",
+    "kodeSlki",
+    "kode_slki",
+    "code",
+    "nomor",
+    "no"
+  ]);
+}
+
+function getItemTitle(item) {
+  return pick(item, [
+    "judulSlki",
+    "judul_slki",
+    "namaLuaran",
+    "nama_luaran",
     "title",
     "judul",
     "nama",
@@ -660,7 +724,7 @@ function getItemTitle(item){
   ]);
 }
 
-function getItemDesc(item){
+function getItemDesc(item) {
   return pick(item, [
     "definisi",
     "deskripsi",
@@ -669,7 +733,7 @@ function getItemDesc(item){
   ]);
 }
 
-function getItemCategory(item){
+function getItemCategory(item) {
   return pick(item, [
     "kategori",
     "category",
@@ -678,9 +742,11 @@ function getItemCategory(item){
   ]);
 }
 
-function getItemSubCategory(item){
+function getItemSubCategory(item) {
   return pick(item, [
     "subkategori",
+    "subKategori",
+    "sub_kategori",
     "sub_category",
     "subCategory",
     "kelas",
@@ -688,7 +754,7 @@ function getItemSubCategory(item){
   ]);
 }
 
-function getEkspektasi(item){
+function getEkspektasi(item) {
   return pick(item, [
     "ekspektasi",
     "harapan",
@@ -698,26 +764,49 @@ function getEkspektasi(item){
   ]);
 }
 
-function arrayFromUnknown(value){
-  if(!value) return [];
+function arrayFromUnknown(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return [];
+  }
 
-  if(Array.isArray(value)){
+  if (Array.isArray(value)) {
     return value
       .map(item => {
-        if(typeof item === "string" || typeof item === "number") return String(item);
-        return stringifyDeep(item);
+        if (
+          typeof item === "string" ||
+          typeof item === "number"
+        ) {
+          return String(item);
+        }
+
+        if (item && typeof item === "object") {
+          return pick(item, [
+            "indikator",
+            "nama",
+            "judul",
+            "label",
+            "text",
+            "kriteria"
+          ]) || stringifyDeep(item);
+        }
+
+        return "";
       })
       .filter(Boolean);
   }
 
-  if(typeof value === "string"){
+  if (typeof value === "string") {
     return value
       .split(/\n|;|\|/g)
       .map(item => item.trim())
       .filter(Boolean);
   }
 
-  if(typeof value === "object"){
+  if (typeof value === "object") {
     return Object.values(value)
       .map(stringifyDeep)
       .filter(Boolean);
@@ -726,7 +815,7 @@ function arrayFromUnknown(value){
   return [String(value)];
 }
 
-function getIndicators(item){
+function getIndicators(item) {
   const direct = pick(item, [
     "indikator",
     "indikators",
@@ -738,13 +827,19 @@ function getIndicators(item){
     "outcome_indicator"
   ]);
 
-  const arr = arrayFromUnknown(direct);
+  const directArray = arrayFromUnknown(direct);
 
-  if(arr.length) return arr;
+  if (directArray.length) {
+    return directArray;
+  }
 
-  const nested = item.luaran || item.detail || item.data || null;
+  const nested =
+    item.luaran ||
+    item.detail ||
+    item.data ||
+    null;
 
-  if(nested && typeof nested === "object"){
+  if (nested && typeof nested === "object") {
     const nestedValue = pick(nested, [
       "indikator",
       "indikators",
@@ -760,8 +855,8 @@ function getIndicators(item){
   return [];
 }
 
-function getSkala(item){
-  const skala = pick(item, [
+function getSkala(item) {
+  const scale = pick(item, [
     "skala",
     "skalaPenilaian",
     "skala_penilaian",
@@ -769,9 +864,11 @@ function getSkala(item){
     "penilaian"
   ]);
 
-  const arr = arrayFromUnknown(skala);
+  const scaleArray = arrayFromUnknown(scale);
 
-  if(arr.length) return arr;
+  if (scaleArray.length) {
+    return scaleArray;
+  }
 
   return [
     "Menurun",
@@ -782,64 +879,136 @@ function getSkala(item){
   ];
 }
 
-function findSlkiItem(list, id){
+function findSlkiItem(list, id) {
   const target = normalizeText(id);
 
-  if(!target) return null;
+  if (!target) {
+    return null;
+  }
+
+  const exact = list.find(item => {
+    const itemId = normalizeText(getItemId(item));
+    const title = normalizeText(getItemTitle(item));
+
+    return itemId === target || title === target;
+  });
+
+  if (exact) {
+    return exact;
+  }
 
   return list.find(item => {
     const itemId = normalizeText(getItemId(item));
     const title = normalizeText(getItemTitle(item));
 
-    return itemId === target || title === target;
-  }) || list.find(item => {
-    const itemId = normalizeText(getItemId(item));
-    const title = normalizeText(getItemTitle(item));
-
-    return itemId.includes(target) || title.includes(target);
-  });
+    return (
+      itemId.includes(target) ||
+      title.includes(target)
+    );
+  }) || null;
 }
 
-function findRelatedDiagnoses(sdkiList, slkiItem){
+function findRelatedDiagnoses(sdkiList, slkiItem) {
   const slkiId = normalizeText(getItemId(slkiItem));
-  const slkiTitle = normalizeText(getItemTitle(slkiItem));
+  const slkiTitle = normalizeText(
+    getItemTitle(slkiItem)
+  );
 
-  if(!slkiId && !slkiTitle) return [];
-
-  return sdkiList.filter(row => {
-    const text = normalizeText(stringifyDeep(row));
-    return (slkiId && text.includes(slkiId)) || (slkiTitle && text.includes(slkiTitle));
-  }).slice(0, 8);
-}
-
-async function fetchJsonSafe(path){
-  try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
-  }catch(err){
-    console.warn(err.message);
+  if (!slkiId && !slkiTitle) {
     return [];
   }
+
+  return sdkiList
+    .filter(row => {
+      const text = normalizeText(
+        stringifyDeep(row)
+      );
+
+      return (
+        (slkiId && text.includes(slkiId)) ||
+        (slkiTitle && text.includes(slkiTitle))
+      );
+    })
+    .slice(0, 8);
+}
+
+async function fetchJsonSafe(url) {
+  const separator = url.includes("?") ? "&" : "?";
+
+  const response = await fetch(
+    `${url}${separator}v=${Date.now()}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      },
+      cache: "no-store"
+    }
+  );
+
+  const rawText = await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      `HTTP ${response.status}: ${
+        rawText || response.statusText
+      }`
+    );
+  }
+
+  if (!rawText.trim()) {
+    throw new Error("Respons API kosong.");
+  }
+
+  let json;
+
+  try {
+    json = JSON.parse(rawText);
+  } catch {
+    throw new Error(
+      "Respons API bukan JSON yang valid."
+    );
+  }
+
+  if (
+    json &&
+    typeof json === "object" &&
+    json.success === false
+  ) {
+    throw new Error(
+      json.message ||
+      "API mengembalikan status gagal."
+    );
+  }
+
+  return json;
 }
 
 /* =========================
    RENDER
 ========================= */
-function renderEmpty(title, desc){
+function renderEmpty(title, description) {
   detailArea.innerHTML = `
     <div class="empty-state">
       <div class="empty-icon">
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
-      <div class="empty-title">${escapeHtml(title)}</div>
-      <div class="empty-desc">${escapeHtml(desc)}</div>
+
+      <div class="empty-title">
+        ${escapeHtml(title)}
+      </div>
+
+      <div class="empty-desc">
+        ${escapeHtml(description)}
+      </div>
     </div>
   `;
 }
 
-function renderTextSection(title, icon, text){
-  if(!text) return "";
+function renderTextSection(title, icon, text) {
+  if (!text) {
+    return "";
+  }
 
   return `
     <section>
@@ -847,33 +1016,20 @@ function renderTextSection(title, icon, text){
         <i class="fa-solid ${icon}"></i>
         <span>${escapeHtml(title)}</span>
       </div>
+
       <div class="detail-card">
-        <div class="detail-text">${escapeHtml(text)}</div>
+        <div class="detail-text">
+          ${escapeHtml(text)}
+        </div>
       </div>
     </section>
   `;
 }
 
-function renderSimpleList(title, icon, items){
-  if(!items || !items.length) return "";
-
-  return `
-    <section>
-      <div class="section-title">
-        <i class="fa-solid ${icon}"></i>
-        <span>${escapeHtml(title)}</span>
-      </div>
-      <div class="simple-list">
-        ${items.map(item => `
-          <div class="simple-item">${escapeHtml(item)}</div>
-        `).join("")}
-      </div>
-    </section>
-  `;
-}
-
-function renderIndicators(items){
-  if(!items || !items.length) return "";
+function renderIndicators(items) {
+  if (!items || !items.length) {
+    return "";
+  }
 
   return `
     <section>
@@ -888,11 +1044,19 @@ function renderIndicators(items){
             <div class="indicator-icon">
               <i class="fa-solid fa-chart-line"></i>
             </div>
-            <div class="indicator-title">Kriteria Hasil / Indikator</div>
+
+            <div class="indicator-title">
+              Kriteria Hasil / Indikator
+            </div>
           </div>
 
           <ol class="indicator-list">
-            ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+            ${items
+              .map(
+                item =>
+                  `<li>${escapeHtml(item)}</li>`
+              )
+              .join("")}
           </ol>
         </div>
       </div>
@@ -900,8 +1064,10 @@ function renderIndicators(items){
   `;
 }
 
-function renderScale(items){
-  if(!items || !items.length) return "";
+function renderScale(items) {
+  if (!items || !items.length) {
+    return "";
+  }
 
   const list = items.slice(0, 5);
 
@@ -914,20 +1080,31 @@ function renderScale(items){
 
       <div class="detail-card">
         <div class="scale-box">
-          ${list.map((item, index) => `
-            <div class="scale-item">
-              <div class="scale-number">${index + 1}</div>
-              <div class="scale-label">${escapeHtml(item)}</div>
-            </div>
-          `).join("")}
+          ${list
+            .map(
+              (item, index) => `
+                <div class="scale-item">
+                  <div class="scale-number">
+                    ${index + 1}
+                  </div>
+
+                  <div class="scale-label">
+                    ${escapeHtml(item)}
+                  </div>
+                </div>
+              `
+            )
+            .join("")}
         </div>
       </div>
     </section>
   `;
 }
 
-function getRelatedTitle(row){
+function getRelatedTitle(row) {
   return pick(row, [
+    "judulSdki",
+    "judul_sdki",
     "diagnosis",
     "diagnosa",
     "namaDiagnosis",
@@ -939,12 +1116,12 @@ function getRelatedTitle(row){
   ]) || "Diagnosis terkait";
 }
 
-function getRelatedCode(row){
+function getRelatedCode(row) {
   return pick(row, [
-    "kodeDiagnosis",
-    "kode_diagnosis",
     "kodeSdki",
     "kode_sdki",
+    "kodeDiagnosis",
+    "kode_diagnosis",
     "idDiagnosis",
     "id_diagnosis",
     "kode",
@@ -952,8 +1129,10 @@ function getRelatedCode(row){
   ]);
 }
 
-function renderRelatedDiagnoses(items){
-  if(!items.length) return "";
+function renderRelatedDiagnoses(items) {
+  if (!items || !items.length) {
+    return "";
+  }
 
   return `
     <section>
@@ -962,49 +1141,71 @@ function renderRelatedDiagnoses(items){
         <span>Kemungkinan Diagnosis Terkait</span>
       </div>
 
-      ${items.map(row => {
-        const title = getRelatedTitle(row);
-        const code = getRelatedCode(row);
-        const url = code ? `diagnosis-detail.html?id=${encodeURIComponent(code)}` : "#";
+      ${items
+        .map(row => {
+          const title = getRelatedTitle(row);
+          const code = getRelatedCode(row);
 
-        return `
-          <a href="${url}" class="related-card native-click">
-            <div class="related-icon">
-              <i class="fa-solid fa-stethoscope"></i>
-            </div>
-            <div class="related-body">
-              <div class="related-title">${escapeHtml(title)}</div>
-              <div class="related-desc">
-                ${code ? `Kode: ${escapeHtml(code)}` : "Ketuk untuk melihat diagnosis terkait"}
+          const url = code
+            ? `diagnosis-detail.html?id=${encodeURIComponent(
+                code
+              )}`
+            : "#";
+
+          return `
+            <a
+              href="${escapeHtml(url)}"
+              class="related-card native-click"
+            >
+              <div class="related-icon">
+                <i class="fa-solid fa-stethoscope"></i>
               </div>
-            </div>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-          </a>
-        `;
-      }).join("")}
+
+              <div class="related-body">
+                <div class="related-title">
+                  ${escapeHtml(title)}
+                </div>
+
+                <div class="related-desc">
+                  ${
+                    code
+                      ? `Kode: ${escapeHtml(code)}`
+                      : "Diagnosis terkait"
+                  }
+                </div>
+              </div>
+
+              <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+          `;
+        })
+        .join("")}
     </section>
   `;
 }
 
-function renderDetail(item, relatedDiagnoses){
+function renderDetail(item, relatedDiagnoses) {
   const id = getItemId(item);
-  const title = getItemTitle(item) || "Luaran SLKI";
-  const desc = getItemDesc(item);
+  const title =
+    getItemTitle(item) || "Luaran SLKI";
+
+  const description = getItemDesc(item);
   const category = getItemCategory(item);
   const subCategory = getItemSubCategory(item);
-  const ekspektasi = getEkspektasi(item);
+  const expectation = getEkspektasi(item);
   const indicators = getIndicators(item);
-  const skala = getSkala(item);
+  const scale = getSkala(item);
 
-  const tujuan = pick(item, [
+  const purpose = pick(item, [
     "tujuan",
     "goal",
     "targetLuaran",
     "target_luaran"
   ]);
 
-  document.title = title + " - Detail SLKI";
-  headerSub.textContent = "Standar Luaran Keperawatan Indonesia";
+  document.title = `${title} - Detail SLKI`;
+  headerSub.textContent =
+    id || "Standar Luaran Keperawatan Indonesia";
 
   detailArea.innerHTML = `
     <section class="hero-card">
@@ -1012,13 +1213,28 @@ function renderDetail(item, relatedDiagnoses){
         <i class="fa-solid fa-chart-line"></i>
         <span>SLKI</span>
       </div>
-      <div class="hero-title">${escapeHtml(title)}</div>
+
+      <div class="hero-title">
+        ${escapeHtml(title)}
+      </div>
+
+      ${
+        expectation
+          ? `
+            <div class="hero-desc">
+              Ekspektasi: ${escapeHtml(expectation)}
+            </div>
+          `
+          : ""
+      }
     </section>
 
     <section class="meta-grid">
       <div class="meta-card">
         <div class="meta-label">Kode</div>
-        <div class="meta-value">${escapeHtml(id || "-")}</div>
+        <div class="meta-value">
+          ${escapeHtml(id || "-")}
+        </div>
       </div>
 
       <div class="meta-card">
@@ -1028,114 +1244,194 @@ function renderDetail(item, relatedDiagnoses){
 
       <div class="meta-card">
         <div class="meta-label">Kategori</div>
-        <div class="meta-value">${escapeHtml(category || "-")}</div>
+        <div class="meta-value">
+          ${escapeHtml(category || "-")}
+        </div>
       </div>
 
       <div class="meta-card">
         <div class="meta-label">Subkategori</div>
-        <div class="meta-value">${escapeHtml(subCategory || "-")}</div>
+        <div class="meta-value">
+          ${escapeHtml(subCategory || "-")}
+        </div>
       </div>
     </section>
 
-    ${renderTextSection("Definisi", "fa-circle-info", desc)}
+    ${renderTextSection(
+      "Definisi",
+      "fa-circle-info",
+      description
+    )}
 
-    ${renderTextSection("Tujuan", "fa-bullseye", tujuan)}
+    ${renderTextSection(
+      "Tujuan",
+      "fa-bullseye",
+      purpose
+    )}
 
-    ${renderTextSection("Ekspektasi", "fa-arrow-trend-up", ekspektasi)}
+    ${renderTextSection(
+      "Ekspektasi",
+      "fa-arrow-trend-up",
+      expectation
+    )}
 
     ${renderIndicators(indicators)}
 
-    ${renderScale(skala)}
+    ${renderScale(scale)}
 
-    ${renderRelatedDiagnoses(relatedDiagnoses)}
+    ${renderRelatedDiagnoses(
+      relatedDiagnoses
+    )}
   `;
 }
 
 /* =========================
    LOAD DETAIL
 ========================= */
-async function loadDetail(){
+async function loadDetail() {
   loadingEl.style.display = "flex";
+  detailArea.innerHTML = "";
 
-  if(!detailId){
+  if (!detailId) {
     loadingEl.style.display = "none";
+
     renderEmpty(
       "ID luaran tidak ditemukan",
-      "Halaman ini membutuhkan parameter id. Contoh: slki-detail.html?id=L.12345"
+      "Halaman ini membutuhkan parameter id, misalnya slki-detail.html?id=L.01001."
     );
+
     return;
   }
 
-  const [slkiJson, sdkiJson] = await Promise.all([
-    fetchJsonSafe(DATA_PATHS.slki),
-    fetchJsonSafe(DATA_PATHS.sdki)
-  ]);
+  try {
+    const [slkiJson, sdkiJson] =
+      await Promise.all([
+        fetchJsonSafe(API_ENDPOINTS.slki),
+        fetchJsonSafe(API_ENDPOINTS.sdki)
+      ]);
 
-  const slkiList = toArray(slkiJson);
-  const sdkiList = toArray(sdkiJson);
+    const slkiList = toArray(slkiJson).filter(
+      item =>
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item)
+    );
 
-  const item = findSlkiItem(slkiList, detailId);
+    const sdkiList = toArray(sdkiJson).filter(
+      item =>
+        item &&
+        typeof item === "object" &&
+        !Array.isArray(item)
+    );
 
-  loadingEl.style.display = "none";
+    const item = findSlkiItem(
+      slkiList,
+      detailId
+    );
 
-  if(!item){
+    if (!item) {
+      renderEmpty(
+        "Luaran tidak ditemukan",
+        `Data SLKI dengan kode atau nama "${detailId}" tidak ditemukan.`
+      );
+
+      return;
+    }
+
+    const relatedDiagnoses =
+      findRelatedDiagnoses(sdkiList, item);
+
+    renderDetail(item, relatedDiagnoses);
+  } catch (error) {
+    console.error(
+      "Gagal memuat detail SLKI:",
+      error
+    );
+
     renderEmpty(
-      "Luaran tidak ditemukan",
-      `Data SLKI dengan kata kunci "${detailId}" belum ditemukan. Coba kembali ke halaman pencarian.`
+      "Data SLKI gagal dimuat",
+      error.message ||
+        "Periksa endpoint API dan console browser."
     );
-    return;
+  } finally {
+    loadingEl.style.display = "none";
   }
-
-  const relatedDiagnoses = findRelatedDiagnoses(sdkiList, item);
-
-  renderDetail(item, relatedDiagnoses);
 }
 
 /* =========================
    RIPPLE EFFECT
 ========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el) return;
+document.addEventListener("click", event => {
+  const element = event.target.closest(
+    ".native-click"
+  );
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+  if (!element || element.disabled) {
+    return;
+  }
 
-  const ripple = document.createElement("span");
+  const oldRipple =
+    element.querySelector(".ripple");
+
+  if (oldRipple) {
+    oldRipple.remove();
+  }
+
+  const ripple =
+    document.createElement("span");
+
   ripple.className = "ripple";
 
-  const rect = el.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
+  const rect =
+    element.getBoundingClientRect();
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+  const size = Math.max(
+    rect.width,
+    rect.height
+  );
 
-  el.appendChild(ripple);
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
 
-  setTimeout(() => ripple.remove(), 600);
+  ripple.style.left = `${
+    event.clientX -
+    rect.left -
+    size / 2
+  }px`;
+
+  ripple.style.top = `${
+    event.clientY -
+    rect.top -
+    size / 2
+  }px`;
+
+  element.appendChild(ripple);
+
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
 });
 
 /* =========================
    BLOKIR SELECT
 ========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
-});
+document.addEventListener(
+  "selectstart",
+  event => {
+    const allowed = event.target.closest(
+      "input, textarea, select"
+    );
+
+    if (!allowed) {
+      event.preventDefault();
+    }
+  }
+);
 
 /* =========================
    INIT
 ========================= */
-loadDetail().catch(err => {
-  console.error(err);
-  loadingEl.style.display = "none";
-  renderEmpty(
-    "Terjadi kesalahan",
-    "Data gagal dimuat atau format JSON tidak sesuai. Cek console browser."
-  );
-});
+loadDetail();
 </script>
-
 </body>
 </html>
