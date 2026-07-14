@@ -1,0 +1,273 @@
+/* Mobile kecil */
+@media (max-width: 380px) {
+  .quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .flow-row {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+  }
+}
+
+/* Tablet */
+@media (min-width: 600px) and (max-width: 899px) {
+  .app {
+    max-width: 760px;
+  }
+
+  .bottom-nav {
+    max-width: 760px;
+  }
+
+  .header,
+  .content,
+  .search-wrap {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .hero {
+    padding: 28px;
+  }
+
+  .hero-title {
+    max-width: 620px;
+    font-size: 26px;
+  }
+
+  .hero-desc {
+    max-width: 620px;
+    font-size: 14px;
+  }
+
+  .quick-grid {
+    gap: 14px;
+  }
+
+  .quick-card {
+    padding: 18px 12px;
+  }
+
+  .quick-label {
+    font-size: 12px;
+  }
+}
+
+/* Desktop dan laptop */
+@media (min-width: 900px) {
+  body {
+    background: var(--bg);
+  }
+
+  .app {
+    max-width: none;
+    min-height: 100dvh;
+    margin: 0 0 0 var(--desktop-sidebar-width);
+    padding-bottom: 48px;
+    background: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 420px);
+  }
+
+  .header,
+  .search-wrap,
+  .content {
+    width: min(calc(100% - 64px), var(--content-max-width));
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .header {
+    padding-top: 32px;
+    padding-bottom: 18px;
+  }
+
+  .topbar {
+    margin-bottom: 24px;
+  }
+
+  .brand-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+
+  .brand-title {
+    font-size: 20px;
+  }
+
+  .brand-subtitle {
+    font-size: 13px;
+  }
+
+  .hero {
+    min-height: 220px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .hero::after {
+    top: -100px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
+  }
+
+  .hero-title {
+    max-width: 760px;
+    font-size: clamp(30px, 3vw, 42px);
+  }
+
+  .hero-desc {
+    max-width: 720px;
+    font-size: 15px;
+  }
+
+  .search-wrap {
+    margin-top: -24px;
+  }
+
+  .search-box {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 17px 20px;
+  }
+
+  .search-box input {
+    font-size: 15px;
+  }
+
+  .content {
+    padding-top: 34px;
+  }
+
+  .section {
+    margin-bottom: 34px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .quick-grid {
+    gap: 16px;
+  }
+
+  .quick-card {
+    padding: 22px 16px;
+  }
+
+  .quick-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 11px;
+    font-size: 20px;
+  }
+
+  .quick-label {
+    font-size: 13px;
+  }
+
+  .feature-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .feature-card {
+    min-height: 148px;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+  }
+
+  .bottom-nav {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    width: var(--desktop-sidebar-width);
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    padding: 28px 18px;
+    transform: none;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 62px) 1fr;
+    align-content: start;
+    gap: 10px;
+    border-top: 0;
+    border-right: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .bottom-nav::before {
+    display: block;
+    margin: 4px 10px 18px;
+    color: var(--text);
+    content: "ASKEP";
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .bottom-item {
+    min-height: 56px;
+    padding: 0 16px;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 14px;
+    border-radius: 16px;
+    font-size: 13px;
+  }
+
+  .bottom-item i {
+    width: 22px;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .native-click:hover {
+    transform: translateY(-2px);
+  }
+
+  .quick-card:hover,
+  .feature-card:hover,
+  .chip:hover,
+  .icon-btn:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Layar sangat lebar */
+@media (min-width: 1440px) {
+  :root {
+    --desktop-sidebar-width: 260px;
+    --content-max-width: 1240px;
+  }
+}
+
+/* Menghormati preferensi aksesibilitas pengguna */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
