@@ -566,18 +566,26 @@
 }
 
 /* DESKTOP */
+/* =========================================================
+   DESKTOP
+========================================================= */
+
 @media (min-width:900px){
+
   .page-daftar-standar .app{
     width:calc(100% - var(--desktop-sidebar-width));
     max-width:none;
     min-width:0;
-    margin:0 0 0 var(--desktop-sidebar-width);
+    margin-left:var(--desktop-sidebar-width);
     padding-bottom:48px;
   }
 
   .page-daftar-standar .header,
   .page-daftar-standar .content{
-    width:min(calc(100% - 48px),var(--content-max-width));
+    width:min(
+      calc(100% - 48px),
+      var(--content-max-width)
+    );
     max-width:100%;
     margin-right:auto;
     margin-left:auto;
@@ -586,7 +594,7 @@
   }
 
   .page-daftar-standar .header{
-    padding-top:32px;
+    padding-top:28px;
     padding-bottom:18px;
   }
 
@@ -594,62 +602,103 @@
     margin-bottom:0;
   }
 
+  /*
+   * Kolom kiri:
+   * hero, pencarian, kategori
+   *
+   * Kolom kanan:
+   * daftar hasil
+   */
   .page-daftar-standar .content{
     display:grid;
-    grid-template-columns:minmax(280px,360px) minmax(0,1fr);
+    grid-template-columns:
+      minmax(300px,396px)
+      minmax(0,1fr);
+
+    grid-template-rows:
+      auto
+      auto
+      auto
+      auto;
+
+    column-gap:26px;
+    row-gap:16px;
     align-items:start;
-    gap:24px;
   }
 
-  .page-daftar-standar .hero-card,
-  .page-daftar-standar .search-card,
+  /* Hero di kiri atas */
+  .page-daftar-standar .hero-card{
+    grid-column:1;
+    grid-row:1;
+    margin:0;
+  }
+
+  /* Pencarian di bawah hero */
+  .page-daftar-standar .search-card{
+    position:static;
+    grid-column:1;
+    grid-row:2;
+    margin:0;
+  }
+
+  /* Kategori di bawah pencarian */
   .page-daftar-standar .category-scroll{
     grid-column:1;
-  }
+    grid-row:3;
 
-  .page-daftar-standar .hero-card{
-    margin-bottom:0;
-  }
-
-  .page-daftar-standar .search-card{
-    position:sticky;
-    top:24px;
-    margin-bottom:0;
-  }
-
-  .page-daftar-standar .category-scroll{
-    align-self:start;
+    display:flex;
     flex-wrap:wrap;
+    align-content:flex-start;
+
+    width:100%;
+    margin:0;
+    padding:0;
     overflow:visible;
-    padding-bottom:0;
   }
 
+  /*
+   * Loading dan daftar dimulai dari kanan atas,
+   * sejajar dengan hero.
+   */
   .page-daftar-standar .loading,
   .page-daftar-standar .diagnosis-list,
   .page-daftar-standar .outcome-list,
-  .page-daftar-standar .intervention-list,
-  .page-daftar-standar .pagination{
+  .page-daftar-standar .intervention-list{
     grid-column:2;
+    grid-row:1 / 4;
+    align-self:start;
+    min-width:0;
   }
 
+  /* Dua kartu per baris */
   .page-daftar-standar .diagnosis-list,
   .page-daftar-standar .outcome-list,
   .page-daftar-standar .intervention-list{
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
     gap:14px;
   }
 
   .page-daftar-standar .diagnosis-card,
   .page-daftar-standar .outcome-card,
   .page-daftar-standar .intervention-card{
-    min-height:132px;
+    min-width:0;
+    min-height:146px;
+  }
+
+  /* Pagination tetap di kanan bawah */
+  .page-daftar-standar .pagination{
+    grid-column:2;
+    grid-row:4;
+    margin:4px 0 0;
   }
 
   .page-daftar-standar .diagnosis-card:hover,
   .page-daftar-standar .outcome-card:hover,
   .page-daftar-standar .intervention-card:hover{
-    border-color:#cbd5e1;
+    border-color:var(--primary-soft);
     box-shadow:var(--shadow-md);
     transform:translateY(-2px);
   }
