@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>SDKI SLKI SIKI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --primary-light:#eff6ff;
+
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+
+  --radius-sm:12px;
+  --radius-md:18px;
+  --radius-lg:24px;
+
+  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
+  --shadow-md:0 10px 28px rgba(15,23,42,.10);
+
+  --bottom-nav-height:76px;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overscroll-behavior:none;
+}
+
+/* Blokir text select global */
+body,
+button,
+a,
+.card,
+.menu-item,
+.quick-card,
+.bottom-item,
+.native-click,
+.feature-card{
+  user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+}
+
+/* Izinkan select hanya input, textarea, select */
+input,
+textarea,
+select{
+  user-select:text;
+  -webkit-user-select:text;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+/* =========================
+   APP
+========================= */
+.app{
+  max-width:520px;
+  margin:0 auto;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 310px);
+  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 20px);
+}
+
+/* =========================
+   HEADER
+========================= */
+.header{
+  padding:22px 18px 16px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand-icon{
+  width:46px;
+  height:46px;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 24px rgba(37,99,235,.28);
+  font-size:20px;
+}
+
+.brand-title{
+  font-size:18px;
+  font-weight:800;
+  line-height:1.1;
+}
+
+.brand-subtitle{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.icon-btn{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:15px;
+  background:var(--card);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.hero{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:20px;
+  box-shadow:0 18px 36px rgba(37,99,235,.25);
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  right:-55px;
+  top:-50px;
+  background:rgba(255,255,255,.16);
+  border-radius:50%;
+}
+
+.hero-title{
+  font-size:21px;
+  font-weight:800;
+  line-height:1.25;
+  margin:0 0 8px;
+  position:relative;
+  z-index:1;
+}
+
+.hero-desc{
+  font-size:13px;
+  line-height:1.6;
+  opacity:.92;
+  margin:0;
+  position:relative;
+  z-index:1;
+}
+
+/* =========================
+   SEARCH
+========================= */
+.search-wrap{
+  padding:0 18px;
+  margin-top:-6px;
+}
+
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:14px 16px;
+  box-shadow:var(--shadow-md);
+}
+
+.search-box i{
+  color:var(--primary);
+}
+
+.search-box input{
+  flex:1;
+  border:0;
+  outline:0;
+  font-size:14px;
+  background:transparent;
+  color:var(--text);
+}
+
+.search-box input::placeholder{
+  color:#94a3b8;
+}
+
+/* =========================
+   CONTENT
+========================= */
+.content{
+  padding:20px 18px 0;
+}
+
+.section{
+  margin-bottom:22px;
+}
+
+.section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.section-title{
+  font-size:16px;
+  font-weight:800;
+  margin:0;
+}
+
+.section-link{
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary);
+}
+
+/* =========================
+   QUICK GRID
+========================= */
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.quick-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px 8px;
+  text-align:center;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.quick-icon{
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  background:var(--primary-soft);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 8px;
+  font-size:17px;
+}
+
+.quick-label{
+  font-size:11px;
+  font-weight:700;
+  line-height:1.25;
+}
+
+/* =========================
+   FEATURE CARDS
+========================= */
+.feature-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.feature-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md);
+  padding:15px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+
+.feature-icon{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  flex-shrink:0;
+}
+
+.feature-body{
+  flex:1;
+  min-width:0;
+}
+
+.feature-title{
+  font-size:14px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+
+.feature-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.45;
+}
+
+.chevron{
+  color:#94a3b8;
+}
+
+/* =========================
+   LINKAGE
+========================= */
+.flow-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px;
+  box-shadow:var(--shadow-sm);
+}
+
+.flow-row{
+  display:grid;
+  grid-template-columns:1fr 28px 1fr 28px 1fr;
+  align-items:center;
+  gap:6px;
+}
+
+.flow-step{
+  background:var(--primary-light);
+  color:var(--primary-dark);
+  border-radius:15px;
+  padding:12px 8px;
+  text-align:center;
+}
+
+.flow-step strong{
+  display:block;
+  font-size:13px;
+}
+
+.flow-step span{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.flow-arrow{
+  text-align:center;
+  color:var(--primary);
+}
+
+/* =========================
+   CASE CHIPS
+========================= */
+.chip-row{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  scrollbar-width:none;
+}
+
+.chip-row::-webkit-scrollbar{
+  display:none;
+}
+
+.chip{
+  flex:0 0 auto;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:700;
+  box-shadow:var(--shadow-sm);
+}
+
+/* =========================
+   ANDROID RIPPLE
+========================= */
+.native-click{
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple .55s linear;
+  background:rgba(37,99,235,.18);
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+.native-click:active{
+  transform:scale(.985);
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+
+.bottom-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:700;
+  position:relative;
+  overflow:hidden;
+}
+
+.bottom-item i{
+  font-size:18px;
+}
+
+.bottom-item.active{
+  color:var(--primary);
+  background:var(--primary-light);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:380px){
+  .quick-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .flow-row{
+    grid-template-columns:1fr;
+  }
+
+  .flow-arrow{
+    transform:rotate(90deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+        <div>
+          <div class="brand-title">Home</div>
+          <div class="brand-subtitle">SDKI · SLKI · SIKI</div>
+        </div>
+      </div>
+
+      <button class="icon-btn native-click" aria-label="Notifikasi">
+        <i class="fa-regular fa-bell"></i>
+      </button>
+    </div>
+
+    <section class="hero">
+      <h1 class="hero-title">Asuhan keperawatan lebih cepat, rapi, dan terarah.</h1>
+      <p class="hero-desc">
+        Cari diagnosis dari gejala, hubungkan SDKI ke SLKI dan SIKI, lalu susun askep dengan lebih mudah.
+      </p>
+    </section>
+  </header>
+
+  <div class="search-wrap">
+   <label class="search-box" onclick="location.href='pages/search.html'">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input id="homeSearch" type="search" placeholder="Cari gejala, diagnosis, luaran, intervensi..." onclick="event.stopPropagation()" />
+</label>
+  </div>
+
+  <main class="content">
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Akses Cepat</h2>
+      </div>
+
+      <div class="quick-grid">
+        <a href="pages/sdki.html" class="quick-card native-click">
+          <div class="quick-icon"><i class="fa-solid fa-stethoscope"></i></div>
+          <div class="quick-label">SDKI</div>
+        </a>
+
+        <a href="pages/slki.html" class="quick-card native-click">
+          <div class="quick-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="quick-label">SLKI</div>
+        </a>
+
+        <a href="pages/siki.html" class="quick-card native-click">
+          <div class="quick-icon"><i class="fa-solid fa-hand-holding-medical"></i></div>
+          <div class="quick-label">SIKI</div>
+        </a>
+
+        <a href="pages/quick-askep.html" class="quick-card native-click">
+          <div class="quick-icon"><i class="fa-solid fa-file-medical"></i></div>
+          <div class="quick-label">Askep</div>
+        </a>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Fitur Utama</h2>
+      </div>
+
+      <div class="feature-list">
+        <a href="pages/cari-gejala.html" class="feature-card native-click">
+          <div class="feature-icon">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">Cari Berdasarkan Gejala</div>
+            <div class="feature-desc">Ketik “sesak”, “nyeri”, “cemas”, atau keluhan pasien untuk menemukan diagnosis terkait.</div>
+          </div>
+          <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+
+        <a href="pages/quick-askep.html" class="feature-card native-click">
+          <div class="feature-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">Quick Askep</div>
+            <div class="feature-desc">Pilih diagnosis, luaran, dan intervensi lalu susun kerangka askep siap salin.</div>
+          </div>
+          <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+
+        <a href="pages/kasus.html" class="feature-card native-click">
+          <div class="feature-icon">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="feature-body">
+            <div class="feature-title">Paket Kasus Klinis</div>
+            <div class="feature-desc">Stroke, STEMI, CKD, pneumonia, sepsis, trauma, dan kasus umum ruangan.</div>
+          </div>
+          <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Kasus Sering Dicari</h2>
+      </div>
+
+      <div class="chip-row">
+        <a href="pages/kasus.html?q=stroke" class="chip native-click">Stroke</a>
+        <a href="pages/kasus.html?q=sesak" class="chip native-click">Sesak Napas</a>
+        <a href="pages/kasus.html?q=stemi" class="chip native-click">STEMI</a>
+        <a href="pages/kasus.html?q=ckd" class="chip native-click">CKD</a>
+        <a href="pages/kasus.html?q=dm" class="chip native-click">DM</a>
+        <a href="pages/kasus.html?q=sepsis" class="chip native-click">Sepsis</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-item active native-click">
+    <i class="fa-solid fa-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="pages/search.html" class="bottom-item native-click">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Cari</span>
+  </a>
+
+  <a href="pages/quick-askep.html" class="bottom-item native-click">
+    <i class="fa-solid fa-notes-medical"></i>
+    <span>Askep</span>
+  </a>
+
+  <a href="pages/profil.html" class="bottom-item native-click">
+    <i class="fa-solid fa-user-nurse"></i>
+    <span>Profil</span>
+  </a>
+</nav>
+
+<script>
+/* =========================
+   ANDROID-LIKE RIPPLE
+========================= */
+document.querySelectorAll('.native-click').forEach(el => {
+  el.addEventListener('click', function(e){
+    const oldRipple = this.querySelector('.ripple');
+    if(oldRipple) oldRipple.remove();
+
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+
+    this.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+  });
+});
+
+/* =========================
+   BLOKIR SELECT UNTUK LINK/TOMBOL
+========================= */
+document.addEventListener('selectstart', function(e){
+  const allow = e.target.closest('input, textarea, select');
+  if(!allow) e.preventDefault();
+});
+
+/* =========================
+   BOTTOM NAV DEMO ACTIVE
+========================= */
+document.querySelectorAll('.bottom-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.bottom-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+const homeSearch = document.getElementById("homeSearch");
+
+homeSearch.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    const q = homeSearch.value.trim();
+
+    if(q){
+      location.href = `pages/search.html?q=${encodeURIComponent(q)}`;
+    }else{
+      location.href = "pages/search.html";
+    }
+  }
+});
+</script>
+
+</body>
+</html>
