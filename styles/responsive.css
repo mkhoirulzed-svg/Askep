@@ -64,6 +64,7 @@
   }
 
   .app {
+    width: calc(100% - var(--desktop-sidebar-width));
     max-width: none;
     min-height: 100dvh;
     margin: 0 0 0 var(--desktop-sidebar-width);
@@ -74,7 +75,8 @@
   .header,
   .search-wrap,
   .content {
-    width: min(calc(100% - 64px), var(--content-max-width));
+    width: min(calc(100% - 48px), var(--content-max-width));
+    max-width: 100%;
     margin-right: auto;
     margin-left: auto;
     padding-right: 0;
