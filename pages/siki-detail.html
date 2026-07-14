@@ -547,11 +547,15 @@ button{
 
 <script>
 /* =========================
-   CONFIG PATH
+   CONFIG API
 ========================= */
-const DATA_PATHS = {
-  siki: "../data/sdkislki/siki.json",
-  tautanSiki: "../data/tautansiki.json"
+const API_BASE = "https://askep.mkhoirulzed.workers.dev";
+
+const API_ENDPOINTS = {
+  sdki: `${API_BASE}/api/sdki`,
+  slki: `${API_BASE}/api/slki`,
+  siki: `${API_BASE}/api/siki`,
+  relations: `${API_BASE}/api/relations`
 };
 
 /* =========================
@@ -564,8 +568,13 @@ const headerSub = document.getElementById("headerSub");
 /* =========================
    PARAMS
 ========================= */
-const params = new URLSearchParams(location.search);
-const detailId = params.get("id") || params.get("kode") || params.get("q") || "";
+const params = new URLSearchParams(window.location.search);
+
+const detailId =
+  params.get("id") ||
+  params.get("kode") ||
+  params.get("q") ||
+  "";
 
 /* =========================
    HELPERS
@@ -580,49 +589,154 @@ function normalizeText(text){
     .trim();
 }
 
+function normalizeCode(value){
+  return String(value || "")
+    .toUpperCase()
+    .replace(/\s+/g, "")
+    .trim();
+}
+
 function pick(obj, keys){
   for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
+    if(
+      obj &&
+      obj[key] !== undefined &&
+      obj[key] !== null &&
+      obj[key] !== ""
+    ){
       return obj[key];
     }
   }
+
   return "";
 }
 
+/*
+  Mengubah berbagai kemungkinan format respons API menjadi array.
+
+  Format yang didukung:
+  [
+    {...}
+  ]
+
+  {
+    "success": true,
+    "data": [...]
+  }
+
+  {
+    "items": [...]
+  }
+
+  {
+    "siki": [...]
+  }
+
+  {
+    "relations": [...]
+  }
+*/
 function toArray(data){
-  if(Array.isArray(data)) return data;
+  if(Array.isArray(data)){
+    return data;
+  }
 
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.intervensi)) return data.intervensi;
-  if(data && Array.isArray(data.siki)) return data.siki;
+  if(!data || typeof data !== "object"){
+    return [];
+  }
 
-  if(data && typeof data === "object"){
-    return Object.values(data);
+  const possibleKeys = [
+    "data",
+    "items",
+    "results",
+    "records",
+    "sdki",
+    "slki",
+    "siki",
+    "relations",
+    "relation",
+    "diagnosis",
+    "diagnosa",
+    "intervensi",
+    "outcomes"
+  ];
+
+  for(const key of possibleKeys){
+    if(Array.isArray(data[key])){
+      return data[key];
+    }
+
+    if(data[key] && typeof data[key] === "object"){
+      const nestedResult = toArray(data[key]);
+
+      if(nestedResult.length){
+        return nestedResult;
+      }
+    }
+  }
+
+  /*
+    Jangan langsung memakai Object.values pada respons API yang
+    hanya berisi success dan message.
+  */
+  const values = Object.values(data);
+
+  if(
+    values.length &&
+    values.every(value => value && typeof value === "object")
+  ){
+    return values;
   }
 
   return [];
 }
 
 function stringifyDeep(value){
-  if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
+  if(value === null || value === undefined){
+    return "";
+  }
+
+  if(
+    typeof value === "string" ||
+    typeof value === "number"
+  ){
+    return String(value);
+  }
+
+  if(Array.isArray(value)){
+    return value
+      .map(stringifyDeep)
+      .join(" ");
+  }
+
+  if(typeof value === "object"){
+    return Object.values(value)
+      .map(stringifyDeep)
+      .join(" ");
+  }
+
   return "";
 }
 
 function escapeHtml(text){
   return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function getItemId(item){
-  return pick(item, ["id", "kode", "code", "nomor", "no"]);
+  return pick(item, [
+    "id",
+    "kode",
+    "code",
+    "nomor",
+    "no",
+    "kodeSiki",
+    "kode_siki"
+  ]);
 }
 
 function getItemTitle(item){
@@ -631,6 +745,8 @@ function getItemTitle(item){
     "judul",
     "nama",
     "intervensi",
+    "namaIntervensi",
+    "nama_intervensi",
     "label",
     "name"
   ]);
@@ -664,14 +780,44 @@ function getItemSubCategory(item){
   ]);
 }
 
+/*
+  Mengubah string, array, atau object menjadi array teks.
+*/
 function arrayFromUnknown(value){
-  if(!value) return [];
+  if(
+    value === undefined ||
+    value === null ||
+    value === ""
+  ){
+    return [];
+  }
 
   if(Array.isArray(value)){
     return value
       .map(item => {
-        if(typeof item === "string" || typeof item === "number") return String(item);
-        return stringifyDeep(item);
+        if(
+          typeof item === "string" ||
+          typeof item === "number"
+        ){
+          return String(item).trim();
+        }
+
+        if(item && typeof item === "object"){
+          return String(
+            pick(item, [
+              "tindakan",
+              "aktivitas",
+              "nama",
+              "judul",
+              "label",
+              "text",
+              "description",
+              "deskripsi"
+            ]) || stringifyDeep(item)
+          ).trim();
+        }
+
+        return "";
       })
       .filter(Boolean);
   }
@@ -685,68 +831,317 @@ function arrayFromUnknown(value){
 
   if(typeof value === "object"){
     return Object.values(value)
-      .map(stringifyDeep)
+      .flatMap(arrayFromUnknown)
       .filter(Boolean);
   }
 
-  return [String(value)];
+  return [String(value).trim()].filter(Boolean);
 }
 
+/*
+  Mencari kelompok tindakan baik secara langsung maupun
+  di dalam object tindakan/aktivitas.
+*/
 function getNestedAction(item, keys){
   for(const key of keys){
-    if(item && item[key]) return arrayFromUnknown(item[key]);
+    if(
+      item &&
+      item[key] !== undefined &&
+      item[key] !== null
+    ){
+      const result = arrayFromUnknown(item[key]);
+
+      if(result.length){
+        return result;
+      }
+    }
   }
 
-  const tindakan = item.tindakan || item.aktivitas || item.activities || item.action || null;
+  const actionContainers = [
+    item?.tindakan,
+    item?.aktivitas,
+    item?.activities,
+    item?.action,
+    item?.intervensi,
+    item?.tindakanKeperawatan,
+    item?.tindakan_keperawatan
+  ];
 
-  if(tindakan && typeof tindakan === "object"){
+  for(const container of actionContainers){
+    if(!container || typeof container !== "object"){
+      continue;
+    }
+
     for(const key of keys){
-      if(tindakan[key]) return arrayFromUnknown(tindakan[key]);
+      if(
+        container[key] !== undefined &&
+        container[key] !== null
+      ){
+        const result = arrayFromUnknown(container[key]);
+
+        if(result.length){
+          return result;
+        }
+      }
     }
   }
 
   return [];
 }
 
+/* =========================
+   FETCH API
+========================= */
+async function fetchJsonSafe(url){
+  try{
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      },
+      cache: "no-cache"
+    });
+
+    if(!response.ok){
+      throw new Error(
+        `HTTP ${response.status} saat memuat ${url}`
+      );
+    }
+
+    const result = await response.json();
+
+    if(
+      result &&
+      typeof result === "object" &&
+      result.success === false
+    ){
+      throw new Error(
+        result.message ||
+        `API mengembalikan status gagal: ${url}`
+      );
+    }
+
+    return result;
+  }catch(error){
+    console.error("Gagal memuat API:", url, error);
+    throw error;
+  }
+}
+
+/* =========================
+   CARI DATA SIKI
+========================= */
 function findSikiItem(list, id){
-  const target = normalizeText(id);
+  const targetCode = normalizeCode(id);
+  const targetText = normalizeText(id);
 
-  if(!target) return null;
+  if(!targetCode && !targetText){
+    return null;
+  }
 
+  /*
+    Prioritas pertama: kode sama persis.
+  */
+  const exactCode = list.find(item => {
+    return normalizeCode(getItemId(item)) === targetCode;
+  });
+
+  if(exactCode){
+    return exactCode;
+  }
+
+  /*
+    Prioritas kedua: judul sama persis.
+  */
+  const exactTitle = list.find(item => {
+    return normalizeText(getItemTitle(item)) === targetText;
+  });
+
+  if(exactTitle){
+    return exactTitle;
+  }
+
+  /*
+    Prioritas ketiga: pencarian sebagian.
+  */
   return list.find(item => {
     const itemId = normalizeText(getItemId(item));
-    const title = normalizeText(getItemTitle(item));
+    const itemTitle = normalizeText(getItemTitle(item));
 
-    return itemId === target || title === target;
-  }) || list.find(item => {
-    const itemId = normalizeText(getItemId(item));
-    const title = normalizeText(getItemTitle(item));
-
-    return itemId.includes(target) || title.includes(target);
-  });
+    return (
+      itemId.includes(targetText) ||
+      itemTitle.includes(targetText)
+    );
+  }) || null;
 }
 
-function findRelatedDiagnoses(tautanList, sikiItem){
-  const sikiId = normalizeText(getItemId(sikiItem));
-  const sikiTitle = normalizeText(getItemTitle(sikiItem));
-
-  if(!sikiId && !sikiTitle) return [];
-
-  return tautanList.filter(row => {
-    const text = normalizeText(stringifyDeep(row));
-    return (sikiId && text.includes(sikiId)) || (sikiTitle && text.includes(sikiTitle));
-  }).slice(0, 8);
+/* =========================
+   RELATIONS HELPERS
+========================= */
+function getRelationDiagnosisCode(row){
+  return pick(row, [
+    "kodeSdki",
+    "kode_sdki",
+    "kodeDiagnosis",
+    "kode_diagnosis",
+    "idDiagnosis",
+    "id_diagnosis",
+    "kode",
+    "id"
+  ]);
 }
 
-async function fetchJsonSafe(path){
-  try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
-  }catch(err){
-    console.warn(err.message);
-    return [];
+function getRelationDiagnosisTitle(row){
+  return pick(row, [
+    "judulSdki",
+    "judul_sdki",
+    "diagnosis",
+    "diagnosa",
+    "namaDiagnosis",
+    "nama_diagnosis",
+    "judulDiagnosis",
+    "judul_diagnosis",
+    "judul",
+    "nama",
+    "sdki",
+    "label"
+  ]) || "Diagnosis terkait";
+}
+
+/*
+  Mengambil seluruh SIKI yang terdapat dalam sebuah relation.
+
+  Mendukung:
+  - sikiUtama
+  - sikiPendukung
+  - siki
+  - intervensi
+*/
+function getRelationSikiItems(row){
+  const possibleFields = [
+    "sikiUtama",
+    "siki_utama",
+    "sikiPendukung",
+    "siki_pendukung",
+    "siki",
+    "intervensi",
+    "interventions"
+  ];
+
+  const results = [];
+
+  for(const field of possibleFields){
+    const value = row?.[field];
+
+    if(value === undefined || value === null){
+      continue;
+    }
+
+    if(Array.isArray(value)){
+      results.push(...value);
+    }else{
+      results.push(value);
+    }
   }
+
+  return results;
+}
+
+function relationSikiMatches(relationItem, sikiItem){
+  const targetCode = normalizeCode(getItemId(sikiItem));
+  const targetTitle = normalizeText(getItemTitle(sikiItem));
+
+  if(
+    typeof relationItem === "string" ||
+    typeof relationItem === "number"
+  ){
+    const relationCode = normalizeCode(relationItem);
+    const relationText = normalizeText(relationItem);
+
+    return (
+      (targetCode && relationCode === targetCode) ||
+      (targetTitle && relationText === targetTitle)
+    );
+  }
+
+  if(!relationItem || typeof relationItem !== "object"){
+    return false;
+  }
+
+  const relationCode = normalizeCode(
+    pick(relationItem, [
+      "kode",
+      "id",
+      "code",
+      "kodeSiki",
+      "kode_siki"
+    ])
+  );
+
+  const relationTitle = normalizeText(
+    pick(relationItem, [
+      "judul",
+      "nama",
+      "title",
+      "label",
+      "intervensi",
+      "namaIntervensi",
+      "nama_intervensi"
+    ])
+  );
+
+  if(targetCode && relationCode === targetCode){
+    return true;
+  }
+
+  if(targetTitle && relationTitle === targetTitle){
+    return true;
+  }
+
+  /*
+    Fallback jika struktur objek relation berbeda.
+  */
+  const completeText = normalizeText(
+    stringifyDeep(relationItem)
+  );
+
+  return Boolean(
+    (targetCode && normalizeCode(completeText).includes(targetCode)) ||
+    (targetTitle && completeText.includes(targetTitle))
+  );
+}
+
+/*
+  Mencari diagnosis SDKI yang memiliki intervensi SIKI ini.
+*/
+function findRelatedDiagnoses(relations, sikiItem){
+  const matched = relations.filter(row => {
+    const relatedSiki = getRelationSikiItems(row);
+
+    return relatedSiki.some(item => {
+      return relationSikiMatches(item, sikiItem);
+    });
+  });
+
+  /*
+    Menghapus diagnosis duplikat.
+  */
+  const unique = new Map();
+
+  matched.forEach(row => {
+    const code = getRelationDiagnosisCode(row);
+    const title = getRelationDiagnosisTitle(row);
+
+    const key =
+      normalizeCode(code) ||
+      normalizeText(title);
+
+    if(key && !unique.has(key)){
+      unique.set(key, row);
+    }
+  });
+
+  return Array.from(unique.values()).slice(0, 20);
 }
 
 /* =========================
@@ -758,14 +1153,22 @@ function renderEmpty(title, desc){
       <div class="empty-icon">
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
-      <div class="empty-title">${escapeHtml(title)}</div>
-      <div class="empty-desc">${escapeHtml(desc)}</div>
+
+      <div class="empty-title">
+        ${escapeHtml(title)}
+      </div>
+
+      <div class="empty-desc">
+        ${escapeHtml(desc)}
+      </div>
     </div>
   `;
 }
 
 function renderTextSection(title, icon, text){
-  if(!text) return "";
+  if(!text){
+    return "";
+  }
 
   return `
     <section>
@@ -773,15 +1176,20 @@ function renderTextSection(title, icon, text){
         <i class="fa-solid ${icon}"></i>
         <span>${escapeHtml(title)}</span>
       </div>
+
       <div class="detail-card">
-        <div class="detail-text">${escapeHtml(text)}</div>
+        <div class="detail-text">
+          ${escapeHtml(text)}
+        </div>
       </div>
     </section>
   `;
 }
 
 function renderSimpleList(title, icon, items){
-  if(!items || !items.length) return "";
+  if(!items || !items.length){
+    return "";
+  }
 
   return `
     <section>
@@ -789,17 +1197,27 @@ function renderSimpleList(title, icon, items){
         <i class="fa-solid ${icon}"></i>
         <span>${escapeHtml(title)}</span>
       </div>
+
       <div class="simple-list">
         ${items.map(item => `
-          <div class="simple-item">${escapeHtml(item)}</div>
+          <div class="simple-item">
+            ${escapeHtml(item)}
+          </div>
         `).join("")}
       </div>
     </section>
   `;
 }
 
-function renderActionSection(title, icon, className, items){
-  if(!items || !items.length) return "";
+function renderActionSection(
+  title,
+  icon,
+  className,
+  items
+){
+  if(!items || !items.length){
+    return "";
+  }
 
   return `
     <div class="action-card">
@@ -807,43 +1225,25 @@ function renderActionSection(title, icon, className, items){
         <div class="action-icon ${className}">
           <i class="fa-solid ${icon}"></i>
         </div>
-        <div class="action-title">${escapeHtml(title)}</div>
+
+        <div class="action-title">
+          ${escapeHtml(title)}
+        </div>
       </div>
+
       <ol class="action-list">
-        ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+        ${items.map(item => `
+          <li>${escapeHtml(item)}</li>
+        `).join("")}
       </ol>
     </div>
   `;
 }
 
-function getRelatedTitle(row){
-  return pick(row, [
-    "diagnosis",
-    "diagnosa",
-    "namaDiagnosis",
-    "nama_diagnosis",
-    "judul",
-    "nama",
-    "sdki",
-    "label"
-  ]) || "Diagnosis terkait";
-}
-
-function getRelatedCode(row){
-  return pick(row, [
-    "kodeDiagnosis",
-    "kode_diagnosis",
-    "kodeSdki",
-    "kode_sdki",
-    "idDiagnosis",
-    "id_diagnosis",
-    "kode",
-    "id"
-  ]);
-}
-
 function renderRelatedDiagnoses(items){
-  if(!items.length) return "";
+  if(!items.length){
+    return "";
+  }
 
   return `
     <section>
@@ -853,21 +1253,40 @@ function renderRelatedDiagnoses(items){
       </div>
 
       ${items.map(row => {
-        const title = getRelatedTitle(row);
-        const code = getRelatedCode(row);
-        const url = code ? `diagnosis-detail.html?id=${encodeURIComponent(code)}` : "#";
+        const title = getRelationDiagnosisTitle(row);
+        const code = getRelationDiagnosisCode(row);
+
+        /*
+          Sesuaikan diagnosis-detail.html jika nama halaman
+          detail SDKI di repo berbeda.
+        */
+        const url = code
+          ? `diagnosis-detail.html?id=${encodeURIComponent(code)}`
+          : "#";
 
         return `
-          <a href="${url}" class="related-card native-click">
+          <a
+            href="${url}"
+            class="related-card native-click"
+          >
             <div class="related-icon">
               <i class="fa-solid fa-stethoscope"></i>
             </div>
+
             <div class="related-body">
-              <div class="related-title">${escapeHtml(title)}</div>
+              <div class="related-title">
+                ${escapeHtml(title)}
+              </div>
+
               <div class="related-desc">
-                ${code ? `Kode: ${escapeHtml(code)}` : "Ketuk untuk melihat diagnosis terkait"}
+                ${
+                  code
+                    ? `Kode: ${escapeHtml(code)}`
+                    : "Diagnosis SDKI terkait"
+                }
               </div>
             </div>
+
             <i class="fa-solid fa-chevron-right chevron"></i>
           </a>
         `;
@@ -880,17 +1299,25 @@ function renderDetail(item, relatedDiagnoses){
   const id = getItemId(item);
   const title = getItemTitle(item) || "Intervensi SIKI";
   const desc = getItemDesc(item);
+
   const category = getItemCategory(item);
   const subCategory = getItemSubCategory(item);
 
-  const tujuan = pick(item, ["tujuan", "goal", "target"]);
-  const kriteria = arrayFromUnknown(pick(item, [
-    "kriteria",
-    "kriteriaHasil",
-    "kriteria_hasil",
-    "outcome",
-    "indikator"
-  ]));
+  const tujuan = pick(item, [
+    "tujuan",
+    "goal",
+    "target"
+  ]);
+
+  const kriteria = arrayFromUnknown(
+    pick(item, [
+      "kriteria",
+      "kriteriaHasil",
+      "kriteria_hasil",
+      "outcome",
+      "indikator"
+    ])
+  );
 
   const observasi = getNestedAction(item, [
     "observasi",
@@ -925,8 +1352,12 @@ function renderDetail(item, relatedDiagnoses){
     "activities"
   ]);
 
-  document.title = title + " - Detail SIKI";
-  headerSub.textContent = "Standar Intervensi Keperawatan Indonesia";
+  document.title = `${title} - Detail SIKI`;
+
+  headerSub.textContent =
+    id
+      ? `${id} • Standar Intervensi Keperawatan Indonesia`
+      : "Standar Intervensi Keperawatan Indonesia";
 
   detailArea.innerHTML = `
     <section class="hero-card">
@@ -934,26 +1365,75 @@ function renderDetail(item, relatedDiagnoses){
         <i class="fa-solid fa-hand-holding-medical"></i>
         <span>SIKI</span>
       </div>
-      <div class="hero-title">${escapeHtml(title)}</div>
+
+      <div class="hero-title">
+        ${escapeHtml(title)}
+      </div>
+
+      ${
+        desc
+          ? `<div class="hero-desc">${escapeHtml(desc)}</div>`
+          : ""
+      }
     </section>
 
-   <section class="meta-grid">
-  <div class="meta-card">
-    <div class="meta-label">Kode</div>
-    <div class="meta-value">${escapeHtml(id || "-")}</div>
-  </div>
+    <section class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label">Kode</div>
+        <div class="meta-value">
+          ${escapeHtml(id || "-")}
+        </div>
+      </div>
 
-  <div class="meta-card">
-    <div class="meta-label">Jenis</div>
-    <div class="meta-value">Intervensi</div>
-  </div>
-</section>
+      <div class="meta-card">
+        <div class="meta-label">Jenis</div>
+        <div class="meta-value">Intervensi</div>
+      </div>
 
-    ${renderTextSection("Definisi", "fa-circle-info", desc)}
+      ${
+        category
+          ? `
+            <div class="meta-card">
+              <div class="meta-label">Kategori</div>
+              <div class="meta-value">
+                ${escapeHtml(category)}
+              </div>
+            </div>
+          `
+          : ""
+      }
 
-    ${renderTextSection("Tujuan", "fa-bullseye", tujuan)}
+      ${
+        subCategory
+          ? `
+            <div class="meta-card">
+              <div class="meta-label">Subkategori</div>
+              <div class="meta-value">
+                ${escapeHtml(subCategory)}
+              </div>
+            </div>
+          `
+          : ""
+      }
+    </section>
 
-    ${renderSimpleList("Kriteria / Indikator", "fa-list-check", kriteria)}
+    ${renderTextSection(
+      "Definisi",
+      "fa-circle-info",
+      desc
+    )}
+
+    ${renderTextSection(
+      "Tujuan",
+      "fa-bullseye",
+      tujuan
+    )}
+
+    ${renderSimpleList(
+      "Kriteria / Indikator",
+      "fa-list-check",
+      kriteria
+    )}
 
     <section>
       <div class="section-title">
@@ -962,13 +1442,61 @@ function renderDetail(item, relatedDiagnoses){
       </div>
 
       <div class="action-group">
-        ${renderActionSection("Observasi", "fa-eye", "observasi", observasi)}
-        ${renderActionSection("Terapeutik", "fa-hand-holding-heart", "terapeutik", terapeutik)}
-        ${renderActionSection("Edukasi", "fa-person-chalkboard", "edukasi", edukasi)}
-        ${renderActionSection("Kolaborasi", "fa-user-doctor", "kolaborasi", kolaborasi)}
+        ${renderActionSection(
+          "Observasi",
+          "fa-eye",
+          "observasi",
+          observasi
+        )}
+
+        ${renderActionSection(
+          "Terapeutik",
+          "fa-hand-holding-heart",
+          "terapeutik",
+          terapeutik
+        )}
+
+        ${renderActionSection(
+          "Edukasi",
+          "fa-person-chalkboard",
+          "edukasi",
+          edukasi
+        )}
+
+        ${renderActionSection(
+          "Kolaborasi",
+          "fa-user-doctor",
+          "kolaborasi",
+          kolaborasi
+        )}
+
         ${
-          (!observasi.length && !terapeutik.length && !edukasi.length && !kolaborasi.length)
-            ? renderActionSection("Aktivitas / Tindakan", "fa-list-ul", "observasi", aktivitas)
+          !observasi.length &&
+          !terapeutik.length &&
+          !edukasi.length &&
+          !kolaborasi.length
+            ? renderActionSection(
+                "Aktivitas / Tindakan",
+                "fa-list-ul",
+                "observasi",
+                aktivitas
+              )
+            : ""
+        }
+
+        ${
+          !observasi.length &&
+          !terapeutik.length &&
+          !edukasi.length &&
+          !kolaborasi.length &&
+          !aktivitas.length
+            ? `
+              <div class="detail-card">
+                <div class="detail-text">
+                  Data tindakan keperawatan belum tersedia.
+                </div>
+              </div>
+            `
             : ""
         }
       </div>
@@ -983,85 +1511,136 @@ function renderDetail(item, relatedDiagnoses){
 ========================= */
 async function loadDetail(){
   loadingEl.style.display = "flex";
+  detailArea.innerHTML = "";
 
   if(!detailId){
     loadingEl.style.display = "none";
+
     renderEmpty(
       "ID intervensi tidak ditemukan",
-      "Halaman ini membutuhkan parameter id. Contoh: siki-detail.html?id=I.12345"
+      "Halaman ini membutuhkan parameter id. Contoh: siki-detail.html?id=I.01011"
     );
+
     return;
   }
 
-  const [sikiJson, tautanJson] = await Promise.all([
-    fetchJsonSafe(DATA_PATHS.siki),
-    fetchJsonSafe(DATA_PATHS.tautanSiki)
-  ]);
+  try{
+    /*
+      Halaman detail SIKI hanya membutuhkan:
+      1. Data SIKI
+      2. Data relations
 
-  const sikiList = toArray(sikiJson);
-  const tautanList = toArray(tautanJson);
+      Endpoint SDKI dan SLKI belum perlu dimuat di halaman ini.
+    */
+    const [sikiResponse, relationsResponse] =
+      await Promise.all([
+        fetchJsonSafe(API_ENDPOINTS.siki),
+        fetchJsonSafe(API_ENDPOINTS.relations)
+      ]);
 
-  const item = findSikiItem(sikiList, detailId);
+    const sikiList = toArray(sikiResponse);
+    const relationsList = toArray(relationsResponse);
 
-  loadingEl.style.display = "none";
+    console.log("Jumlah data SIKI:", sikiList.length);
+    console.log("Jumlah data relations:", relationsList.length);
 
-  if(!item){
+    const item = findSikiItem(
+      sikiList,
+      detailId
+    );
+
+    loadingEl.style.display = "none";
+
+    if(!item){
+      renderEmpty(
+        "Intervensi tidak ditemukan",
+        `Data SIKI dengan kode atau kata kunci "${detailId}" tidak ditemukan.`
+      );
+
+      return;
+    }
+
+    const relatedDiagnoses = findRelatedDiagnoses(
+      relationsList,
+      item
+    );
+
+    console.log(
+      "Diagnosis terkait:",
+      relatedDiagnoses
+    );
+
+    renderDetail(
+      item,
+      relatedDiagnoses
+    );
+  }catch(error){
+    console.error("Load detail gagal:", error);
+
+    loadingEl.style.display = "none";
+
     renderEmpty(
-      "Intervensi tidak ditemukan",
-      `Data SIKI dengan kata kunci "${detailId}" belum ditemukan. Coba kembali ke halaman pencarian.`
+      "Data gagal dimuat",
+      "Tidak dapat terhubung ke API ASKEP. Periksa endpoint Worker, pengaturan CORS, dan isi respons API."
     );
-    return;
   }
-
-  const relatedDiagnoses = findRelatedDiagnoses(tautanList, item);
-
-  renderDetail(item, relatedDiagnoses);
 }
 
 /* =========================
    RIPPLE EFFECT
 ========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el) return;
+document.addEventListener("click", function(event){
+  const element = event.target.closest(".native-click");
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+  if(!element){
+    return;
+  }
+
+  const oldRipple = element.querySelector(".ripple");
+
+  if(oldRipple){
+    oldRipple.remove();
+  }
 
   const ripple = document.createElement("span");
   ripple.className = "ripple";
 
-  const rect = el.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
   const size = Math.max(rect.width, rect.height);
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
 
-  el.appendChild(ripple);
+  ripple.style.left =
+    `${event.clientX - rect.left - size / 2}px`;
 
-  setTimeout(() => ripple.remove(), 600);
+  ripple.style.top =
+    `${event.clientY - rect.top - size / 2}px`;
+
+  element.appendChild(ripple);
+
+  window.setTimeout(() => {
+    ripple.remove();
+  }, 600);
 });
 
 /* =========================
    BLOKIR SELECT
 ========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
+document.addEventListener("selectstart", function(event){
+  const allowedElement = event.target.closest(
+    "input, textarea, select"
+  );
+
+  if(!allowedElement){
+    event.preventDefault();
+  }
 });
 
 /* =========================
    INIT
 ========================= */
-loadDetail().catch(err => {
-  console.error(err);
-  loadingEl.style.display = "none";
-  renderEmpty(
-    "Terjadi kesalahan",
-    "Data gagal dimuat atau format JSON tidak sesuai. Cek console browser."
-  );
-});
+loadDetail();
 </script>
 
 </body>
