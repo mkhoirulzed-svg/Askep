@@ -306,7 +306,7 @@ button{
 .option-list{
   display:flex;
   flex-direction:column;
-  gap:9px;
+  gap:10px;
   max-height:330px;
   overflow:auto;
   padding-right:2px;
@@ -326,6 +326,9 @@ button{
   gap:10px;
   position:relative;
   overflow:hidden;
+  flex-shrink:0;
+  text-align:left;
+  width:100%;
 }
 
 .option-card.active{
@@ -361,6 +364,7 @@ button{
   font-size:13px;
   font-weight:800;
   line-height:1.35;
+  word-break:break-word;
 }
 
 .option-desc{
@@ -627,31 +631,6 @@ button{
   color:var(--primary);
   background:var(--primary-light);
 }
-
- .option-card{
-  border:1px solid var(--border);
-  background:#fff;
-  border-radius:16px;
-  padding:12px;
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  position:relative;
-  overflow:hidden;
-  flex-shrink:0;   /* <-- tambahkan ini */
-}
-
-.option-title{
-  word-break:break-word;
-}
-
-.option-desc{
-  line-height:1.45;
-}
-
-.option-list{
-  gap:10px;
-}
 </style>
 </head>
 
@@ -884,13 +863,15 @@ button{
 
 <script>
 /* =========================
-   CONFIG PATH
+   CONFIG API
 ========================= */
+const API_BASE = "https://askep.mkhoirulzed.workers.dev";
+
 const DATA_PATHS = {
-  sdki: "../data/sdkislki/sdki.json",
-  slki: "../data/sdkislki/slki.json",
-  siki: "../data/sdkislki/siki.json",
-  tautanSiki: "../data/tautansiki.json"
+  sdki: `${API_BASE}/api/sdki`,
+  slki: `${API_BASE}/api/slki`,
+  siki: `${API_BASE}/api/siki`,
+  relations: `${API_BASE}/api/relations`
 };
 
 /* =========================
@@ -900,7 +881,7 @@ let DB = {
   sdki: [],
   slki: [],
   siki: [],
-  tautanSiki: []
+  relations: []
 };
 
 let selected = {
@@ -967,6 +948,13 @@ function normalizeText(text){
     .trim();
 }
 
+function normalizeCode(value){
+  return String(value || "")
+    .toUpperCase()
+    .replace(/\s+/g, "")
+    .replace(/-/g, ".");
+}
+
 function pick(obj, keys){
   for(const key of keys){
     if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
@@ -988,6 +976,7 @@ function toArray(data){
   if(data && Array.isArray(data.sdki)) return data.sdki;
   if(data && Array.isArray(data.slki)) return data.slki;
   if(data && Array.isArray(data.siki)) return data.siki;
+  if(data && Array.isArray(data.relations)) return data.relations;
 
   if(data && typeof data === "object"){
     return Object.values(data);
@@ -1014,7 +1003,19 @@ function escapeHtml(text){
 }
 
 function getId(item){
-  return pick(item, ["id", "kode", "code", "nomor", "no"]);
+  return pick(item, [
+    "id",
+    "kode",
+    "code",
+    "nomor",
+    "no",
+    "kodeSdki",
+    "kodeSlki",
+    "kodeSiki",
+    "kodeSDKI",
+    "kodeSLKI",
+    "kodeSIKI"
+  ]);
 }
 
 function getTitle(item, type){
@@ -1022,6 +1023,8 @@ function getTitle(item, type){
     return pick(item, [
       "title",
       "judul",
+      "judulSdki",
+      "judulSDKI",
       "nama",
       "diagnosis",
       "diagnosa",
@@ -1034,6 +1037,8 @@ function getTitle(item, type){
     return pick(item, [
       "title",
       "judul",
+      "judulSlki",
+      "judulSLKI",
       "nama",
       "luaran",
       "outcome",
@@ -1046,6 +1051,8 @@ function getTitle(item, type){
     return pick(item, [
       "title",
       "judul",
+      "judulSiki",
+      "judulSIKI",
       "nama",
       "intervensi",
       "label",
@@ -1094,6 +1101,22 @@ function arrayFromUnknown(value){
   }
 
   return [String(value)];
+}
+
+function relationArray(value){
+  if(!value) return [];
+  if(Array.isArray(value)) return value;
+
+  if(typeof value === "string"){
+    return value
+      .split(/\n|;|\|/g)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  if(typeof value === "object") return [value];
+
+  return [value];
 }
 
 function getNestedAction(item, keys){
@@ -1178,6 +1201,7 @@ function itemToSearchObject(item, type){
     title,
     desc,
     raw:item,
+    relationType:item?._relationType || "",
     haystack:normalizeText([
       id,
       title,
@@ -1212,6 +1236,7 @@ function scoreItem(item, keywords, query){
 function searchItems(list, type, query, limit = 40){
   const q = normalizeText(query);
   const stopwords = ["dan", "atau", "yang", "dengan", "pada", "di", "ke", "dari", "untuk"];
+
   const keywords = q
     .split(" ")
     .filter(word => word.length > 1 && !stopwords.includes(word));
@@ -1254,9 +1279,24 @@ function scrollTopApp(){
 ========================= */
 async function fetchJsonSafe(path){
   try{
-    const res = await fetch(path + "?v=" + Date.now());
-    if(!res.ok) throw new Error("Gagal memuat " + path);
-    return await res.json();
+    const separator = path.includes("?") ? "&" : "?";
+    const res = await fetch(path + separator + "v=" + Date.now(), {
+      headers:{
+        "Accept":"application/json"
+      }
+    });
+
+    if(!res.ok){
+      throw new Error(`Gagal memuat ${path}. Status ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    if(json && json.success === false){
+      throw new Error(json.message || `API gagal memuat ${path}`);
+    }
+
+    return json;
   }catch(err){
     console.warn(err.message);
     return [];
@@ -1266,135 +1306,405 @@ async function fetchJsonSafe(path){
 async function loadAllData(){
   loadingEl.style.display = "flex";
 
-  const [sdki, slki, siki, tautanSiki] = await Promise.all([
+  const [sdki, slki, siki, relations] = await Promise.all([
     fetchJsonSafe(DATA_PATHS.sdki),
     fetchJsonSafe(DATA_PATHS.slki),
     fetchJsonSafe(DATA_PATHS.siki),
-    fetchJsonSafe(DATA_PATHS.tautanSiki)
+    fetchJsonSafe(DATA_PATHS.relations)
   ]);
 
   DB.sdki = toArray(sdki);
   DB.slki = toArray(slki);
   DB.siki = toArray(siki);
-  DB.tautanSiki = toArray(tautanSiki);
+  DB.relations = toArray(relations);
+
+  console.log("Jumlah SDKI:", DB.sdki.length);
+  console.log("Jumlah SLKI:", DB.slki.length);
+  console.log("Jumlah SIKI:", DB.siki.length);
+  console.log("Jumlah relations:", DB.relations.length);
 
   loadingEl.style.display = "none";
 
   renderSdkiList();
   showStep(1);
+
+  if(!DB.sdki.length){
+    showToast("Data SDKI kosong atau gagal dimuat", "fa-circle-exclamation");
+  }
 }
 
 /* =========================
-   SMART RELATED
+   MASTER RELATIONS
 ========================= */
-function getRelatedFromTautan(type){
-  if(!selected.sdki || !DB.tautanSiki.length) return [];
+function extractStandardCode(value){
+  const text = stringifyDeep(value);
+  const match = text.match(/\b([DLI])\s*[.\-]?\s*(\d{3,6})\b/i);
 
-  const sdkiId = normalizeText(getId(selected.sdki.raw));
-  const sdkiTitle = normalizeText(selected.sdki.title);
+  if(!match) return "";
 
-  const rows = DB.tautanSiki.filter(row => {
-    const text = normalizeText(stringifyDeep(row));
-    return (sdkiId && text.includes(sdkiId)) || (sdkiTitle && text.includes(sdkiTitle));
-  });
+  return `${match[1].toUpperCase()}.${match[2]}`;
+}
 
-  if(type === "siki"){
-    const candidates = [];
-
-    rows.forEach(row => {
-      const possibleNames = [
-        "intervensi",
-        "siki",
-        "namaIntervensi",
-        "nama_intervensi",
-        "judulIntervensi",
-        "judul_intervensi"
-      ];
-
-      const possibleCodes = [
-        "kodeIntervensi",
-        "kode_intervensi",
-        "kodeSiki",
-        "kode_siki",
-        "idIntervensi",
-        "id_intervensi"
-      ];
-
-      const name = pick(row, possibleNames);
-      const code = pick(row, possibleCodes);
-
-      if(name || code){
-        candidates.push({ name, code });
-      }
-
-      const deep = stringifyDeep(row);
-      DB.siki.forEach(item => {
-        const itemTitle = normalizeText(getTitle(item, "siki"));
-        const itemId = normalizeText(getId(item));
-
-        if(
-          (itemTitle && normalizeText(deep).includes(itemTitle)) ||
-          (itemId && normalizeText(deep).includes(itemId))
-        ){
-          candidates.push({
-            name:getTitle(item, "siki"),
-            code:getId(item)
-          });
-        }
-      });
-    });
-
-    const unique = [];
-    const seen = new Set();
-
-    candidates.forEach(c => {
-      const key = normalizeText(c.code || c.name);
-      if(key && !seen.has(key)){
-        seen.add(key);
-        unique.push(c);
-      }
-    });
-
-    return unique;
+function normalizeRelationItem(item, type){
+  if(item === null || item === undefined){
+    return { code:"", title:"", raw:item };
   }
 
-  return [];
+  if(typeof item === "string" || typeof item === "number"){
+    const text = String(item).trim();
+    const code = extractStandardCode(text);
+
+    let title = text;
+
+    if(code){
+      const codePattern = code
+        .replace(".", "[.\\-]?")
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      title = text
+        .replace(new RegExp(`^${codePattern}\\s*[-–—:]?\\s*`, "i"), "")
+        .trim();
+    }
+
+    return {
+      code,
+      title,
+      raw:item
+    };
+  }
+
+  if(typeof item !== "object"){
+    return {
+      code:"",
+      title:String(item),
+      raw:item
+    };
+  }
+
+  let code = "";
+  let title = "";
+
+  if(type === "slki"){
+    code = pick(item, [
+      "kodeSlki",
+      "kodeSLKI",
+      "kode_slki",
+      "kodeLuaran",
+      "kode_luaran",
+      "idSlki",
+      "id_slki",
+      "code",
+      "kode",
+      "id"
+    ]);
+
+    title = pick(item, [
+      "judulSlki",
+      "judulSLKI",
+      "judul_slki",
+      "namaSlki",
+      "nama_slki",
+      "judulLuaran",
+      "judul_luaran",
+      "namaLuaran",
+      "nama_luaran",
+      "luaran",
+      "title",
+      "judul",
+      "nama",
+      "label",
+      "name"
+    ]);
+  }
+
+  if(type === "siki"){
+    code = pick(item, [
+      "kodeSiki",
+      "kodeSIKI",
+      "kode_siki",
+      "kodeIntervensi",
+      "kode_intervensi",
+      "idSiki",
+      "id_siki",
+      "idIntervensi",
+      "id_intervensi",
+      "code",
+      "kode",
+      "id"
+    ]);
+
+    title = pick(item, [
+      "judulSiki",
+      "judulSIKI",
+      "judul_siki",
+      "namaSiki",
+      "nama_siki",
+      "judulIntervensi",
+      "judul_intervensi",
+      "namaIntervensi",
+      "nama_intervensi",
+      "intervensi",
+      "title",
+      "judul",
+      "nama",
+      "label",
+      "name"
+    ]);
+  }
+
+  if(!code){
+    code = extractStandardCode(item);
+  }
+
+  if(!title){
+    title = pick(item, [
+      "title",
+      "judul",
+      "nama",
+      "label",
+      "name"
+    ]);
+  }
+
+  return {
+    code:String(code || "").trim(),
+    title:String(title || "").trim(),
+    raw:item
+  };
+}
+
+function getSelectedRelation(){
+  if(!selected.sdki || !DB.relations.length){
+    return null;
+  }
+
+  const selectedCode = normalizeCode(
+    selected.sdki.id ||
+    getId(selected.sdki.raw)
+  );
+
+  const selectedTitle = normalizeText(
+    selected.sdki.title ||
+    getTitle(selected.sdki.raw, "sdki")
+  );
+
+  if(selectedCode){
+    const relationByCode = DB.relations.find(row => {
+      const relationCode = normalizeCode(
+        pick(row, [
+          "kodeSdki",
+          "kodeSDKI",
+          "kode_sdki",
+          "idSdki",
+          "id_sdki",
+          "kode",
+          "id"
+        ])
+      );
+
+      return relationCode && relationCode === selectedCode;
+    });
+
+    if(relationByCode){
+      return relationByCode;
+    }
+  }
+
+  if(selectedTitle){
+    return DB.relations.find(row => {
+      const relationTitle = normalizeText(
+        pick(row, [
+          "judulSdki",
+          "judulSDKI",
+          "judul_sdki",
+          "namaSdki",
+          "nama_sdki",
+          "diagnosis",
+          "diagnosa",
+          "judul",
+          "nama"
+        ])
+      );
+
+      return (
+        relationTitle &&
+        (
+          relationTitle === selectedTitle ||
+          relationTitle.includes(selectedTitle) ||
+          selectedTitle.includes(relationTitle)
+        )
+      );
+    }) || null;
+  }
+
+  return null;
+}
+
+function getRelatedSlkiReferences(){
+  const relation = getSelectedRelation();
+
+  if(!relation){
+    return [];
+  }
+
+  const items = relationArray(
+    pick(relation, [
+      "slki",
+      "luaran",
+      "luaranKeperawatan",
+      "luaran_keperawatan"
+    ])
+  );
+
+  return items
+    .map(item => normalizeRelationItem(item, "slki"))
+    .filter(item => item.code || item.title);
+}
+
+function getRelatedSikiReferences(){
+  const relation = getSelectedRelation();
+
+  if(!relation){
+    return [];
+  }
+
+  const groups = [
+    {
+      type:"utama",
+      items:relationArray(
+        pick(relation, [
+          "sikiUtama",
+          "siki_utama",
+          "intervensiUtama",
+          "intervensi_utama"
+        ])
+      )
+    },
+    {
+      type:"pendukung",
+      items:relationArray(
+        pick(relation, [
+          "sikiPendukung",
+          "siki_pendukung",
+          "intervensiPendukung",
+          "intervensi_pendukung"
+        ])
+      )
+    },
+    {
+      type:"belum-terklasifikasi",
+      items:relationArray(
+        pick(relation, [
+          "sikiBelumTerklasifikasi",
+          "siki_belum_terklasifikasi",
+          "sikiLainnya",
+          "siki_lainnya"
+        ])
+      )
+    }
+  ];
+
+  const result = [];
+
+  groups.forEach(group => {
+    group.items.forEach(item => {
+      const normalized = normalizeRelationItem(item, "siki");
+
+      if(normalized.code || normalized.title){
+        result.push({
+          ...normalized,
+          relationType:group.type
+        });
+      }
+    });
+  });
+
+  return result;
+}
+
+function matchRelationToDatabase(references, database, type){
+  const matched = [];
+  const seen = new Set();
+
+  references.forEach(reference => {
+    const referenceCode = normalizeCode(reference.code);
+    const referenceTitle = normalizeText(reference.title);
+
+    const found = database.find(item => {
+      const itemCode = normalizeCode(getId(item));
+      const itemTitle = normalizeText(getTitle(item, type));
+
+      if(referenceCode && itemCode && referenceCode === itemCode){
+        return true;
+      }
+
+      if(referenceTitle && itemTitle){
+        if(referenceTitle === itemTitle){
+          return true;
+        }
+
+        if(
+          referenceTitle.length >= 5 &&
+          (
+            itemTitle.includes(referenceTitle) ||
+            referenceTitle.includes(itemTitle)
+          )
+        ){
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if(!found){
+      return;
+    }
+
+    const foundKey = normalizeCode(getId(found)) ||
+      normalizeText(getTitle(found, type));
+
+    if(!foundKey || seen.has(foundKey)){
+      return;
+    }
+
+    seen.add(foundKey);
+
+    matched.push({
+      ...found,
+      _relationType:reference.relationType || ""
+    });
+  });
+
+  return matched;
+}
+
+function getSuggestedSlki(){
+  const references = getRelatedSlkiReferences();
+
+  if(!references.length){
+    return [];
+  }
+
+  return matchRelationToDatabase(
+    references,
+    DB.slki,
+    "slki"
+  );
 }
 
 function getSuggestedSiki(){
-  const related = getRelatedFromTautan("siki");
+  const references = getRelatedSikiReferences();
 
-  if(!related.length) return [];
+  if(!references.length){
+    return [];
+  }
 
-  const matched = [];
-
-  related.forEach(rel => {
-    const relCode = normalizeText(rel.code);
-    const relName = normalizeText(rel.name);
-
-    const found = DB.siki.find(item => {
-      const id = normalizeText(getId(item));
-      const title = normalizeText(getTitle(item, "siki"));
-
-      return (
-        (relCode && id && id === relCode) ||
-        (relName && title && title === relName) ||
-        (relName && title && title.includes(relName)) ||
-        (relName && title && relName.includes(title))
-      );
-    });
-
-    if(found) matched.push(found);
-  });
-
-  const seen = new Set();
-
-  return matched.filter(item => {
-    const key = normalizeText(getId(item) || getTitle(item, "siki"));
-    if(seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  return matchRelationToDatabase(
+    references,
+    DB.siki,
+    "siki"
+  );
 }
 
 /* =========================
@@ -1415,9 +1725,22 @@ function renderOptionList(container, items, type, selectedItem, onSelect){
   }
 
   container.innerHTML = items.map((item, index) => {
-    const activeKey = selectedItem ? normalizeText(selectedItem.id || selectedItem.title) : "";
-    const thisKey = normalizeText(item.id || item.title);
+    const activeKey = selectedItem
+      ? normalizeCode(selectedItem.id) || normalizeText(selectedItem.title)
+      : "";
+
+    const thisKey = normalizeCode(item.id) || normalizeText(item.title);
     const isActive = activeKey && activeKey === thisKey;
+
+    let relationLabel = "";
+
+    if(item.relationType === "utama"){
+      relationLabel = " • Intervensi utama";
+    }else if(item.relationType === "pendukung"){
+      relationLabel = " • Intervensi pendukung";
+    }else if(item.relationType === "belum-terklasifikasi"){
+      relationLabel = " • Belum terklasifikasi";
+    }
 
     return `
       <button class="option-card native-click ${isActive ? "active" : ""}" type="button" data-index="${index}">
@@ -1427,7 +1750,12 @@ function renderOptionList(container, items, type, selectedItem, onSelect){
         <div class="option-body">
           <div class="option-title">${escapeHtml(item.title || "Tanpa Judul")}</div>
           <div class="option-desc">${escapeHtml(item.desc || "Ketuk untuk memilih item ini.")}</div>
-          ${item.id ? `<div class="option-meta">Kode: ${escapeHtml(item.id)}</div>` : ""}
+          ${(item.id || relationLabel) ? `
+            <div class="option-meta">
+              ${item.id ? `Kode: ${escapeHtml(item.id)}` : ""}
+              ${escapeHtml(relationLabel)}
+            </div>
+          ` : ""}
         </div>
       </button>
     `;
@@ -1443,10 +1771,7 @@ function renderOptionList(container, items, type, selectedItem, onSelect){
 
 function renderSdkiList(){
   const query = sdkiSearch.value.trim();
-
-  // Kalau belum mencari, tampilkan sedikit saja supaya tidak numpuk
   const limit = query ? 50 : 20;
-
   const items = searchItems(DB.sdki, "sdki", query, limit);
 
   renderOptionList(sdkiList, items, "sdki", selected.sdki, item => {
@@ -1460,8 +1785,12 @@ function renderSdkiList(){
 
     selectedSlki.style.display = "none";
     selectedSiki.style.display = "none";
+
     toSikiBtn.disabled = true;
     generateBtn.disabled = true;
+
+    slkiSearch.value = "";
+    sikiSearch.value = "";
 
     renderSdkiList();
     renderSlkiList();
@@ -1470,34 +1799,60 @@ function renderSdkiList(){
     showToast("Diagnosis dipilih");
   });
 }
-  
+
 function renderSlkiList(){
-  const items = searchItems(DB.slki, "slki", slkiSearch.value, 50);
+  const query = slkiSearch.value.trim();
+  const suggested = getSuggestedSlki();
+
+  let source = DB.slki;
+
+  if(!query && suggested.length){
+    source = suggested;
+  }
+
+  const items = searchItems(
+    source,
+    "slki",
+    query,
+    query ? 50 : 30
+  );
 
   renderOptionList(slkiList, items, "slki", selected.slki, item => {
     selected.slki = item;
+    selected.siki = null;
 
     selectedSlki.style.display = "block";
     selectedSlkiText.textContent = item.title || "-";
     toSikiBtn.disabled = false;
 
+    selectedSiki.style.display = "none";
+    generateBtn.disabled = true;
+
+    sikiSearch.value = "";
+
     renderSlkiList();
+    renderSikiList();
 
     showToast("Luaran dipilih");
   });
 }
 
 function renderSikiList(){
-  const q = sikiSearch.value;
-  let source = DB.siki;
-
+  const query = sikiSearch.value.trim();
   const suggested = getSuggestedSiki();
 
-  if(!q && suggested.length){
+  let source = DB.siki;
+
+  if(!query && suggested.length){
     source = suggested;
   }
 
-  const items = searchItems(source, "siki", q, 50);
+  const items = searchItems(
+    source,
+    "siki",
+    query,
+    query ? 50 : 30
+  );
 
   renderOptionList(sikiList, items, "siki", selected.siki, item => {
     selected.siki = item;
@@ -1541,8 +1896,13 @@ function updateProgress(){
    GENERATE
 ========================= */
 function buildAskepText(){
+  const diagnosisCode = selected.sdki?.id || "";
   const diagnosis = selected.sdki?.title || "-";
+
+  const luaranCode = selected.slki?.id || "";
   const luaran = selected.slki?.title || "-";
+
+  const intervensiCode = selected.siki?.id || "";
   const intervensi = selected.siki?.title || "-";
 
   const implementasi = getSikiImplementations(selected.siki?.raw || {});
@@ -1556,13 +1916,13 @@ function buildAskepText(){
       ].join("\n");
 
   return `Diagnosis Keperawatan:
-${diagnosis}
+${diagnosisCode ? diagnosisCode + " - " : ""}${diagnosis}
 
 Luaran Keperawatan:
-${luaran}
+${luaranCode ? luaranCode + " - " : ""}${luaran}
 
 Intervensi Keperawatan:
-${intervensi}
+${intervensiCode ? intervensiCode + " - " : ""}${intervensi}
 
 Implementasi:
 ${implementationText}`;
@@ -1614,7 +1974,9 @@ async function shareAskep(){
         text
       });
     }catch(err){
-      console.warn(err);
+      if(err?.name !== "AbortError"){
+        console.warn(err);
+      }
     }
   }else{
     await copyAskep();
@@ -1740,7 +2102,7 @@ loadAllData().catch(err => {
         <i class="fa-solid fa-circle-exclamation"></i>
       </div>
       <div class="empty-title">Data gagal dimuat</div>
-      <div class="empty-desc">Cek path JSON atau format data SDKI, SLKI, dan SIKI.</div>
+      <div class="empty-desc">Cek endpoint API SDKI, SLKI, SIKI, dan relations.</div>
     </div>
   `;
 });
