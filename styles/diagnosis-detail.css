@@ -574,3 +574,67 @@
     width: min(calc(100% - 80px), 1320px);
   }
 }
+
+/* =========================================================
+   ALUR DETAIL RESPONSIF
+   Mobile tetap memakai urutan lama. Tablet dan desktop
+   memakai dua kolom independen agar tidak muncul ruang kosong.
+========================================================= */
+.mobile-detail-flow {
+  display: block;
+}
+
+.wide-detail-columns {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  /* Batalkan grid lama pada container utama. */
+  .detail-content {
+    display: block;
+  }
+
+  .mobile-detail-flow {
+    display: none;
+  }
+
+  .wide-detail-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 16px;
+  }
+
+  .wide-detail-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .wide-detail-column > .card {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .wide-detail-columns,
+  .wide-detail-column {
+    gap: 20px;
+  }
+
+  .wide-detail-column > .card {
+    padding: 22px 24px;
+  }
+
+  /* Kolom kanan sedikit lebih lebar untuk daftar SLKI dan SIKI. */
+  .wide-detail-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  }
+
+  .wide-detail-column .link-list {
+    grid-template-columns: 1fr;
+  }
+}
