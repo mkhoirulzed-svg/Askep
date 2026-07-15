@@ -329,26 +329,47 @@ function renderPage(){
   // Prioritaskan field faktor risiko khusus; jika kosong, gunakan penyebab.
   const faktorRisikoTampil = faktorRisiko.length ? faktorRisiko : penyebab;
 
+  const mobileClinicalSections = isDiagnosisRisiko
+    ? renderListSection("Faktor Risiko", "fa-triangle-exclamation", faktorRisikoTampil)
+    : `
+        ${renderListSection("Penyebab", "fa-link", penyebab)}
+        ${renderListSection("Gejala dan Tanda Mayor", "fa-circle-check", mayor)}
+        ${renderListSection("Gejala dan Tanda Minor", "fa-list-check", minor)}
+      `;
+
+  const wideClinicalSections = isDiagnosisRisiko
+    ? renderListSection("Faktor Risiko", "fa-triangle-exclamation", faktorRisikoTampil)
+    : `
+        ${renderListSection("Penyebab", "fa-link", penyebab)}
+        ${renderListSection("Gejala dan Tanda Minor", "fa-list-check", minor)}
+        ${renderListSection("Gejala dan Tanda Mayor", "fa-circle-check", mayor)}
+      `;
+
   contentArea.innerHTML = `
-    ${renderTextSection("Definisi", "fa-circle-info", desc || "Definisi belum tersedia.")}
+    <!-- Urutan mobile dipertahankan seperti versi sebelumnya. -->
+    <div class="mobile-detail-flow">
+      ${renderTextSection("Definisi", "fa-circle-info", desc || "Definisi belum tersedia.")}
+      ${renderInfoGrid()}
+      ${mobileClinicalSections}
+      ${renderListSection("Kondisi Klinis Terkait", "fa-hospital-user", kondisi)}
+      ${renderRelatedSection("Luaran SLKI Terkait", "fa-chart-line", slkiLinks, "slki")}
+      ${renderRelatedSection("Intervensi SIKI Terkait", "fa-hand-holding-medical", sikiLinks, "siki")}
+    </div>
 
-    ${renderInfoGrid()}
+    <!-- Tablet dan desktop: dua kolom independen agar tidak ada ruang kosong antarbaris. -->
+    <div class="wide-detail-columns">
+      <div class="wide-detail-column">
+        ${renderTextSection("Definisi", "fa-circle-info", desc || "Definisi belum tersedia.")}
+        ${wideClinicalSections}
+        ${renderListSection("Kondisi Klinis Terkait", "fa-hospital-user", kondisi)}
+      </div>
 
-    ${
-      isDiagnosisRisiko
-        ? renderListSection("Faktor Risiko", "fa-triangle-exclamation", faktorRisikoTampil)
-        : `
-            ${renderListSection("Penyebab", "fa-link", penyebab)}
-            ${renderListSection("Gejala dan Tanda Mayor", "fa-circle-check", mayor)}
-            ${renderListSection("Gejala dan Tanda Minor", "fa-list-check", minor)}
-          `
-    }
-
-    ${renderListSection("Kondisi Klinis Terkait", "fa-hospital-user", kondisi)}
-
-    ${renderRelatedSection("Luaran SLKI Terkait", "fa-chart-line", slkiLinks, "slki")}
-
-    ${renderRelatedSection("Intervensi SIKI Terkait", "fa-hand-holding-medical", sikiLinks, "siki")}
+      <div class="wide-detail-column">
+        ${renderInfoGrid()}
+        ${renderRelatedSection("Luaran SLKI Terkait", "fa-chart-line", slkiLinks, "slki")}
+        ${renderRelatedSection("Intervensi SIKI Terkait", "fa-hand-holding-medical", sikiLinks, "siki")}
+      </div>
+    </div>
   `;
 }
 
