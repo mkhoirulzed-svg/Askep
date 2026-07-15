@@ -722,3 +722,107 @@
     padding: 11px;
   }
 }
+/* =========================================================
+   SIDEBAR DESKTOP — disamakan dengan askep.html
+   Hanya berlaku pada layar desktop.
+========================================================= */
+@media (min-width: 900px) {
+  .page-cari-gejala {
+    --desktop-sidebar-width: 248px;
+  }
+
+  .page-cari-gejala .app {
+    width: calc(100% - var(--desktop-sidebar-width));
+    max-width: none;
+    min-height: 100dvh;
+    margin: 0 0 0 var(--desktop-sidebar-width);
+    padding-bottom: 48px;
+  }
+
+  .page-cari-gejala .bottom-nav {
+    position: fixed;
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: var(--desktop-sidebar-width);
+    max-width: none;
+    height: 100dvh;
+    padding: 24px 18px;
+    overflow-y: auto;
+    transform: none;
+    border-top: 0;
+    border-right: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 8px 0 30px rgba(15, 23, 42, 0.04);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .page-cari-gejala .desktop-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+    margin: 0 4px 20px;
+    padding: 4px;
+  }
+
+  .page-cari-gejala .desktop-brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 9px 20px rgba(37, 99, 235, 0.20);
+    color: #fff;
+    font-size: 18px;
+  }
+
+  .page-cari-gejala .desktop-brand-copy {
+    min-width: 0;
+  }
+
+  .page-cari-gejala .desktop-brand-title {
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .page-cari-gejala .desktop-brand-subtitle {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .page-cari-gejala .bottom-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 52px;
+    min-height: 52px;
+    gap: 12px;
+    padding: 0 14px;
+    flex-direction: row;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+
+  .page-cari-gejala .bottom-item i {
+    width: 22px;
+    font-size: 17px;
+    text-align: center;
+  }
+
+  .page-cari-gejala .bottom-item.active {
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+}
