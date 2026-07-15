@@ -1,8 +1,8 @@
 /* =========================================================
    CARI BERDASARKAN GEJALA
-   Mobile  : satu kolom + bottom navigation
-   Tablet  : satu kolom dengan lebar terkontrol
-   Desktop : sidebar kiri dari responsive.css, konten kanan
+   - Mobile tetap satu kolom
+   - Tablet dan desktop tetap satu kolom
+   - Desktop menggunakan sidebar dari responsive.css
 ========================================================= */
 
 .page-cari-gejala {
@@ -13,16 +13,10 @@
 .page-cari-gejala .app {
   width: 100%;
   min-width: 0;
-  background: linear-gradient(
-    180deg,
-    var(--primary-light) 0%,
-    var(--bg) 330px
-  );
+  background: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 320px);
 }
 
-/* =========================
-   HEADER
-========================= */
+/* Header */
 .page-cari-gejala .topbar {
   display: block;
   margin: 0;
@@ -73,15 +67,13 @@
   white-space: nowrap;
 }
 
-/* =========================
-   MAIN CONTAINER
-========================= */
+/* Layout utama: selalu satu kolom */
 .page-cari-gejala .container {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: 18px;
+  gap: 16px;
   padding: 0 18px;
 }
 
@@ -91,20 +83,14 @@
   min-width: 0;
 }
 
-/* =========================
-   HERO
-========================= */
+/* Hero */
 .page-cari-gejala .hero-card {
   position: relative;
   margin-bottom: 14px;
   padding: 20px;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  background: linear-gradient(
-    135deg,
-    var(--primary),
-    var(--primary-dark)
-  );
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   box-shadow: 0 16px 32px rgba(37, 99, 235, 0.23);
   color: #fff;
 }
@@ -135,16 +121,14 @@
 }
 
 .page-cari-gejala .hero-card p {
-  max-width: 720px;
+  max-width: 680px;
   margin: 0;
   font-size: 13px;
   line-height: 1.65;
   opacity: 0.94;
 }
 
-/* =========================
-   SEARCH FORM
-========================= */
+/* Card utama */
 .page-cari-gejala .search-card,
 .page-cari-gejala .result-section {
   width: 100%;
@@ -156,6 +140,7 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Form pencarian */
 .page-cari-gejala .search-box {
   display: flex;
   align-items: flex-start;
@@ -180,7 +165,7 @@
   display: block;
   width: 100%;
   min-width: 0;
-  min-height: 126px;
+  min-height: 124px;
   resize: vertical;
   border: 0;
   outline: 0;
@@ -257,9 +242,7 @@
   white-space: nowrap;
 }
 
-/* =========================
-   STATUS
-========================= */
+/* Status */
 .page-cari-gejala .status {
   display: none;
   align-items: flex-start;
@@ -287,9 +270,7 @@
   color: var(--primary);
 }
 
-/* =========================
-   RESULTS
-========================= */
+/* Hasil */
 .page-cari-gejala .result-head {
   display: flex;
   align-items: center;
@@ -325,17 +306,29 @@
   gap: 10px;
 }
 
-/* Mendukung beberapa kemungkinan class dari JS lama */
+/*
+  Aman untuk markup yang dibuat JavaScript:
+  setiap elemen langsung di dalam #resultList dianggap sebagai kartu hasil.
+*/
+.page-cari-gejala .result-list > a,
+.page-cari-gejala .result-list > article,
+.page-cari-gejala .result-list > section,
+.page-cari-gejala .result-list > div {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .page-cari-gejala .result-card,
 .page-cari-gejala .diagnosis-card,
 .page-cari-gejala .result-item,
-.page-cari-gejala .diagnosis-item {
+.page-cari-gejala .diagnosis-item,
+.page-cari-gejala .result-list > a {
   position: relative;
   display: flex;
   align-items: flex-start;
   width: 100%;
   min-width: 0;
-  max-width: 100%;
   gap: 12px;
   padding: 14px;
   overflow: hidden;
@@ -348,7 +341,8 @@
 .page-cari-gejala .result-card > *,
 .page-cari-gejala .diagnosis-card > *,
 .page-cari-gejala .result-item > *,
-.page-cari-gejala .diagnosis-item > * {
+.page-cari-gejala .diagnosis-item > *,
+.page-cari-gejala .result-list > a > * {
   min-width: 0;
 }
 
@@ -380,7 +374,6 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  min-width: 0;
   gap: 7px;
   margin-bottom: 5px;
 }
@@ -408,7 +401,6 @@
 .page-cari-gejala .item-title {
   max-width: 100%;
   overflow-wrap: anywhere;
-  word-break: break-word;
   font-size: 14px;
   font-weight: 800;
   line-height: 1.4;
@@ -427,9 +419,7 @@
   line-height: 1.55;
 }
 
-.page-cari-gejala .result-card .chevron,
-.page-cari-gejala .diagnosis-card .chevron,
-.page-cari-gejala .result-item .chevron {
+.page-cari-gejala .chevron {
   flex: 0 0 auto;
   margin-top: 12px;
   color: #94a3b8;
@@ -446,9 +436,7 @@
   text-align: center;
 }
 
-/* =========================
-   TABLET
-========================= */
+/* Tablet */
 @media (min-width: 600px) and (max-width: 899px) {
   .page-cari-gejala .app,
   .page-cari-gejala .bottom-nav {
@@ -471,14 +459,12 @@
   }
 }
 
-/* =========================
-   DESKTOP / LAPTOP
-========================= */
+/* Desktop / laptop */
 @media (min-width: 900px) {
   .page-cari-gejala .topbar,
   .page-cari-gejala .container {
-    width: min(calc(100% - 56px), 920px);
-    max-width: 920px;
+    width: min(calc(100% - 56px), 780px);
+    max-width: 780px;
     margin-right: auto;
     margin-left: auto;
     padding-right: 0;
@@ -491,68 +477,52 @@
   }
 
   .page-cari-gejala .container {
-    gap: 20px;
-    padding-bottom: 32px;
+    gap: 18px;
+    padding-bottom: 36px;
   }
 
   .page-cari-gejala .hero-card {
-    min-height: 180px;
+    min-height: 165px;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: 30px;
+    padding: 28px;
   }
 
   .page-cari-gejala .hero-card::after {
-    top: -92px;
-    right: -72px;
-    width: 260px;
-    height: 260px;
+    top: -86px;
+    right: -70px;
+    width: 240px;
+    height: 240px;
   }
 
   .page-cari-gejala .hero-card h2 {
-    max-width: 720px;
-    font-size: clamp(26px, 2.2vw, 34px);
+    max-width: 620px;
+    font-size: 29px;
   }
 
   .page-cari-gejala .hero-card p {
-    max-width: 720px;
+    max-width: 650px;
     font-size: 14px;
   }
 
   .page-cari-gejala .search-card,
   .page-cari-gejala .result-section {
-    padding: 20px;
-  }
-
-  .page-cari-gejala .search-box textarea {
-    min-height: 132px;
-  }
-
-  .page-cari-gejala .result-list {
-    max-width: 100%;
-  }
-
-  .page-cari-gejala .result-card,
-  .page-cari-gejala .diagnosis-card,
-  .page-cari-gejala .result-item,
-  .page-cari-gejala .diagnosis-item {
-    padding: 15px 16px;
+    padding: 19px;
   }
 
   .page-cari-gejala .result-card:hover,
   .page-cari-gejala .diagnosis-card:hover,
   .page-cari-gejala .result-item:hover,
   .page-cari-gejala .diagnosis-item:hover,
+  .page-cari-gejala .result-list > a:hover,
   .page-cari-gejala .chip:hover {
     border-color: #cbd5e1;
     box-shadow: var(--shadow-md);
   }
 }
 
-/* =========================
-   MOBILE KECIL
-========================= */
+/* Mobile kecil */
 @media (max-width: 380px) {
   .page-cari-gejala .action-row {
     grid-template-columns: minmax(0, 1fr) 44px;
@@ -562,13 +532,5 @@
   .page-cari-gejala .search-card,
   .page-cari-gejala .result-section {
     border-radius: 20px;
-  }
-
-  .page-cari-gejala .result-card,
-  .page-cari-gejala .diagnosis-card,
-  .page-cari-gejala .result-item,
-  .page-cari-gejala .diagnosis-item {
-    gap: 10px;
-    padding: 12px;
   }
 }
