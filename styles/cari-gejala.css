@@ -1,676 +1,480 @@
 /* =========================================================
-   HALAMAN CARI BERDASARKAN GEJALA
-
-   CSS ini hanya untuk halaman cari-gejala.html.
-   global.css, layout.css, components.css, dan responsive.css
-   tetap memakai file yang sudah digunakan oleh index.html.
+   CARI BERDASARKAN GEJALA
+   Mobile: satu kolom
+   Tablet/Desktop: pencarian kiri, hasil kanan
 ========================================================= */
 
-.page-cari-gejala{
-  overflow-x:hidden;
+.page-cari-gejala {
+  overflow-x: hidden;
+  background: var(--bg);
 }
 
-.page-cari-gejala .app{
-  width:100%;
-  max-width:720px;
-  min-width:0;
-  margin:0 auto;
-  background:var(--bg);
+.page-cari-gejala .app {
+  width: 100%;
+  min-width: 0;
+  background: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 330px);
 }
 
-/* =========================================================
-   TOPBAR
-========================================================= */
-
-.page-cari-gejala .topbar{
-  position:sticky;
-  top:0;
-  z-index:40;
-  display:block;
-  width:100%;
-  margin:0;
-  padding:12px 16px 10px;
-  border-bottom:1px solid rgba(226,232,240,.75);
-  background:rgba(248,250,252,.92);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
+/* Header */
+.page-cari-gejala .topbar {
+  display: block;
+  margin: 0;
+  padding: 18px 18px 14px;
 }
 
-.page-cari-gejala .topbar-inner{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  width:100%;
-  max-width:720px;
-  min-width:0;
-  margin:0 auto;
+.page-cari-gejala .topbar-inner {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
 }
 
-.page-cari-gejala .back-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:42px;
-  height:42px;
-  flex:0 0 42px;
-  padding:0;
-  border:0;
-  border-radius:15px;
-  background:var(--card);
-  box-shadow:var(--shadow-sm);
-  color:var(--primary);
-  font-size:17px;
+.page-cari-gejala .back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 15px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  color: var(--primary);
 }
 
-.page-cari-gejala .top-title{
-  min-width:0;
-  flex:1;
+.page-cari-gejala .top-title {
+  min-width: 0;
+  flex: 1;
 }
 
-.page-cari-gejala .top-title h1{
-  margin:0;
-  font-size:18px;
-  font-weight:800;
-  line-height:1.2;
+.page-cari-gejala .top-title h1 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.page-cari-gejala .top-title p{
-  margin:3px 0 0;
-  overflow:hidden;
-  color:var(--muted);
-  font-size:12px;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+.page-cari-gejala .top-title p {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* =========================================================
-   LAYOUT
-========================================================= */
-
-.page-cari-gejala .container{
-  display:block;
-  width:100%;
-  max-width:720px;
-  min-width:0;
-  margin:0 auto;
-  padding:16px;
+/* Main */
+.page-cari-gejala .container {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 16px;
+  padding: 0 18px;
 }
 
 .page-cari-gejala .search-column,
-.page-cari-gejala .result-column{
-  min-width:0;
+.page-cari-gejala .result-column {
+  min-width: 0;
 }
 
-.page-cari-gejala .result-column{
-  width:100%;
+/* Hero */
+.page-cari-gejala .hero-card {
+  position: relative;
+  margin-bottom: 14px;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.23);
+  color: #fff;
 }
 
-/* =========================================================
-   HERO
-========================================================= */
-
-.page-cari-gejala .hero-card{
-  position:relative;
-  margin-bottom:14px;
-  padding:18px;
-  overflow:hidden;
-  border-radius:var(--radius-lg);
-  background:linear-gradient(
-    135deg,
-    var(--primary),
-    var(--primary-dark)
-  );
-  box-shadow:0 16px 32px rgba(37,99,235,.22);
-  color:#fff;
+.page-cari-gejala .hero-card::after {
+  position: absolute;
+  top: -58px;
+  right: -52px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  content: "";
+  pointer-events: none;
 }
 
-.page-cari-gejala .hero-card::after{
-  content:"";
-  position:absolute;
-  top:-55px;
-  right:-55px;
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  background:rgba(255,255,255,.12);
-  pointer-events:none;
+.page-cari-gejala .hero-card h2,
+.page-cari-gejala .hero-card p {
+  position: relative;
+  z-index: 1;
 }
 
-.page-cari-gejala .hero-card h2{
-  position:relative;
-  z-index:1;
-  margin:0 0 6px;
-  font-size:20px;
-  font-weight:800;
-  line-height:1.3;
+.page-cari-gejala .hero-card h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.3;
 }
 
-.page-cari-gejala .hero-card p{
-  position:relative;
-  z-index:1;
-  margin:0;
-  font-size:13px;
-  line-height:1.55;
-  opacity:.92;
+.page-cari-gejala .hero-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  opacity: 0.94;
 }
 
-/* =========================================================
-   SEARCH CARD
-========================================================= */
-
-.page-cari-gejala .search-card{
-  width:100%;
-  min-width:0;
-  margin-bottom:14px;
-  padding:14px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  background:var(--card);
-  box-shadow:var(--shadow-sm);
+/* Search card */
+.page-cari-gejala .search-card,
+.page-cari-gejala .result-section {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
 }
 
-.page-cari-gejala .search-box{
-  display:flex;
-  align-items:flex-start;
-  width:100%;
-  min-width:0;
-  gap:10px;
-  padding:12px 13px;
-  border:1px solid var(--border);
-  border-radius:18px;
-  background:var(--bg);
-  box-shadow:none;
+.page-cari-gejala .search-box {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  gap: 11px;
+  padding: 13px 14px;
+  border: 1px solid var(--primary-soft);
+  border-radius: 18px;
+  background: var(--primary-light);
+  box-shadow: none;
 }
 
-.page-cari-gejala .search-box i{
-  flex:0 0 auto;
-  margin-top:3px;
-  color:var(--primary);
+.page-cari-gejala .search-box > i {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: var(--primary);
+  font-size: 16px;
 }
 
-.page-cari-gejala .search-box textarea{
-  display:block;
-  width:100%;
-  min-width:0;
-  min-height:74px;
-  padding:0;
-  border:0;
-  outline:0;
-  resize:none;
-  background:transparent;
-  color:var(--text);
-  font-family:inherit;
-  font-size:14px;
-  line-height:1.5;
+.page-cari-gejala .search-box textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 132px;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
 }
 
-.page-cari-gejala .search-box textarea::placeholder{
-  color:#94a3b8;
+.page-cari-gejala .search-box textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
 }
 
-/* =========================================================
-   BUTTON
-========================================================= */
-
-.page-cari-gejala .action-row{
-  display:flex;
-  width:100%;
-  min-width:0;
-  gap:10px;
-  margin-top:12px;
+.page-cari-gejala .action-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  gap: 10px;
+  margin-top: 12px;
 }
 
-.page-cari-gejala .btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:44px;
-  padding:0 14px;
-  gap:8px;
-  border:0;
-  border-radius:15px;
-  font-family:inherit;
-  font-weight:800;
+.page-cari-gejala .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  gap: 8px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 800;
 }
 
-.page-cari-gejala .btn-primary{
-  min-width:0;
-  flex:1;
-  background:var(--primary);
-  box-shadow:0 10px 18px rgba(37,99,235,.20);
-  color:#fff;
+.page-cari-gejala .btn-primary {
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+  color: #fff;
 }
 
-.page-cari-gejala .btn-primary span{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+.page-cari-gejala .btn-light {
+  padding: 0;
+  background: var(--primary-light);
+  color: var(--primary);
 }
 
-.page-cari-gejala .btn-light{
-  width:44px;
-  flex:0 0 44px;
-  padding:0;
-  background:var(--primary-light);
-  color:var(--primary);
+.page-cari-gejala .chip-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-/* =========================================================
-   CHIP
-========================================================= */
-
-.page-cari-gejala .chip-wrap{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:12px;
+.page-cari-gejala .chip-wrap::-webkit-scrollbar {
+  display: none;
 }
 
-.page-cari-gejala .chip-wrap .chip{
-  flex:0 0 auto;
-  padding:8px 10px;
-  border:0;
-  border-radius:999px;
-  background:var(--primary-light);
-  box-shadow:none;
-  color:var(--primary-dark);
-  font-size:12px;
-  font-weight:700;
+.page-cari-gejala .chip {
+  flex: 0 0 auto;
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
-/* =========================================================
-   STATUS
-========================================================= */
-
-.page-cari-gejala .status{
-  display:none;
-  align-items:center;
-  width:100%;
-  min-width:0;
-  gap:9px;
-  margin-bottom:14px;
-  padding:12px 14px;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  background:var(--card);
-  box-shadow:var(--shadow-sm);
-  color:var(--muted);
-  font-size:13px;
+/* Status */
+.page-cari-gejala .status {
+  display: none;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--primary-soft);
+  border-radius: 16px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
-.page-cari-gejala .status.show{
-  display:flex;
+.page-cari-gejala .status.show {
+  display: flex;
 }
 
-.page-cari-gejala .status i{
-  flex:0 0 auto;
-  color:var(--primary);
+.page-cari-gejala .status i {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--primary);
 }
 
-.page-cari-gejala .status span{
-  min-width:0;
-  overflow-wrap:anywhere;
+/* Result */
+.page-cari-gejala .result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-/* =========================================================
-   RESULT
-========================================================= */
-
-.page-cari-gejala .result-section{
-  min-width:0;
+.page-cari-gejala .result-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
 }
 
-.page-cari-gejala .result-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-width:0;
-  gap:10px;
-  margin:10px 2px 12px;
+.page-cari-gejala .result-count {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
 }
 
-.page-cari-gejala .result-head h3{
-  min-width:0;
-  margin:0;
-  font-size:15px;
-  font-weight:800;
+.page-cari-gejala .result-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 10px;
 }
 
-.page-cari-gejala .result-count{
-  flex:0 0 auto;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:700;
+/* Dukungan untuk kartu yang dirender oleh JS */
+.page-cari-gejala .result-card,
+.page-cari-gejala .diagnosis-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  gap: 12px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
 }
 
-.page-cari-gejala .result-list{
-  display:flex;
-  flex-direction:column;
-  width:100%;
-  min-width:0;
-  gap:12px;
+.page-cari-gejala .result-icon,
+.page-cari-gejala .diagnosis-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 15px;
+  background: var(--primary-light);
+  color: var(--primary);
 }
 
-/* =========================================================
-   DIAGNOSIS CARD
-========================================================= */
-
-.page-cari-gejala .dx-card{
-  width:100%;
-  min-width:0;
-  padding:14px;
-  overflow:hidden;
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  background:var(--card);
-  box-shadow:var(--shadow-sm);
-  cursor:pointer;
-  transition:
-    transform .16s ease,
-    border-color .16s ease,
-    box-shadow .16s ease;
+.page-cari-gejala .result-body,
+.page-cari-gejala .diagnosis-body {
+  min-width: 0;
+  flex: 1;
 }
 
-.page-cari-gejala .dx-card:active{
-  transform:scale(.985);
+.page-cari-gejala .result-title,
+.page-cari-gejala .diagnosis-title {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
-.page-cari-gejala .dx-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  min-width:0;
-  gap:10px;
+.page-cari-gejala .result-code,
+.page-cari-gejala .diagnosis-code {
+  display: inline-flex;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 10px;
+  font-weight: 800;
 }
 
-.page-cari-gejala .dx-title{
-  min-width:0;
-  flex:1;
+.page-cari-gejala .result-desc,
+.page-cari-gejala .diagnosis-desc,
+.page-cari-gejala .match-info {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
 }
 
-.page-cari-gejala .dx-title h4{
-  min-width:0;
-  margin:0;
-  overflow-wrap:anywhere;
-  font-size:15px;
-  font-weight:800;
-  line-height:1.35;
+.page-cari-gejala .empty-state,
+.page-cari-gejala .loading {
+  padding: 34px 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
 }
 
-.page-cari-gejala .dx-code{
-  display:inline-flex;
-  max-width:100%;
-  margin-bottom:5px;
-  padding:4px 8px;
-  overflow:hidden;
-  border-radius:999px;
-  background:var(--primary-light);
-  color:var(--primary-dark);
-  font-size:11px;
-  font-weight:800;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.page-cari-gejala .score-badge{
-  display:flex;
-  align-items:center;
-  flex:0 0 auto;
-  gap:5px;
-  padding:6px 9px;
-  border-radius:999px;
-  background:#ecfdf5;
-  color:#15803d;
-  font-size:11px;
-  font-weight:800;
-}
-
-/* =========================================================
-   META
-========================================================= */
-
-.page-cari-gejala .meta-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:9px;
-}
-
-.page-cari-gejala .meta{
-  display:inline-flex;
-  max-width:100%;
-  padding:5px 8px;
-  overflow:hidden;
-  border-radius:999px;
-  background:#f1f5f9;
-  color:var(--muted);
-  font-size:11px;
-  font-weight:700;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-/* =========================================================
-   MATCH RESULT
-========================================================= */
-
-.page-cari-gejala .match-box{
-  width:100%;
-  min-width:0;
-  margin-top:11px;
-  padding:10px;
-  overflow-wrap:anywhere;
-  border-radius:15px;
-  background:var(--primary-light);
-  color:#1e3a8a;
-  font-size:12px;
-  line-height:1.5;
-}
-
-.page-cari-gejala .match-box b{
-  color:var(--primary-dark);
-}
-
-.page-cari-gejala .match-list{
-  margin:6px 0 0;
-  padding-left:17px;
-}
-
-.page-cari-gejala .match-list li{
-  margin:3px 0;
-  overflow-wrap:anywhere;
-}
-
-/* =========================================================
-   EMPTY STATE
-========================================================= */
-
-.page-cari-gejala .empty{
-  width:100%;
-  min-width:0;
-  margin-top:12px;
-  padding:20px;
-  text-align:center;
-  border:1px dashed #cbd5e1;
-  border-radius:var(--radius-lg);
-  background:var(--card);
-  color:var(--muted);
-}
-
-.page-cari-gejala .empty i{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:48px;
-  height:48px;
-  margin-bottom:10px;
-  border-radius:18px;
-  background:var(--primary-light);
-  color:var(--primary);
-  font-size:20px;
-}
-
-.page-cari-gejala .empty h3{
-  margin:0 0 6px;
-  color:var(--text);
-  font-size:16px;
-}
-
-.page-cari-gejala .empty p{
-  margin:0;
-  overflow-wrap:anywhere;
-  font-size:13px;
-  line-height:1.5;
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (min-width:600px) and (max-width:899px){
-
-  .page-cari-gejala .app,
-  .page-cari-gejala .bottom-nav{
-    max-width:760px;
+/* Tablet: dua kolom, navigasi masih bawah */
+@media (min-width: 600px) and (max-width: 899px) {
+  .page-cari-gejala .app {
+    max-width: 860px;
   }
 
-  .page-cari-gejala .container{
-    max-width:760px;
-    padding:24px 28px;
+  .page-cari-gejala .bottom-nav {
+    max-width: 860px;
   }
 
-  .page-cari-gejala .topbar{
-    padding-right:28px;
-    padding-left:28px;
+  .page-cari-gejala .topbar,
+  .page-cari-gejala .container {
+    padding-right: 28px;
+    padding-left: 28px;
   }
 
-  .page-cari-gejala .topbar-inner{
-    max-width:704px;
+  .page-cari-gejala .container {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 18px;
+  }
+
+  .page-cari-gejala .hero-card {
+    padding: 24px;
+  }
+
+  .page-cari-gejala .result-column {
+    min-height: 100%;
+  }
+}
+
+/* Desktop/laptop: sidebar kiri dari responsive.css */
+@media (min-width: 900px) {
+  .page-cari-gejala .topbar,
+  .page-cari-gejala .container {
+    width: min(calc(100% - 48px), var(--content-max-width));
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .page-cari-gejala .topbar {
+    padding-top: 32px;
+    padding-bottom: 18px;
+  }
+
+  .page-cari-gejala .container {
+    grid-template-columns: minmax(320px, 0.85fr) minmax(420px, 1.15fr);
+    align-items: start;
+    gap: 24px;
+  }
+
+  .page-cari-gejala .hero-card {
+    min-height: 210px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 32px;
+  }
+
+  .page-cari-gejala .hero-card::after {
+    top: -95px;
+    right: -75px;
+    width: 280px;
+    height: 280px;
+  }
+
+  .page-cari-gejala .hero-card h2 {
+    max-width: 520px;
+    font-size: clamp(26px, 2.3vw, 36px);
+  }
+
+  .page-cari-gejala .hero-card p {
+    max-width: 560px;
+    font-size: 14px;
+  }
+
+  .page-cari-gejala .search-card,
+  .page-cari-gejala .result-section {
+    padding: 20px;
+  }
+
+  .page-cari-gejala .search-box textarea {
+    min-height: 170px;
+  }
+
+  .page-cari-gejala .result-column {
+    min-width: 0;
+  }
+
+  .page-cari-gejala .result-section {
+    min-height: 420px;
+  }
+
+  .page-cari-gejala .result-card:hover,
+  .page-cari-gejala .diagnosis-card:hover,
+  .page-cari-gejala .chip:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+  }
+}
+
+@media (max-width: 380px) {
+  .page-cari-gejala .action-row {
+    grid-template-columns: 1fr 44px;
   }
 
   .page-cari-gejala .hero-card,
   .page-cari-gejala .search-card,
-  .page-cari-gejala .dx-card{
-    padding:20px;
-  }
-}
-
-/* =========================================================
-   DESKTOP
-========================================================= */
-
-@media (min-width:900px){
-
-  .page-cari-gejala .app{
-    width:calc(100% - var(--desktop-sidebar-width));
-    max-width:none;
-    min-width:0;
-    margin:0 0 0 var(--desktop-sidebar-width);
-    padding-bottom:40px;
-  }
-
-  .page-cari-gejala .topbar{
-    position:sticky;
-    width:100%;
-    padding:18px 32px;
-  }
-
-  .page-cari-gejala .topbar-inner{
-    width:min(100%, var(--content-max-width));
-    max-width:var(--content-max-width);
-  }
-
-  .page-cari-gejala .container{
-    display:grid;
-    grid-template-columns:minmax(280px,380px) minmax(0,1fr);
-    align-items:start;
-    width:min(
-      calc(100% - 48px),
-      var(--content-max-width)
-    );
-    max-width:100%;
-    min-width:0;
-    gap:24px;
-    padding:28px 0 0;
-  }
-
-  .page-cari-gejala .search-column,
-  .page-cari-gejala .result-column{
-    min-width:0;
-  }
-
-  .page-cari-gejala .search-column{
-    position:sticky;
-    top:108px;
-  }
-
-  .page-cari-gejala .hero-card{
-    margin-bottom:14px;
-  }
-
-  .page-cari-gejala .search-card{
-    margin-bottom:0;
-  }
-
-  .page-cari-gejala .result-head{
-    margin-top:0;
-  }
-
-  .page-cari-gejala .dx-card:hover{
-    border-color:#cbd5e1;
-    box-shadow:var(--shadow-md);
-    transform:translateY(-2px);
-  }
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width:480px){
-
-  .page-cari-gejala .container{
-    padding:12px;
-  }
-
-  .page-cari-gejala .topbar{
-    padding-right:12px;
-    padding-left:12px;
-  }
-
-  .page-cari-gejala .hero-card{
-    padding:16px;
-  }
-
-  .page-cari-gejala .hero-card h2{
-    font-size:18px;
-  }
-
-  .page-cari-gejala .search-card{
-    padding:12px;
-  }
-
-  .page-cari-gejala .action-row{
-    gap:8px;
-  }
-
-  .page-cari-gejala .score-badge{
-    padding:5px 7px;
-  }
-}
-
-@media (max-width:360px){
-
-  .page-cari-gejala .btn-primary{
-    padding-right:10px;
-    padding-left:10px;
-  }
-
-  .page-cari-gejala .chip-wrap{
-    gap:6px;
-  }
-
-  .page-cari-gejala .chip-wrap .chip{
-    padding:7px 9px;
+  .page-cari-gejala .result-section {
+    border-radius: 20px;
   }
 }
