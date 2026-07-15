@@ -363,7 +363,7 @@
   text-align: center;
 }
 
-/* Tablet: dua kolom, navigasi masih bawah */
+/* Tablet: tetap satu kolom, navigasi masih bawah */
 @media (min-width: 600px) and (max-width: 899px) {
   .page-cari-gejala .app {
     max-width: 860px;
@@ -380,21 +380,16 @@
   }
 
   .page-cari-gejala .container {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    align-items: start;
+    grid-template-columns: 1fr;
     gap: 18px;
   }
 
   .page-cari-gejala .hero-card {
     padding: 24px;
   }
-
-  .page-cari-gejala .result-column {
-    min-height: 100%;
-  }
 }
 
-/* Desktop/laptop: sidebar kiri dari responsive.css */
+/* Desktop/laptop: sidebar kiri, konten tetap satu kolom */
 @media (min-width: 900px) {
   .page-cari-gejala .topbar,
   .page-cari-gejala .container {
@@ -412,8 +407,7 @@
   }
 
   .page-cari-gejala .container {
-    grid-template-columns: minmax(320px, 0.85fr) minmax(420px, 1.15fr);
-    align-items: start;
+    grid-template-columns: 1fr;
     gap: 24px;
   }
 
@@ -433,12 +427,12 @@
   }
 
   .page-cari-gejala .hero-card h2 {
-    max-width: 520px;
+    max-width: 760px;
     font-size: clamp(26px, 2.3vw, 36px);
   }
 
   .page-cari-gejala .hero-card p {
-    max-width: 560px;
+    max-width: 820px;
     font-size: 14px;
   }
 
@@ -448,15 +442,11 @@
   }
 
   .page-cari-gejala .search-box textarea {
-    min-height: 170px;
-  }
-
-  .page-cari-gejala .result-column {
-    min-width: 0;
+    min-height: 150px;
   }
 
   .page-cari-gejala .result-section {
-    min-height: 420px;
+    min-height: 0;
   }
 
   .page-cari-gejala .result-card:hover,
