@@ -20,11 +20,7 @@
 
   <header class="topbar">
     <div class="topbar-inner">
-      <button
-        class="back-btn native-click"
-        onclick="history.back()"
-        aria-label="Kembali"
-      >
+      <button class="back-btn native-click" onclick="history.back()" aria-label="Kembali">
         <i class="fa-solid fa-chevron-left"></i>
       </button>
 
@@ -36,7 +32,6 @@
   </header>
 
   <main class="container">
-
     <div class="search-column">
       <section class="hero-card">
         <h2>Cari diagnosis dari gejala pasien</h2>
@@ -62,49 +57,16 @@
             <span>Cari Diagnosis</span>
           </button>
 
-          <button
-            class="btn btn-light native-click"
-            id="clearBtn"
-            type="button"
-            title="Bersihkan"
-            aria-label="Bersihkan pencarian"
-          >
+          <button class="btn btn-light native-click" id="clearBtn" type="button" title="Bersihkan" aria-label="Bersihkan pencarian">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
         <div class="chip-wrap">
-          <button
-            class="chip native-click"
-            type="button"
-            data-example="nyeri akut, tampak meringis, sulit tidur"
-          >
-            Nyeri
-          </button>
-
-          <button
-            class="chip native-click"
-            type="button"
-            data-example="sesak napas, dispnea, penggunaan otot bantu napas"
-          >
-            Sesak
-          </button>
-
-          <button
-            class="chip native-click"
-            type="button"
-            data-example="mual, muntah, tidak nafsu makan"
-          >
-            Mual
-          </button>
-
-          <button
-            class="chip native-click"
-            type="button"
-            data-example="cemas, gelisah, sulit tidur, khawatir"
-          >
-            Cemas
-          </button>
+          <button class="chip native-click" type="button" data-example="nyeri akut, tampak meringis, sulit tidur">Nyeri</button>
+          <button class="chip native-click" type="button" data-example="sesak napas, dispnea, penggunaan otot bantu napas">Sesak</button>
+          <button class="chip native-click" type="button" data-example="mual, muntah, tidak nafsu makan">Mual</button>
+          <button class="chip native-click" type="button" data-example="cemas, gelisah, sulit tidur, khawatir">Cemas</button>
         </div>
       </section>
     </div>
@@ -118,15 +80,12 @@
       <section class="result-section">
         <div class="result-head">
           <h3>Hasil Pencarian</h3>
-          <span class="result-count" id="resultCount">
-            0 diagnosis
-          </span>
+          <span class="result-count" id="resultCount">0 diagnosis</span>
         </div>
 
         <div class="result-list" id="resultList"></div>
       </section>
     </div>
-
   </main>
 
   <nav class="bottom-nav" aria-label="Navigasi utama">
@@ -141,16 +100,15 @@
     </a>
 
     <a href="quick-askep.html" class="bottom-item native-click">
-    <i class="fa-solid fa-notes-medical"></i>
-    <span>Askep</span>
-  </a>
+      <i class="fa-solid fa-notes-medical"></i>
+      <span>Askep</span>
+    </a>
 
     <a href="profil.html" class="bottom-item native-click">
       <i class="fa-solid fa-user-nurse"></i>
       <span>Profil</span>
     </a>
   </nav>
-
 </div>
 
 <script src="../scripts/cari-gejala.js" defer></script>
