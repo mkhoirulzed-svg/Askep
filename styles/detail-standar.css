@@ -1,0 +1,48 @@
+/* =========================================================
+   LAYOUT BERSAMA HALAMAN DETAIL SDKI / SLKI / SIKI
+   Dipakai setelah global.css, layout.css, components.css,
+   dan responsive.css.
+========================================================= */
+.page-detail-standar{overflow-x:hidden;background:var(--bg)}
+.page-detail-standar .app{width:100%;max-width:520px;min-width:0;margin:0 auto;background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 320px)}
+.detail-header{padding:18px 18px 14px}
+.detail-topbar{display:flex;align-items:center;min-width:0;gap:12px;margin-bottom:16px}
+.nav-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:0 0 44px;padding:0;border:0;border-radius:15px;background:var(--card);box-shadow:var(--shadow-sm);color:var(--primary)}
+.detail-heading{min-width:0;flex:1}
+.detail-heading h1{margin:0;font-size:19px;font-weight:800;line-height:1.2}
+.detail-heading p{margin:4px 0 0;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.detail-content{width:100%;min-width:0;padding:0 18px}
+.hero-card{position:relative;margin-bottom:14px;overflow:hidden;padding:18px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 16px 32px var(--detail-shadow);color:#fff}
+.hero-card::after{position:absolute;top:-58px;right:-52px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.13);content:"";pointer-events:none}
+.badge,.hero-title,.hero-desc{position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.16);font-size:11px;font-weight:800}
+.hero-title{margin-bottom:8px;overflow-wrap:anywhere;font-size:21px;font-weight:800;line-height:1.25}
+.hero-desc{font-size:13px;line-height:1.55;opacity:.94}
+.section-title{display:flex;align-items:center;gap:8px;margin:18px 0 10px;font-size:14px;font-weight:800}
+.section-title i{flex:0 0 auto;color:var(--primary)}
+.detail-card,.detail-panel{min-width:0;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--card);box-shadow:var(--shadow-sm)}
+.detail-card{margin-bottom:12px;padding:15px}
+.detail-text{overflow-wrap:anywhere;font-size:13px;line-height:1.65}
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px 0;color:var(--muted);font-size:13px}
+.spinner{width:18px;height:18px;border:3px solid var(--primary-soft);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.native-click{position:relative;overflow:hidden;cursor:pointer;touch-action:manipulation}
+.native-click:active{transform:scale(.985)}
+.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple .55s linear;background:var(--ripple-color);pointer-events:none}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+.siki-desktop-layout{display:none}
+@media (min-width:600px){
+  .page-detail-standar .app{max-width:760px}
+  .detail-header,.detail-content{padding-right:28px;padding-left:28px}
+}
+@media (min-width:900px){
+  .page-detail-standar .app{width:calc(100% - var(--desktop-sidebar-width));max-width:none;min-height:100dvh;margin:0 0 0 var(--desktop-sidebar-width);padding-bottom:48px;background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 420px)}
+  .detail-header,.detail-content{width:min(calc(100% - 48px),var(--content-max-width));margin-right:auto;margin-left:auto;padding-right:0;padding-left:0}
+  .detail-header{padding-top:32px}
+  .hero-card{padding:28px}
+  .hero-title{font-size:clamp(24px,2.4vw,34px)}
+  .siki-mobile-flow{display:none}
+  .siki-desktop-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);align-items:start;gap:20px}
+  .detail-column{display:flex;min-width:0;flex-direction:column;gap:0}
+}
+@media (min-width:1280px){.siki-desktop-layout{gap:24px}}
