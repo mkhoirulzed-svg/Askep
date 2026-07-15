@@ -534,3 +534,191 @@
     border-radius: 20px;
   }
 }
+
+/* =========================================================
+   PERBAIKAN MARKUP HASIL ASLI DARI cari-gejala.js
+========================================================= */
+.page-cari-gejala .dx-card {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.page-cari-gejala .dx-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 12px;
+}
+
+.page-cari-gejala .dx-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.page-cari-gejala .dx-title h4 {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.page-cari-gejala .dx-code {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 5px 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-cari-gejala .score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 30px;
+  flex: 0 0 auto;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.page-cari-gejala .meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.page-cari-gejala .meta {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 5px 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-cari-gejala .match-box {
+  margin-top: 12px;
+  padding: 12px 13px;
+  border: 1px solid var(--primary-soft);
+  border-radius: 15px;
+  background: var(--primary-light);
+  color: #1e3a8a;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.page-cari-gejala .match-box b {
+  color: var(--primary-dark);
+}
+
+.page-cari-gejala .match-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.page-cari-gejala .match-list li {
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+
+.page-cari-gejala .empty {
+  width: 100%;
+  padding: 28px 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  color: var(--muted);
+  text-align: center;
+}
+
+.page-cari-gejala .empty i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 20px;
+}
+
+.page-cari-gejala .empty h3 {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.page-cari-gejala .empty p {
+  max-width: 520px;
+  margin: 0 auto;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .page-cari-gejala .dx-card:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Desktop: kurangi ruang kosong tanpa membuat konten terlalu lebar */
+@media (min-width: 900px) {
+  .page-cari-gejala .topbar,
+  .page-cari-gejala .container {
+    width: min(calc(100% - 64px), 920px);
+    max-width: 920px;
+    margin-right: auto;
+    margin-left: 32px;
+  }
+}
+
+@media (max-width: 599px) {
+  .page-cari-gejala .dx-card {
+    padding: 14px;
+  }
+
+  .page-cari-gejala .dx-title h4 {
+    font-size: 14px;
+  }
+
+  .page-cari-gejala .match-box {
+    padding: 11px;
+  }
+}
