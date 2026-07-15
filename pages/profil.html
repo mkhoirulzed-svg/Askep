@@ -1,816 +1,285 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Profil</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-:root{
-  --primary:#2563eb;
-  --primary-dark:#1d4ed8;
-  --primary-soft:#dbeafe;
-  --primary-light:#eff6ff;
-
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --text:#0f172a;
-  --muted:#64748b;
-  --border:#e2e8f0;
-
-  --success:#16a34a;
-  --warning:#f59e0b;
-  --danger:#ef4444;
-
-  --radius-sm:12px;
-  --radius-md:18px;
-  --radius-lg:24px;
-
-  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
-  --shadow-md:0 10px 28px rgba(15,23,42,.10);
-
-  --bottom-nav-height:76px;
-}
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  margin:0;
-  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overscroll-behavior:none;
-}
-
-body,
-button,
-a,
-.card,
-.profile-card,
-.form-card,
-.bottom-item,
-.native-click{
-  user-select:none;
-  -webkit-user-select:none;
-  -ms-user-select:none;
-}
-
-input,
-textarea,
-select{
-  user-select:text;
-  -webkit-user-select:text;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-button,
-input,
-textarea,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  max-width:520px;
-  margin:0 auto;
-  min-height:100vh;
-  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 300px);
-  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px);
-}
-
-.header{
-  padding:18px 18px 14px;
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:16px;
-}
-
-.nav-btn{
-  width:44px;
-  height:44px;
-  border:0;
-  border-radius:15px;
-  background:var(--card);
-  color:var(--primary);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:var(--shadow-sm);
-  position:relative;
-  overflow:hidden;
-}
-
-.header-title{
-  flex:1;
-  min-width:0;
-}
-
-.header-title h1{
-  font-size:19px;
-  font-weight:800;
-  margin:0;
-  line-height:1.2;
-}
-
-.header-title p{
-  font-size:12px;
-  color:var(--muted);
-  margin:4px 0 0;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.hero-card{
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:#fff;
-  border-radius:var(--radius-lg);
-  padding:16px;
-  box-shadow:0 16px 32px rgba(37,99,235,.22);
-}
-
-.hero-title{
-  font-size:16px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.hero-desc{
-  font-size:12px;
-  line-height:1.55;
-  opacity:.92;
-}
-
-.content{
-  padding:0 18px;
-}
-
-.profile-card,
-.form-card,
-.info-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:15px;
-  box-shadow:var(--shadow-sm);
-  margin-bottom:14px;
-}
-
-.login-empty{
-  text-align:center;
-  padding:24px 10px;
-}
-
-.login-icon{
-  width:70px;
-  height:70px;
-  border-radius:26px;
-  background:var(--primary-light);
-  color:var(--primary);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 14px;
-  font-size:30px;
-}
-
-.login-title{
-  font-size:17px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.login-desc{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.6;
-  margin-bottom:16px;
-}
-
-.user-head{
-  display:flex;
-  align-items:center;
-  gap:13px;
-}
-
-.avatar-wrap{
-  width:66px;
-  height:66px;
-  border-radius:24px;
-  overflow:hidden;
-  background:var(--primary-light);
-  color:var(--primary);
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  border:3px solid #fff;
-  box-shadow:var(--shadow-sm);
-}
-
-.avatar-wrap img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-.user-info{
-  flex:1;
-  min-width:0;
-}
-
-.user-name{
-  font-size:16px;
-  font-weight:800;
-  line-height:1.3;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.user-email{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.user-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  margin-top:8px;
-  background:#ecfdf5;
-  color:var(--success);
-  font-size:10px;
-  font-weight:800;
-  border-radius:999px;
-  padding:5px 9px;
-}
-
-.section-title{
-  font-size:14px;
-  font-weight:800;
-  margin:0 0 4px;
-}
-
-.section-desc{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.5;
-  margin:0 0 14px;
-}
-
-.form-grid{
-  display:grid;
-  gap:12px;
-}
-
-.form-group{
-  display:grid;
-  gap:7px;
-}
-
-.form-label{
-  font-size:12px;
-  font-weight:800;
-  color:var(--text);
-}
-
-.form-control{
-  width:100%;
-  border:1px solid var(--border);
-  background:#f8fafc;
-  border-radius:16px;
-  padding:12px 13px;
-  outline:0;
-  font-size:13px;
-  color:var(--text);
-}
-
-.form-control:focus{
-  border-color:var(--primary);
-  background:#fff;
-  box-shadow:0 0 0 4px rgba(37,99,235,.09);
-}
-
-.form-control[readonly]{
-  color:var(--muted);
-  background:#f1f5f9;
-}
-
-textarea.form-control{
-  min-height:94px;
-  resize:vertical;
-  line-height:1.6;
-}
-
-.btn-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:14px;
-}
-
-.btn{
-  border:0;
-  border-radius:16px;
-  min-height:46px;
-  padding:12px 14px;
-  font-size:13px;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  position:relative;
-  overflow:hidden;
-}
-
-.btn-primary{
-  background:var(--primary);
-  color:#fff;
-  box-shadow:0 10px 20px rgba(37,99,235,.18);
-}
-
-.btn-soft{
-  background:var(--primary-light);
-  color:var(--primary);
-}
-
-.btn-danger-soft{
-  background:#fef2f2;
-  color:var(--danger);
-}
-
-.btn-success{
-  background:var(--success);
-  color:#fff;
-}
-
-.btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-.info-list{
-  display:grid;
-  gap:10px;
-}
-
-.info-item{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  background:#f8fafc;
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:11px;
-}
-
-.info-icon{
-  width:34px;
-  height:34px;
-  border-radius:13px;
-  background:var(--primary-light);
-  color:var(--primary);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-}
-
-.info-text{
-  flex:1;
-  min-width:0;
-}
-
-.info-label{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:700;
-}
-
-.info-value{
-  font-size:13px;
-  font-weight:800;
-  margin-top:2px;
-  word-break:break-word;
-}
-
-.loading{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  color:var(--muted);
-  font-size:13px;
-  padding:26px 0;
-}
-
-.spinner{
-  width:18px;
-  height:18px;
-  border:3px solid var(--primary-soft);
-  border-top-color:var(--primary);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 18px);
-  transform:translateX(-50%) translateY(20px);
-  max-width:calc(520px - 36px);
-  width:calc(100% - 36px);
-  background:#0f172a;
-  color:#fff;
-  border-radius:18px;
-  padding:13px 15px;
-  font-size:13px;
-  font-weight:700;
-  box-shadow:var(--shadow-md);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s ease;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-.native-click{
-  position:relative;
-  overflow:hidden;
-  cursor:pointer;
-  touch-action:manipulation;
-}
-
-.native-click:active{
-  transform:scale(.985);
-}
-
-.ripple{
-  position:absolute;
-  border-radius:50%;
-  transform:scale(0);
-  animation:ripple .55s linear;
-  background:rgba(37,99,235,.18);
-  pointer-events:none;
-}
-
-@keyframes ripple{
-  to{
-    transform:scale(4);
-    opacity:0;
-  }
-}
-
-.bottom-nav{
-  position:fixed;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:520px;
-  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
-  z-index:50;
-}
-
-.bottom-item{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  border-radius:16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-size:11px;
-  font-weight:700;
-  position:relative;
-  overflow:hidden;
-}
-
-.bottom-item i{
-  font-size:18px;
-}
-
-.bottom-item.active{
-  color:var(--primary);
-  background:var(--primary-light);
-}
-
-.hidden{
-  display:none !important;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#eff6ff">
+  <meta name="description" content="Kelola profil dan identitas pengguna aplikasi ASKEP.">
+  <title>Profil - ASKEP</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/responsive.css">
+  <link rel="stylesheet" href="../styles/profil.css">
 </head>
+<body class="page-profile">
+  <div class="app">
+    <header class="page-header">
+      <div class="topbar">
+        <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
 
-<body>
+        <div class="page-heading">
+          <h1>Profil</h1>
+          <p>Kelola data pengguna dan identitas akun</p>
+        </div>
 
-<div class="app">
-
-  <header class="header">
-    <div class="topbar">
-      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
-        <i class="fa-solid fa-arrow-left"></i>
-      </button>
-
-      <div class="header-title">
-        <h1>Profil</h1>
-        <p>Kelola data pengguna dan identitas akun</p>
+        <button class="nav-btn native-click" id="refreshBtn" type="button" aria-label="Muat ulang profil">
+          <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+        </button>
       </div>
 
-      <button class="nav-btn native-click" id="refreshBtn" type="button" aria-label="Refresh">
-        <i class="fa-solid fa-rotate"></i>
-      </button>
+      <section class="hero-card" aria-labelledby="profileHeroTitle">
+        <div class="hero-copy">
+          <div class="hero-badge">
+            <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+            <span>Akun Pengguna</span>
+          </div>
+          <h2 id="profileHeroTitle" class="hero-title">Simpan identitas untuk pengalaman ASKEP yang lebih personal.</h2>
+          <p class="hero-description">
+            Masuk dengan Google, lalu lengkapi nama, profesi, instansi, dan domisili. Data profil tersimpan pada akunmu dan dapat digunakan oleh fitur aplikasi berikutnya.
+          </p>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <i class="fa-solid fa-id-card-clip"></i>
+        </div>
+      </section>
+    </header>
+
+    <main class="profile-layout" aria-live="polite">
+      <div id="loadingBox" class="loading profile-full-row">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Memeriksa akun...</span>
+      </div>
+
+      <section id="loginBox" class="profile-card login-card profile-full-row hidden">
+        <div class="login-empty">
+          <div class="login-icon" aria-hidden="true">
+            <i class="fa-brands fa-google"></i>
+          </div>
+          <div class="login-title">Masuk ke Akun</div>
+          <div class="login-desc">
+            Gunakan akun Google untuk menyimpan profil dan memudahkan penggunaan fitur aplikasi.
+          </div>
+
+          <button class="btn btn-primary native-click login-button" id="loginBtn" type="button">
+            <i class="fa-brands fa-google" aria-hidden="true"></i>
+            Login dengan Google
+          </button>
+        </div>
+      </section>
+
+      <section id="profileBox" class="profile-card account-card hidden">
+        <div class="card-heading">
+          <div>
+            <div class="eyebrow">Akun aktif</div>
+            <h2>Identitas Google</h2>
+          </div>
+          <span class="status-dot" title="Akun aktif" aria-label="Akun aktif"></span>
+        </div>
+
+        <div class="user-head">
+          <div class="avatar-wrap" id="avatarBox">
+            <i class="fa-solid fa-user-nurse" aria-hidden="true"></i>
+          </div>
+
+          <div class="user-info">
+            <div class="user-name" id="displayName">Pengguna</div>
+            <div class="user-email" id="displayEmail">-</div>
+            <div class="user-badge">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              Akun Google aktif
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row account-actions">
+          <button class="btn btn-soft native-click" id="reloadProfileBtn" type="button">
+            <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+            Muat Ulang
+          </button>
+          <button class="btn btn-danger-soft native-click" id="logoutBtn" type="button">
+            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+            Logout
+          </button>
+        </div>
+      </section>
+
+      <section id="formBox" class="form-card hidden">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Informasi pengguna</div>
+            <h2 class="section-title">Lengkapi Profil</h2>
+            <p class="section-desc">Data ini dapat dipakai untuk identitas, komunitas, dan fitur lain di aplikasi.</p>
+          </div>
+          <div class="section-icon" aria-hidden="true">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+        </div>
+
+        <form id="profileForm" class="form-grid">
+          <div class="form-group form-span-2">
+            <label class="form-label" for="fullName">Nama Lengkap</label>
+            <input id="fullName" class="form-control" type="text" placeholder="Masukkan nama lengkap" autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Nomor Telepon</label>
+            <input id="phone" class="form-control" type="tel" placeholder="Contoh: 0812xxxxxxx" autocomplete="tel">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input id="email" class="form-control" type="email" readonly autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profession">Profesi</label>
+            <select id="profession" class="form-control">
+              <option value="">Pilih profesi</option>
+              <option value="Perawat">Perawat</option>
+              <option value="Mahasiswa Keperawatan">Mahasiswa Keperawatan</option>
+              <option value="Dokter">Dokter</option>
+              <option value="Bidan">Bidan</option>
+              <option value="Tenaga Kesehatan Lain">Tenaga Kesehatan Lain</option>
+              <option value="Umum">Umum</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="workplace">Instansi / Kampus / Tempat Kerja</label>
+            <input id="workplace" class="form-control" type="text" placeholder="Contoh: RSUD / Kampus / Klinik" autocomplete="organization">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="city">Kota / Kabupaten</label>
+            <input id="city" class="form-control" type="text" placeholder="Contoh: Palangka Raya" autocomplete="address-level2">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="province">Provinsi</label>
+            <input id="province" class="form-control" type="text" placeholder="Contoh: Kalimantan Tengah" autocomplete="address-level1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="gender">Jenis Kelamin</label>
+            <select id="gender" class="form-control">
+              <option value="">Pilih jenis kelamin</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+              <option value="Tidak ingin menyebutkan">Tidak ingin menyebutkan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="education">Pendidikan Terakhir</label>
+            <select id="education" class="form-control">
+              <option value="">Pilih pendidikan</option>
+              <option value="SMA/SMK">SMA/SMK</option>
+              <option value="D3 Keperawatan">D3 Keperawatan</option>
+              <option value="S1 Keperawatan">S1 Keperawatan</option>
+              <option value="Ners">Ners</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group form-span-2">
+            <label class="form-label" for="bio">Bio Singkat</label>
+            <textarea id="bio" class="form-control" placeholder="Tulis bio singkat, minat, atau bidang praktik..."></textarea>
+          </div>
+
+          <button class="btn btn-primary native-click save-button form-span-2" id="saveBtn" type="submit">
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+            Simpan Profil
+          </button>
+        </form>
+      </section>
+
+      <section id="summaryBox" class="info-card summary-card hidden">
+        <div class="section-heading compact-heading">
+          <div>
+            <div class="eyebrow">Data tersimpan</div>
+            <h2 class="section-title">Ringkasan Profil</h2>
+            <p class="section-desc">Informasi utama yang terhubung dengan akunmu.</p>
+          </div>
+          <div class="section-icon" aria-hidden="true">
+            <i class="fa-solid fa-address-card"></i>
+          </div>
+        </div>
+
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Nama</div><div class="info-value" id="summaryName">-</div></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-phone" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Nomor Telepon</div><div class="info-value" id="summaryPhone">-</div></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Email</div><div class="info-value" id="summaryEmail">-</div></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-briefcase-medical" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Profesi</div><div class="info-value" id="summaryProfession">-</div></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-hospital" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Instansi</div><div class="info-value" id="summaryWorkplace">-</div></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div>
+            <div class="info-text"><div class="info-label">Domisili</div><div class="info-value" id="summaryLocation">-</div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <div class="desktop-brand" aria-hidden="true">
+      <div class="desktop-brand-icon"><i class="fa-solid fa-book-medical"></i></div>
+      <div class="desktop-brand-copy">
+        <div class="desktop-brand-title">ASKEP</div>
+        <div class="desktop-brand-subtitle">Asuhan Keperawatan</div>
+      </div>
     </div>
 
-    <section class="hero-card">
-      <div class="hero-title">Profil Pengguna</div>
-      <div class="hero-desc">
-        Masuk dengan Google, lalu lengkapi data diri seperti nama lengkap, nomor telepon, profesi, instansi, dan alamat.
-      </div>
-    </section>
-  </header>
+    <a href="../index.html" class="bottom-item native-click">
+      <i class="fa-solid fa-house" aria-hidden="true"></i><span>Home</span>
+    </a>
+    <a href="search.html" class="bottom-item native-click">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Cari</span>
+    </a>
+    <a href="askep.html" class="bottom-item native-click">
+      <i class="fa-solid fa-notes-medical" aria-hidden="true"></i><span>Askep</span>
+    </a>
+    <a href="profil.html" class="bottom-item active native-click" aria-current="page">
+      <i class="fa-solid fa-user-nurse" aria-hidden="true"></i><span>Profil</span>
+    </a>
+  </nav>
 
-  <main class="content">
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+    <span id="toastText">Berhasil</span>
+  </div>
 
-    <div id="loadingBox" class="loading">
-      <div class="spinner"></div>
-      <span>Memeriksa akun...</span>
-    </div>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
 
-    <section id="loginBox" class="profile-card hidden">
-      <div class="login-empty">
-        <div class="login-icon">
-          <i class="fa-brands fa-google"></i>
-        </div>
-        <div class="login-title">Masuk ke Akun</div>
-        <div class="login-desc">
-          Gunakan akun Google untuk menyimpan profil dan memudahkan penggunaan fitur aplikasi.
-        </div>
-
-        <button class="btn btn-primary native-click" id="loginBtn" type="button">
-          <i class="fa-brands fa-google"></i>
-          Login dengan Google
-        </button>
-      </div>
-    </section>
-
-    <section id="profileBox" class="profile-card hidden">
-      <div class="user-head">
-        <div class="avatar-wrap" id="avatarBox">
-          <i class="fa-solid fa-user-nurse"></i>
-        </div>
-
-        <div class="user-info">
-          <div class="user-name" id="displayName">Pengguna</div>
-          <div class="user-email" id="displayEmail">-</div>
-          <div class="user-badge">
-            <i class="fa-solid fa-circle-check"></i>
-            Akun Google aktif
-          </div>
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-soft native-click" id="reloadProfileBtn" type="button">
-          <i class="fa-solid fa-rotate-right"></i>
-          Muat Ulang
-        </button>
-        <button class="btn btn-danger-soft native-click" id="logoutBtn" type="button">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          Logout
-        </button>
-      </div>
-    </section>
-
-    <section id="formBox" class="form-card hidden">
-      <h2 class="section-title">Lengkapi Profil</h2>
-      <p class="section-desc">
-        Data ini bisa dipakai untuk identitas pengguna, komunitas, atau fitur lain di aplikasi.
-      </p>
-
-      <form id="profileForm" class="form-grid">
-
-        <div class="form-group">
-          <label class="form-label" for="fullName">Nama Lengkap</label>
-          <input id="fullName" class="form-control" type="text" placeholder="Masukkan nama lengkap">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="phone">Nomor Telepon</label>
-          <input id="phone" class="form-control" type="tel" placeholder="Contoh: 0812xxxxxxx">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="email">Email</label>
-          <input id="email" class="form-control" type="email" readonly>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="profession">Profesi</label>
-          <select id="profession" class="form-control">
-            <option value="">Pilih profesi</option>
-            <option value="Perawat">Perawat</option>
-            <option value="Mahasiswa Keperawatan">Mahasiswa Keperawatan</option>
-            <option value="Dokter">Dokter</option>
-            <option value="Bidan">Bidan</option>
-            <option value="Tenaga Kesehatan Lain">Tenaga Kesehatan Lain</option>
-            <option value="Umum">Umum</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="workplace">Instansi / Kampus / Tempat Kerja</label>
-          <input id="workplace" class="form-control" type="text" placeholder="Contoh: RSUD / Kampus / Klinik">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="city">Kota / Kabupaten</label>
-          <input id="city" class="form-control" type="text" placeholder="Contoh: Palangka Raya">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="province">Provinsi</label>
-          <input id="province" class="form-control" type="text" placeholder="Contoh: Kalimantan Tengah">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="gender">Jenis Kelamin</label>
-          <select id="gender" class="form-control">
-            <option value="">Pilih jenis kelamin</option>
-            <option value="Laki-laki">Laki-laki</option>
-            <option value="Perempuan">Perempuan</option>
-            <option value="Tidak ingin menyebutkan">Tidak ingin menyebutkan</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="education">Pendidikan Terakhir</label>
-          <select id="education" class="form-control">
-            <option value="">Pilih pendidikan</option>
-            <option value="SMA/SMK">SMA/SMK</option>
-            <option value="D3 Keperawatan">D3 Keperawatan</option>
-            <option value="S1 Keperawatan">S1 Keperawatan</option>
-            <option value="Ners">Ners</option>
-            <option value="S2">S2</option>
-            <option value="S3">S3</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="bio">Bio Singkat</label>
-          <textarea id="bio" class="form-control" placeholder="Tulis bio singkat, minat, atau bidang praktik..."></textarea>
-        </div>
-
-        <button class="btn btn-primary native-click" id="saveBtn" type="submit">
-          <i class="fa-solid fa-floppy-disk"></i>
-          Simpan Profil
-        </button>
-
-      </form>
-    </section>
-
-    <section id="summaryBox" class="info-card hidden">
-      <h2 class="section-title">Ringkasan Profil</h2>
-      <p class="section-desc">Data yang tersimpan di akun kamu.</p>
-
-      <div class="info-list">
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-user"></i></div>
-          <div class="info-text">
-            <div class="info-label">Nama</div>
-            <div class="info-value" id="summaryName">-</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
-          <div class="info-text">
-            <div class="info-label">Nomor Telepon</div>
-            <div class="info-value" id="summaryPhone">-</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
-          <div class="info-text">
-            <div class="info-label">Email</div>
-            <div class="info-value" id="summaryEmail">-</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-briefcase-medical"></i></div>
-          <div class="info-text">
-            <div class="info-label">Profesi</div>
-            <div class="info-value" id="summaryProfession">-</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-hospital"></i></div>
-          <div class="info-text">
-            <div class="info-label">Instansi</div>
-            <div class="info-value" id="summaryWorkplace">-</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
-          <div class="info-text">
-            <div class="info-label">Domisili</div>
-            <div class="info-value" id="summaryLocation">-</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-</div>
-
-<nav class="bottom-nav">
-  <a href="../index.html" class="bottom-item native-click">
-    <i class="fa-solid fa-house"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="search.html" class="bottom-item native-click">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span>Cari</span>
-  </a>
-
-  <a href="quick-askep.html" class="bottom-item native-click">
-    <i class="fa-solid fa-notes-medical"></i>
-    <span>Askep</span>
-  </a>
-
-  <a href="profil.html" class="bottom-item active native-click">
-    <i class="fa-solid fa-user-nurse"></i>
-    <span>Profil</span>
-  </a>
-</nav>
-
-<div id="toast" class="toast">
-  <i class="fa-solid fa-circle-check"></i>
-  <span id="toastText">Berhasil</span>
-</div>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
-
-<script>
+  <script>
 /* =========================
    FIREBASE CONFIG
    GANTI SESUAI PROJECT KAMU
@@ -1147,7 +616,6 @@ document.addEventListener("selectstart", function(e){
   const allow = e.target.closest("input, textarea, select");
   if(!allow) e.preventDefault();
 });
-</script>
-
+  </script>
 </body>
 </html>
