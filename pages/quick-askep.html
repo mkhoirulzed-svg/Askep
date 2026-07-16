@@ -1,2112 +1,1136 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Quick Askep</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-:root{
-  --primary:#2563eb;
-  --primary-dark:#1d4ed8;
-  --primary-soft:#dbeafe;
-  --primary-light:#eff6ff;
-
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --text:#0f172a;
-  --muted:#64748b;
-  --border:#e2e8f0;
-
-  --success:#16a34a;
-  --warning:#f59e0b;
-  --danger:#ef4444;
-
-  --radius-sm:12px;
-  --radius-md:18px;
-  --radius-lg:24px;
-
-  --shadow-sm:0 4px 14px rgba(15,23,42,.07);
-  --shadow-md:0 10px 28px rgba(15,23,42,.10);
-
-  --bottom-nav-height:76px;
-}
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  margin:0;
-  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overscroll-behavior:none;
-}
-
-body,
-button,
-a,
-.card,
-.step-card,
-.option-card,
-.output-card,
-.bottom-item,
-.native-click{
-  user-select:none;
-  -webkit-user-select:none;
-  -ms-user-select:none;
-}
-
-input,
-textarea,
-select{
-  user-select:text;
-  -webkit-user-select:text;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-button{
-  font:inherit;
-  cursor:pointer;
-}
-
-.app{
-  max-width:520px;
-  margin:0 auto;
-  min-height:100vh;
-  background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 300px);
-  padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px);
-}
-
-.header{
-  padding:18px 18px 14px;
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:16px;
-}
-
-.nav-btn{
-  width:44px;
-  height:44px;
-  border:0;
-  border-radius:15px;
-  background:var(--card);
-  color:var(--primary);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:var(--shadow-sm);
-  position:relative;
-  overflow:hidden;
-}
-
-.header-title{
-  flex:1;
-  min-width:0;
-}
-
-.header-title h1{
-  font-size:19px;
-  font-weight:800;
-  margin:0;
-  line-height:1.2;
-}
-
-.header-title p{
-  font-size:12px;
-  color:var(--muted);
-  margin:4px 0 0;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.hero-card{
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:#fff;
-  border-radius:var(--radius-lg);
-  padding:16px;
-  box-shadow:0 16px 32px rgba(37,99,235,.22);
-}
-
-.hero-title{
-  font-size:16px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.hero-desc{
-  font-size:12px;
-  line-height:1.55;
-  opacity:.92;
-}
-
-.content{
-  padding:0 18px;
-}
-
-.progress-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:14px;
-  box-shadow:var(--shadow-sm);
-  margin-bottom:14px;
-}
-
-.progress-line{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-}
-
-.progress-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  font-size:10px;
-  color:var(--muted);
-  font-weight:800;
-  text-align:center;
-}
-
-.progress-dot{
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:#f1f5f9;
-  border:1px solid var(--border);
-  color:#94a3b8;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-}
-
-.progress-item.active .progress-dot,
-.progress-item.done .progress-dot{
-  background:var(--primary);
-  color:#fff;
-  border-color:var(--primary);
-}
-
-.progress-item.active,
-.progress-item.done{
-  color:var(--primary);
-}
-
-.step-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:15px;
-  box-shadow:var(--shadow-sm);
-  margin-bottom:14px;
-}
-
-.step-head{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:12px;
-}
-
-.step-icon{
-  width:42px;
-  height:42px;
-  border-radius:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  font-size:17px;
-}
-
-.step-icon.sdki{
-  background:var(--primary-light);
-  color:var(--primary);
-}
-
-.step-icon.slki{
-  background:#ecfdf5;
-  color:var(--success);
-}
-
-.step-icon.siki{
-  background:#fffbeb;
-  color:#b45309;
-}
-
-.step-icon.output{
-  background:#fef2f2;
-  color:var(--danger);
-}
-
-.step-title{
-  font-size:15px;
-  font-weight:800;
-  line-height:1.3;
-}
-
-.step-desc{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-  line-height:1.45;
-}
-
-.search-box{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:#f8fafc;
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:12px 13px;
-  margin-bottom:12px;
-}
-
-.search-box i{
-  color:var(--primary);
-}
-
-.search-box input{
-  flex:1;
-  border:0;
-  outline:0;
-  background:transparent;
-  font-size:13px;
-  color:var(--text);
-  min-width:0;
-}
-
-.search-box input::placeholder{
-  color:#94a3b8;
-}
-
-.option-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  max-height:330px;
-  overflow:auto;
-  padding-right:2px;
-}
-
-.option-list::-webkit-scrollbar{
-  width:0;
-}
-
-.option-card{
-  border:1px solid var(--border);
-  background:#fff;
-  border-radius:16px;
-  padding:12px;
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  position:relative;
-  overflow:hidden;
-  flex-shrink:0;
-  text-align:left;
-  width:100%;
-}
-
-.option-card.active{
-  border-color:var(--primary);
-  background:var(--primary-light);
-}
-
-.option-check{
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background:#f1f5f9;
-  color:#94a3b8;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  font-size:12px;
-  margin-top:1px;
-}
-
-.option-card.active .option-check{
-  background:var(--primary);
-  color:#fff;
-}
-
-.option-body{
-  flex:1;
-  min-width:0;
-}
-
-.option-title{
-  font-size:13px;
-  font-weight:800;
-  line-height:1.35;
-  word-break:break-word;
-}
-
-.option-desc{
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.45;
-  margin-top:4px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-
-.option-meta{
-  font-size:10px;
-  color:#94a3b8;
-  font-weight:700;
-  margin-top:6px;
-}
-
-.selected-box{
-  background:#f8fafc;
-  border:1px dashed #bfdbfe;
-  border-radius:16px;
-  padding:12px;
-  margin-top:12px;
-}
-
-.selected-label{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:800;
-  margin-bottom:5px;
-}
-
-.selected-value{
-  font-size:13px;
-  color:var(--primary-dark);
-  font-weight:800;
-  line-height:1.4;
-}
-
-.btn-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
-
-.btn{
-  border:0;
-  border-radius:16px;
-  min-height:46px;
-  padding:12px 14px;
-  font-size:13px;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  position:relative;
-  overflow:hidden;
-}
-
-.btn-primary{
-  background:var(--primary);
-  color:#fff;
-  box-shadow:0 10px 20px rgba(37,99,235,.18);
-}
-
-.btn-soft{
-  background:var(--primary-light);
-  color:var(--primary);
-}
-
-.btn-success{
-  background:var(--success);
-  color:#fff;
-  box-shadow:0 10px 20px rgba(22,163,74,.16);
-}
-
-.btn-danger-soft{
-  background:#fef2f2;
-  color:var(--danger);
-}
-
-.btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.output-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:15px;
-  box-shadow:var(--shadow-sm);
-  margin-bottom:14px;
-}
-
-.output-text{
-  width:100%;
-  min-height:280px;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:14px;
-  outline:0;
-  resize:vertical;
-  background:#f8fafc;
-  color:var(--text);
-  font-size:13px;
-  line-height:1.65;
-  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
-}
-
-.empty-state{
-  text-align:center;
-  padding:24px 12px;
-  color:var(--muted);
-}
-
-.empty-icon{
-  width:58px;
-  height:58px;
-  border-radius:22px;
-  background:var(--primary-light);
-  color:var(--primary);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 12px;
-  font-size:24px;
-}
-
-.empty-title{
-  font-size:14px;
-  font-weight:800;
-  color:var(--text);
-  margin-bottom:5px;
-}
-
-.empty-desc{
-  font-size:12px;
-  line-height:1.55;
-}
-
-.loading{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  color:var(--muted);
-  font-size:13px;
-  padding:26px 0;
-}
-
-.spinner{
-  width:18px;
-  height:18px;
-  border:3px solid var(--primary-soft);
-  border-top-color:var(--primary);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 18px);
-  transform:translateX(-50%) translateY(20px);
-  max-width:calc(520px - 36px);
-  width:calc(100% - 36px);
-  background:#0f172a;
-  color:#fff;
-  border-radius:18px;
-  padding:13px 15px;
-  font-size:13px;
-  font-weight:700;
-  box-shadow:var(--shadow-md);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s ease;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-.native-click{
-  position:relative;
-  overflow:hidden;
-  cursor:pointer;
-  touch-action:manipulation;
-}
-
-.native-click:active{
-  transform:scale(.985);
-}
-
-.ripple{
-  position:absolute;
-  border-radius:50%;
-  transform:scale(0);
-  animation:ripple .55s linear;
-  background:rgba(37,99,235,.18);
-  pointer-events:none;
-}
-
-@keyframes ripple{
-  to{
-    transform:scale(4);
-    opacity:0;
-  }
-}
-
-.bottom-nav{
-  position:fixed;
-  left:50%;
-  bottom:0;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:520px;
-  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
-  z-index:50;
-}
-
-.bottom-item{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  border-radius:16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-size:11px;
-  font-weight:700;
-  position:relative;
-  overflow:hidden;
-}
-
-.bottom-item i{
-  font-size:18px;
-}
-
-.bottom-item.active{
-  color:var(--primary);
-  background:var(--primary-light);
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#eff6ff" />
+  <meta name="description" content="Penyusun asuhan keperawatan lengkap berbasis SDKI, SLKI, dan SIKI." />
+  <title>Penyusun Askep Lengkap</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --primary-soft:#dbeafe;
+      --primary-light:#eff6ff;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --success:#16a34a;
+      --warning:#f59e0b;
+      --danger:#ef4444;
+      --purple:#7c3aed;
+      --radius-sm:12px;
+      --radius-md:18px;
+      --radius-lg:26px;
+      --shadow-sm:0 4px 16px rgba(15,23,42,.07);
+      --shadow-md:0 18px 42px rgba(37,99,235,.14);
+      --sidebar-width:244px;
+      --summary-width:300px;
+      --bottom-nav-height:76px;
+      --content-max:1120px;
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Plus Jakarta Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    input,textarea,select{user-select:text;-webkit-user-select:text}
+    .native-click{position:relative;overflow:hidden;touch-action:manipulation}
+    .native-click:active{transform:scale(.985)}
+    [hidden]{display:none!important}
+
+    .app-shell{
+      min-height:100vh;
+      padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px);
+      background:
+        radial-gradient(circle at 93% 2%,rgba(37,99,235,.12),transparent 26%),
+        linear-gradient(180deg,var(--primary-light) 0,var(--bg) 390px);
+    }
+
+    .mobile-header{padding:16px 16px 12px}
+    .topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .nav-btn{
+      display:flex;align-items:center;justify-content:center;
+      width:44px;height:44px;flex:0 0 44px;border:0;border-radius:15px;
+      background:var(--card);color:var(--primary);box-shadow:var(--shadow-sm);
+    }
+    .header-copy{min-width:0;flex:1}
+    .header-copy h1{margin:0;font-size:19px;font-weight:800;line-height:1.25}
+    .header-copy p{margin:4px 0 0;overflow:hidden;color:var(--muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+
+    .hero-card{
+      position:relative;overflow:hidden;padding:18px;border-radius:var(--radius-lg);
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      box-shadow:0 18px 38px rgba(37,99,235,.22);color:#fff;
+    }
+    .hero-card::after{
+      position:absolute;right:-48px;top:-64px;width:170px;height:170px;border-radius:50%;
+      background:rgba(255,255,255,.10);content:"";
+    }
+    .hero-content{position:relative;z-index:1}
+    .hero-badge{display:inline-flex;align-items:center;gap:7px;margin-bottom:9px;padding:6px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.14);font-size:10px;font-weight:800}
+    .hero-title{margin:0 0 7px;font-size:20px;font-weight:800;line-height:1.3}
+    .hero-desc{margin:0;font-size:11px;line-height:1.65;opacity:.94}
+
+    .workspace{width:100%}
+    .step-sidebar,.summary-sidebar{display:none}
+    .main-column{width:100%;padding:0 16px}
+
+    .mobile-progress{
+      position:sticky;top:0;z-index:30;margin:0 -16px 14px;padding:9px 16px 10px;
+      background:rgba(248,250,252,.94);border-bottom:1px solid rgba(226,232,240,.85);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    }
+    .mobile-progress-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+    .mobile-progress-scroll::-webkit-scrollbar{display:none}
+    .progress-pill{
+      display:flex;align-items:center;gap:7px;flex:0 0 auto;padding:8px 10px;border:1px solid var(--border);
+      border-radius:999px;background:#fff;color:var(--muted);font-size:10px;font-weight:800;
+    }
+    .progress-pill .number{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#f1f5f9;color:#94a3b8;font-size:9px}
+    .progress-pill.active{border-color:#93c5fd;background:var(--primary-light);color:var(--primary)}
+    .progress-pill.active .number,.progress-pill.done .number{background:var(--primary);color:#fff}
+    .progress-pill.done{color:var(--primary)}
+
+    .section-card{
+      margin-bottom:14px;padding:15px;border:1px solid var(--border);border-radius:var(--radius-lg);
+      background:var(--card);box-shadow:var(--shadow-sm);
+    }
+    .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .section-heading{min-width:0}
+    .eyebrow{margin-bottom:4px;color:var(--primary);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .section-title{margin:0;font-size:16px;font-weight:800;line-height:1.35}
+    .section-desc{margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.6}
+    .optional-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:#f1f5f9;color:#64748b;font-size:9px;font-weight:800;white-space:nowrap}
+
+    .info-card{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;padding:13px;border:1px solid #bfdbfe;border-radius:16px;background:#eff6ff;color:#1e3a8a}
+    .info-card i{margin-top:2px;color:var(--primary)}
+    .info-card p{margin:0;font-size:10px;line-height:1.6}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:11px}
+    .grid.two,.grid.three,.grid.four{grid-template-columns:1fr}
+    .field{min-width:0}
+    .field.full{grid-column:1/-1}
+    .field-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;color:#334155;font-size:10px;font-weight:800}
+    .field-label small{color:#94a3b8;font-weight:600}
+    .field-input,.field-select,.field-textarea{
+      width:100%;border:1px solid var(--border);outline:none;border-radius:13px;background:#fff;color:var(--text);
+      transition:border-color .18s ease,box-shadow .18s ease;
+    }
+    .field-input,.field-select{height:44px;padding:0 12px}
+    .field-textarea{min-height:92px;padding:12px;resize:vertical;line-height:1.55}
+    .field-input:focus,.field-select:focus,.field-textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(37,99,235,.10)}
+    .input-group{display:flex;gap:8px}.input-group>*:first-child{flex:1}
+
+    .accordion{display:grid;gap:10px}
+    .accordion-item{overflow:hidden;border:1px solid var(--border);border-radius:16px;background:#fff}
+    .accordion-trigger{
+      display:flex;align-items:center;gap:10px;width:100%;padding:13px;border:0;background:#fff;color:var(--text);text-align:left;
+    }
+    .accordion-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:var(--primary-light);color:var(--primary)}
+    .accordion-copy{min-width:0;flex:1}.accordion-title{font-size:11px;font-weight:800}.accordion-sub{margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4}
+    .accordion-chevron{color:#94a3b8;transition:transform .18s ease}
+    .accordion-item.open .accordion-chevron{transform:rotate(180deg)}
+    .accordion-panel{display:none;padding:0 13px 13px}
+    .accordion-item.open .accordion-panel{display:block}
+
+    .dynamic-list{display:grid;gap:9px}
+    .dynamic-row{display:grid;grid-template-columns:1fr;gap:8px;padding:11px;border:1px solid var(--border);border-radius:14px;background:#f8fafc}
+    .row-actions{display:flex;justify-content:flex-end;gap:6px}
+    .icon-btn{
+      display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:0;border-radius:10px;background:#fff;color:#64748b;box-shadow:0 2px 8px rgba(15,23,42,.06)
+    }
+    .icon-btn.danger{background:#fef2f2;color:var(--danger)}
+
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+    .btn-row.single{grid-template-columns:1fr}
+    .btn{
+      display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 14px;border:0;border-radius:14px;
+      font-size:11px;font-weight:800;
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 10px 22px rgba(37,99,235,.20);color:#fff}
+    .btn-secondary{border:1px solid var(--border);background:#fff;color:#475569}
+    .btn-soft{background:var(--primary-light);color:var(--primary)}
+    .btn-success{background:var(--success);color:#fff}
+    .btn-warning{background:#fffbeb;color:#b45309}
+    .btn-danger-soft{background:#fef2f2;color:var(--danger)}
+    .btn:disabled{cursor:not-allowed;opacity:.5}
+
+    .step-actions{
+      position:sticky;bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));z-index:25;
+      display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:16px -4px 0;padding:10px 4px;
+      background:linear-gradient(180deg,rgba(248,250,252,0),rgba(248,250,252,.98) 25%);
+    }
+
+    .search-wrap{position:relative;margin-bottom:10px}
+    .search-wrap i{position:absolute;top:50%;left:13px;transform:translateY(-50%);color:#94a3b8;font-size:13px}
+    .search-input{width:100%;height:46px;padding:0 13px 0 39px;border:1px solid var(--border);outline:none;border-radius:14px;background:#fff;color:var(--text)}
+    .search-input:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(37,99,235,.10)}
+    .search-results{display:grid;gap:8px;max-height:360px;overflow:auto;padding-right:2px}
+    .search-result{
+      display:flex;align-items:flex-start;gap:10px;width:100%;padding:11px;border:1px solid var(--border);border-radius:14px;background:#fff;text-align:left;
+    }
+    .search-result:hover{border-color:#93c5fd;background:#f8fbff}
+    .result-code{display:inline-flex;align-items:center;justify-content:center;min-width:62px;padding:5px 7px;border-radius:9px;background:var(--primary-light);color:var(--primary);font-size:9px;font-weight:800}
+    .result-body{min-width:0;flex:1}.result-title{font-size:11px;font-weight:800;line-height:1.45}.result-desc{margin-top:3px;color:var(--muted);font-size:9px;line-height:1.45}
+
+    .selected-list{display:grid;gap:11px;margin-top:12px}
+    .diagnosis-card,.care-card{padding:13px;border:1px solid var(--border);border-radius:17px;background:#fff}
+    .diagnosis-card.priority-one{border-color:#fca5a5;box-shadow:0 8px 20px rgba(239,68,68,.08)}
+    .card-top{display:flex;align-items:flex-start;gap:10px}
+    .priority-badge{display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:0 0 38px;border-radius:13px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:800}
+    .priority-one .priority-badge{background:#fef2f2;color:#dc2626}
+    .card-copy{min-width:0;flex:1}.card-title{font-size:12px;font-weight:800;line-height:1.45}.card-meta{margin-top:3px;color:var(--muted);font-size:9px;line-height:1.45}
+    .card-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .mini-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:0 9px;border:1px solid var(--border);border-radius:10px;background:#fff;color:#475569;font-size:9px;font-weight:800}
+    .mini-btn.primary{border-color:#bfdbfe;background:var(--primary-light);color:var(--primary)}
+    .mini-btn.danger{border-color:#fecaca;background:#fef2f2;color:var(--danger)}
+
+    .inline-editor{display:grid;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+    .supporting-data{display:grid;grid-template-columns:1fr;gap:9px}
+
+    .diagnosis-tabs{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+    .diagnosis-tabs::-webkit-scrollbar{display:none}
+    .diagnosis-tab{flex:0 0 auto;padding:9px 11px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--muted);font-size:9px;font-weight:800}
+    .diagnosis-tab.active{border-color:#93c5fd;background:var(--primary-light);color:var(--primary)}
+
+    .relation-note{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;padding:10px;border-radius:13px;background:#f8fafc;color:#475569;font-size:9px;line-height:1.55}
+    .care-card{margin-top:9px}
+    .care-head{display:flex;align-items:flex-start;gap:9px}
+    .care-check{display:flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:var(--primary-light);color:var(--primary)}
+    .care-copy{min-width:0;flex:1}
+    .care-code{display:inline-flex;margin-bottom:4px;padding:3px 7px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:8px;font-weight:800}
+    .care-title{font-size:11px;font-weight:800;line-height:1.45}
+    .care-fields{display:grid;grid-template-columns:1fr;gap:9px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--border)}
+    .check-list{display:grid;gap:7px;margin-top:8px}
+    .check-row{display:flex;align-items:flex-start;gap:8px;padding:8px;border-radius:11px;background:#f8fafc;font-size:9px;line-height:1.5}
+    .check-row input{width:15px;height:15px;flex:0 0 15px;margin-top:1px;accent-color:var(--primary)}
+    .group-label{margin:10px 0 6px;color:#475569;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+
+    .analysis-table-wrap,.review-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:15px;background:#fff}
+    table{width:100%;border-collapse:collapse}
+    .analysis-table{min-width:900px}
+    .review-table{min-width:860px}
+    th,td{padding:10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;text-align:left;font-size:9px;line-height:1.55}
+    th{background:#f8fafc;font-weight:800}
+    th:last-child,td:last-child{border-right:0}
+    tr:last-child td{border-bottom:0}
+    td input,td textarea{width:100%;border:0;outline:none;background:transparent;font-size:9px;line-height:1.5;resize:vertical}
+    .table-actions{white-space:nowrap}
+
+    .review-section{margin-bottom:14px;padding:14px;border:1px solid var(--border);border-radius:18px;background:#fff}
+    .review-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .review-title{font-size:12px;font-weight:800}.review-sub{margin-top:3px;color:var(--muted);font-size:9px}
+    .identity-grid{display:grid;grid-template-columns:1fr;gap:8px}
+    .identity-item{padding:9px;border-radius:11px;background:#f8fafc}.identity-label{color:var(--muted);font-size:8px;font-weight:700}.identity-value{margin-top:3px;font-size:10px;font-weight:800;line-height:1.4}
+    .review-note{padding:10px;border-radius:12px;background:#fffbeb;color:#92400e;font-size:9px;line-height:1.55}
+
+    .download-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .download-grid .btn{min-height:44px}
+
+    .empty-state{padding:20px 12px;border:1px dashed #cbd5e1;border-radius:14px;color:var(--muted);text-align:center;font-size:10px;line-height:1.6}
+    .empty-icon{display:flex;align-items:center;justify-content:center;width:50px;height:50px;margin:0 auto 9px;border-radius:17px;background:var(--primary-light);color:var(--primary);font-size:20px}
+    .empty-title{color:var(--text);font-size:11px;font-weight:800}
+
+    .loading-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.40);backdrop-filter:blur(5px)}
+    .loading-overlay.show{display:flex}
+    .loading-card{display:flex;align-items:center;gap:12px;width:min(340px,100%);padding:16px;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.25)}
+    .spinner{width:22px;height:22px;border:3px solid var(--primary-soft);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .toast{position:fixed;right:16px;bottom:calc(var(--bottom-nav-height) + 16px);left:16px;z-index:180;max-width:460px;margin:auto;padding:12px 14px;transform:translateY(18px);border-radius:14px;background:#0f172a;box-shadow:0 14px 34px rgba(15,23,42,.28);color:#fff;font-size:10px;line-height:1.5;opacity:0;pointer-events:none;transition:.2s ease}
+    .toast.show{transform:translateY(0);opacity:1}
+
+    .bottom-nav{position:fixed;right:0;bottom:0;left:0;z-index:80;display:grid;grid-template-columns:repeat(4,1fr);height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--border);background:rgba(255,255,255,.94);backdrop-filter:blur(18px)}
+    .bottom-item{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border-radius:15px;color:var(--muted);font-size:10px;font-weight:700}
+    .bottom-item i{font-size:17px}.bottom-item.active{background:var(--primary-light);color:var(--primary)}
+
+    .print-document{display:none}
+
+    @media (min-width:600px){
+      .mobile-header,.main-column{padding-right:24px;padding-left:24px}
+      .main-column{max-width:860px;margin:auto}
+      .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .dynamic-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .dynamic-row .row-actions{grid-column:1/-1}
+      .supporting-data{grid-template-columns:1fr 1fr}
+      .care-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .identity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .download-grid{grid-template-columns:repeat(4,1fr)}
+    }
+
+    @media (min-width:1024px){
+      .app-shell{padding-bottom:0}
+      .mobile-header{display:none}
+      .workspace{display:grid;grid-template-columns:var(--sidebar-width) minmax(0,1fr) var(--summary-width);min-height:100vh}
+      .step-sidebar,.summary-sidebar{display:block;position:sticky;top:0;height:100vh;overflow:auto;background:rgba(255,255,255,.97)}
+      .step-sidebar{border-right:1px solid var(--border);padding:22px 16px}
+      .summary-sidebar{border-left:1px solid var(--border);padding:22px 16px}
+      .brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;padding:4px}
+      .brand-icon{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 9px 20px rgba(37,99,235,.20);color:#fff}
+      .brand-title{font-size:13px;font-weight:800}.brand-sub{margin-top:2px;color:var(--muted);font-size:9px}
+      .sidebar-menu{display:grid;gap:7px}
+      .sidebar-step{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 10px;border:0;border-radius:14px;background:transparent;color:var(--muted);text-align:left}
+      .sidebar-step:hover{background:#f8fafc}.sidebar-step.active{background:var(--primary-light);color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+      .sidebar-number{display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex:0 0 28px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-size:9px;font-weight:800}
+      .sidebar-step.active .sidebar-number,.sidebar-step.done .sidebar-number{background:var(--primary);color:#fff}
+      .sidebar-copy{min-width:0}.sidebar-title{font-size:10px;font-weight:800}.sidebar-sub{margin-top:2px;font-size:8px;line-height:1.35}
+      .sidebar-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+      .main-column{max-width:var(--content-max);margin:0;padding:28px 30px 46px}
+      .mobile-progress{display:none}
+      .desktop-hero{display:block;margin-bottom:16px}
+      .grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .step-actions{position:static;display:flex;justify-content:flex-end;margin-top:18px;padding:0;background:none}
+      .step-actions .btn{min-width:150px}
+      .summary-title{margin:0 0 4px;font-size:13px;font-weight:800}.summary-desc{margin:0 0 15px;color:var(--muted);font-size:9px;line-height:1.5}
+      .summary-card{margin-bottom:10px;padding:12px;border:1px solid var(--border);border-radius:15px;background:#fff}
+      .summary-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:9px}.summary-row:last-child{border-bottom:0}.summary-row strong{font-size:10px}
+      .summary-diagnoses{display:grid;gap:7px;margin-top:8px}.summary-diagnosis{padding:9px;border-radius:11px;background:#f8fafc;font-size:9px;line-height:1.45}.summary-diagnosis b{display:block;margin-bottom:2px}
+      .bottom-nav{display:none}
+      .toast{right:24px;bottom:24px;left:auto;width:360px}
+      .identity-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+
+    @media print{
+      body{background:#fff}
+      .app-shell,.bottom-nav,.toast,.loading-overlay{display:none!important}
+      .print-document{display:block!important;color:#000;font-family:Arial,sans-serif}
+      @page{size:A4;margin:14mm}
+      .print-document h1{text-align:center;font-size:16pt;margin:0 0 4px}
+      .print-document h2{font-size:12pt;margin:18px 0 8px}
+      .print-document p,.print-document li{font-size:9pt;line-height:1.5}
+      .print-document table{width:100%;border-collapse:collapse;page-break-inside:auto}
+      .print-document tr{page-break-inside:avoid;page-break-after:auto}
+      .print-document th,.print-document td{border:1px solid #000;padding:6px;font-size:8pt;vertical-align:top}
+      .print-document th{background:#eee}
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="app">
-
-  <header class="header">
-    <div class="topbar">
-      <button class="nav-btn native-click" onclick="history.back()" aria-label="Kembali">
-        <i class="fa-solid fa-arrow-left"></i>
-      </button>
-
-      <div class="header-title">
-        <h1>Quick Askep</h1>
-        <p>Buat askep SDKI, SLKI, SIKI lebih cepat</p>
+  <div class="app-shell">
+    <header class="mobile-header">
+      <div class="topbar">
+        <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="header-copy">
+          <h1>Penyusun Askep</h1>
+          <p>Pengkajian, diagnosis, luaran, dan intervensi</p>
+        </div>
+        <button class="nav-btn native-click" id="mobileNewButton" type="button" aria-label="Buat Askep baru"><i class="fa-solid fa-file-circle-plus"></i></button>
       </div>
+      <section class="hero-card">
+        <div class="hero-content">
+          <div class="hero-badge"><i class="fa-solid fa-notes-medical"></i> Askep lengkap</div>
+          <h2 class="hero-title">Susun asuhan keperawatan dalam satu alur</h2>
+          <p class="hero-desc">Identitas bersifat opsional. Pilih beberapa diagnosis, tentukan prioritas, lalu lengkapi SLKI dan SIKI untuk setiap masalah.</p>
+        </div>
+      </section>
+    </header>
 
-      <a href="search.html" class="nav-btn native-click" aria-label="Cari">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </a>
+    <div class="workspace">
+      <aside class="step-sidebar">
+        <div class="brand">
+          <div class="brand-icon"><i class="fa-solid fa-book-medical"></i></div>
+          <div><div class="brand-title">ASKEP</div><div class="brand-sub">Asuhan Keperawatan</div></div>
+        </div>
+        <nav class="sidebar-menu" id="desktopStepMenu"></nav>
+        <div class="sidebar-footer">
+          <button class="btn btn-secondary native-click" id="desktopSaveButton" type="button" style="width:100%;margin-bottom:8px"><i class="fa-solid fa-floppy-disk"></i> Simpan Draft</button>
+          <button class="btn btn-danger-soft native-click" id="desktopNewButton" type="button" style="width:100%"><i class="fa-solid fa-file-circle-plus"></i> Askep Baru</button>
+        </div>
+      </aside>
+
+      <main class="main-column">
+        <section class="hero-card desktop-hero">
+          <div class="hero-content">
+            <div class="hero-badge"><i class="fa-solid fa-notes-medical"></i> Penyusun Askep Lengkap</div>
+            <h2 class="hero-title">Dari pengkajian sampai rencana intervensi</h2>
+            <p class="hero-desc">Data pasien boleh dikosongkan. Semua pilihan dapat diedit kembali sebelum diunduh dalam DOCX atau PDF.</p>
+          </div>
+        </section>
+
+        <div class="mobile-progress"><div class="mobile-progress-scroll" id="mobileProgress"></div></div>
+        <div id="stepContainer"></div>
+      </main>
+
+      <aside class="summary-sidebar">
+        <h2 class="summary-title">Ringkasan Askep</h2>
+        <p class="summary-desc">Ringkasan berubah otomatis mengikuti data yang Anda isi.</p>
+        <div id="summaryContent"></div>
+      </aside>
     </div>
-
-    <section class="hero-card">
-      <div class="hero-title">Asuhan Keperawatan Instan</div>
-      <div class="hero-desc">
-        Pilih diagnosis, luaran, dan intervensi. Sistem akan membantu menyusun format askep sederhana yang bisa langsung disalin.
-      </div>
-    </section>
-  </header>
-
-  <main class="content">
-
-    <section class="progress-card">
-      <div class="progress-line">
-        <div class="progress-item active" id="progress1">
-          <div class="progress-dot">1</div>
-          <span>Diagnosis</span>
-        </div>
-        <div class="progress-item" id="progress2">
-          <div class="progress-dot">2</div>
-          <span>Luaran</span>
-        </div>
-        <div class="progress-item" id="progress3">
-          <div class="progress-dot">3</div>
-          <span>Intervensi</span>
-        </div>
-        <div class="progress-item" id="progress4">
-          <div class="progress-dot">4</div>
-          <span>Copy</span>
-        </div>
-      </div>
-    </section>
-
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      <span>Memuat data...</span>
-    </div>
-
-    <section class="step-card" id="stepSdki" style="display:none;">
-      <div class="step-head">
-        <div class="step-icon sdki">
-          <i class="fa-solid fa-stethoscope"></i>
-        </div>
-        <div>
-          <div class="step-title">1. Pilih Diagnosis Keperawatan</div>
-          <div class="step-desc">Cari berdasarkan nama diagnosis, gejala, atau kata kunci klinis.</div>
-        </div>
-      </div>
-
-      <label class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input id="sdkiSearch" type="search" placeholder="Contoh: ansietas, nyeri, bersihan jalan napas..." autocomplete="off">
-      </label>
-
-      <div id="sdkiList" class="option-list"></div>
-
-      <div id="selectedSdki" class="selected-box" style="display:none;">
-        <div class="selected-label">Diagnosis dipilih</div>
-        <div class="selected-value" id="selectedSdkiText"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-danger-soft native-click" id="resetBtn1" type="button">
-          <i class="fa-solid fa-rotate-left"></i>
-          Reset
-        </button>
-        <button class="btn btn-primary native-click" id="toSlkiBtn" type="button" disabled>
-          Lanjut
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </div>
-    </section>
-
-    <section class="step-card" id="stepSlki" style="display:none;">
-      <div class="step-head">
-        <div class="step-icon slki">
-          <i class="fa-solid fa-chart-line"></i>
-        </div>
-        <div>
-          <div class="step-title">2. Pilih Luaran Keperawatan</div>
-          <div class="step-desc">Pilih luaran yang sesuai dengan target kondisi pasien.</div>
-        </div>
-      </div>
-
-      <label class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input id="slkiSearch" type="search" placeholder="Contoh: tingkat ansietas, kontrol nyeri..." autocomplete="off">
-      </label>
-
-      <div id="slkiList" class="option-list"></div>
-
-      <div id="selectedSlki" class="selected-box" style="display:none;">
-        <div class="selected-label">Luaran dipilih</div>
-        <div class="selected-value" id="selectedSlkiText"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-soft native-click" id="backToSdkiBtn" type="button">
-          <i class="fa-solid fa-arrow-left"></i>
-          Kembali
-        </button>
-        <button class="btn btn-primary native-click" id="toSikiBtn" type="button" disabled>
-          Lanjut
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </div>
-    </section>
-
-    <section class="step-card" id="stepSiki" style="display:none;">
-      <div class="step-head">
-        <div class="step-icon siki">
-          <i class="fa-solid fa-hand-holding-medical"></i>
-        </div>
-        <div>
-          <div class="step-title">3. Pilih Intervensi Keperawatan</div>
-          <div class="step-desc">Pilih intervensi utama, lalu sistem mengambil tindakan implementasi yang tersedia.</div>
-        </div>
-      </div>
-
-      <label class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input id="sikiSearch" type="search" placeholder="Contoh: reduksi ansietas, manajemen nyeri..." autocomplete="off">
-      </label>
-
-      <div id="sikiList" class="option-list"></div>
-
-      <div id="selectedSiki" class="selected-box" style="display:none;">
-        <div class="selected-label">Intervensi dipilih</div>
-        <div class="selected-value" id="selectedSikiText"></div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-soft native-click" id="backToSlkiBtn" type="button">
-          <i class="fa-solid fa-arrow-left"></i>
-          Kembali
-        </button>
-        <button class="btn btn-success native-click" id="generateBtn" type="button" disabled>
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
-          Generate
-        </button>
-      </div>
-    </section>
-
-    <section class="output-card" id="stepOutput" style="display:none;">
-      <div class="step-head">
-        <div class="step-icon output">
-          <i class="fa-solid fa-file-lines"></i>
-        </div>
-        <div>
-          <div class="step-title">4. Hasil Askep</div>
-          <div class="step-desc">Silakan cek hasilnya, lalu salin untuk tugas atau dokumentasi akademik.</div>
-        </div>
-      </div>
-
-      <textarea id="askepOutput" class="output-text" readonly></textarea>
-
-      <div class="btn-row">
-        <button class="btn btn-soft native-click" id="editAgainBtn" type="button">
-          <i class="fa-solid fa-pen-to-square"></i>
-          Ubah
-        </button>
-        <button class="btn btn-primary native-click" id="copyBtn" type="button">
-          <i class="fa-solid fa-copy"></i>
-          Copy
-        </button>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-danger-soft native-click" id="resetAllBtn" type="button">
-          <i class="fa-solid fa-trash"></i>
-          Reset Semua
-        </button>
-        <button class="btn btn-success native-click" id="shareBtn" type="button">
-          <i class="fa-solid fa-share-nodes"></i>
-          Share
-        </button>
-      </div>
-    </section>
-
-  </main>
-</div>
-
-<nav class="bottom-nav">
-  <a href="../index.html" class="bottom-item native-click">
-    <i class="fa-solid fa-house"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="search.html" class="bottom-item native-click">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span>Cari</span>
-  </a>
-
-  <a href="quick-askep.html" class="bottom-item active native-click">
-    <i class="fa-solid fa-notes-medical"></i>
-    <span>Askep</span>
-  </a>
-
-  <a href="profil.html" class="bottom-item native-click">
-    <i class="fa-solid fa-user-nurse"></i>
-    <span>Profil</span>
-  </a>
-</nav>
-
-<div id="toast" class="toast">
-  <i class="fa-solid fa-circle-check"></i>
-  <span id="toastText">Berhasil</span>
-</div>
-
-<script>
-/* =========================
-   CONFIG API
-========================= */
-const API_BASE = "https://askep.mkhoirulzed.workers.dev";
-
-const DATA_PATHS = {
-  sdki: `${API_BASE}/api/sdki`,
-  slki: `${API_BASE}/api/slki`,
-  siki: `${API_BASE}/api/siki`,
-  relations: `${API_BASE}/api/relations`
-};
-
-/* =========================
-   STATE
-========================= */
-let DB = {
-  sdki: [],
-  slki: [],
-  siki: [],
-  relations: []
-};
-
-let selected = {
-  sdki: null,
-  slki: null,
-  siki: null
-};
-
-let currentStep = 1;
-
-/* =========================
-   ELEMENTS
-========================= */
-const loadingEl = document.getElementById("loading");
-
-const stepSdki = document.getElementById("stepSdki");
-const stepSlki = document.getElementById("stepSlki");
-const stepSiki = document.getElementById("stepSiki");
-const stepOutput = document.getElementById("stepOutput");
-
-const sdkiSearch = document.getElementById("sdkiSearch");
-const slkiSearch = document.getElementById("slkiSearch");
-const sikiSearch = document.getElementById("sikiSearch");
-
-const sdkiList = document.getElementById("sdkiList");
-const slkiList = document.getElementById("slkiList");
-const sikiList = document.getElementById("sikiList");
-
-const selectedSdki = document.getElementById("selectedSdki");
-const selectedSlki = document.getElementById("selectedSlki");
-const selectedSiki = document.getElementById("selectedSiki");
-
-const selectedSdkiText = document.getElementById("selectedSdkiText");
-const selectedSlkiText = document.getElementById("selectedSlkiText");
-const selectedSikiText = document.getElementById("selectedSikiText");
-
-const toSlkiBtn = document.getElementById("toSlkiBtn");
-const toSikiBtn = document.getElementById("toSikiBtn");
-const generateBtn = document.getElementById("generateBtn");
-
-const backToSdkiBtn = document.getElementById("backToSdkiBtn");
-const backToSlkiBtn = document.getElementById("backToSlkiBtn");
-const resetBtn1 = document.getElementById("resetBtn1");
-const resetAllBtn = document.getElementById("resetAllBtn");
-const editAgainBtn = document.getElementById("editAgainBtn");
-
-const askepOutput = document.getElementById("askepOutput");
-const copyBtn = document.getElementById("copyBtn");
-const shareBtn = document.getElementById("shareBtn");
-
-const toast = document.getElementById("toast");
-const toastText = document.getElementById("toastText");
-
-/* =========================
-   HELPERS
-========================= */
-function normalizeText(text){
-  return String(text || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\s.-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function normalizeCode(value){
-  return String(value || "")
-    .toUpperCase()
-    .replace(/\s+/g, "")
-    .replace(/-/g, ".");
-}
-
-function pick(obj, keys){
-  for(const key of keys){
-    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
-      return obj[key];
-    }
-  }
-  return "";
-}
-
-function toArray(data){
-  if(Array.isArray(data)) return data;
-
-  if(data && Array.isArray(data.data)) return data.data;
-  if(data && Array.isArray(data.items)) return data.items;
-  if(data && Array.isArray(data.diagnosis)) return data.diagnosis;
-  if(data && Array.isArray(data.diagnosa)) return data.diagnosa;
-  if(data && Array.isArray(data.luaran)) return data.luaran;
-  if(data && Array.isArray(data.intervensi)) return data.intervensi;
-  if(data && Array.isArray(data.sdki)) return data.sdki;
-  if(data && Array.isArray(data.slki)) return data.slki;
-  if(data && Array.isArray(data.siki)) return data.siki;
-  if(data && Array.isArray(data.relations)) return data.relations;
-
-  if(data && typeof data === "object"){
-    return Object.values(data);
-  }
-
-  return [];
-}
-
-function stringifyDeep(value){
-  if(value === null || value === undefined) return "";
-  if(typeof value === "string" || typeof value === "number") return String(value);
-  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
-  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
-  return "";
-}
-
-function escapeHtml(text){
-  return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-function getId(item){
-  return pick(item, [
-    "id",
-    "kode",
-    "code",
-    "nomor",
-    "no",
-    "kodeSdki",
-    "kodeSlki",
-    "kodeSiki",
-    "kodeSDKI",
-    "kodeSLKI",
-    "kodeSIKI"
-  ]);
-}
-
-function getTitle(item, type){
-  if(type === "sdki"){
-    return pick(item, [
-      "title",
-      "judul",
-      "judulSdki",
-      "judulSDKI",
-      "nama",
-      "diagnosis",
-      "diagnosa",
-      "label",
-      "name"
-    ]);
-  }
-
-  if(type === "slki"){
-    return pick(item, [
-      "title",
-      "judul",
-      "judulSlki",
-      "judulSLKI",
-      "nama",
-      "luaran",
-      "outcome",
-      "label",
-      "name"
-    ]);
-  }
-
-  if(type === "siki"){
-    return pick(item, [
-      "title",
-      "judul",
-      "judulSiki",
-      "judulSIKI",
-      "nama",
-      "intervensi",
-      "label",
-      "name"
-    ]);
-  }
-
-  return pick(item, ["title", "judul", "nama", "label", "name"]);
-}
-
-function getDesc(item){
-  return pick(item, [
-    "definisi",
-    "deskripsi",
-    "description",
-    "keterangan",
-    "tujuan",
-    "ekspektasi"
-  ]);
-}
-
-function arrayFromUnknown(value){
-  if(!value) return [];
-
-  if(Array.isArray(value)){
-    return value
-      .map(item => {
-        if(typeof item === "string" || typeof item === "number") return String(item).trim();
-        return stringifyDeep(item).trim();
-      })
-      .filter(Boolean);
-  }
-
-  if(typeof value === "string"){
-    return value
-      .split(/\n|;|\|/g)
-      .map(item => item.trim())
-      .filter(Boolean);
-  }
-
-  if(typeof value === "object"){
-    return Object.values(value)
-      .map(stringifyDeep)
-      .map(item => item.trim())
-      .filter(Boolean);
-  }
-
-  return [String(value)];
-}
-
-function relationArray(value){
-  if(!value) return [];
-  if(Array.isArray(value)) return value;
-
-  if(typeof value === "string"){
-    return value
-      .split(/\n|;|\|/g)
-      .map(item => item.trim())
-      .filter(Boolean);
-  }
-
-  if(typeof value === "object") return [value];
-
-  return [value];
-}
-
-function getNestedAction(item, keys){
-  for(const key of keys){
-    if(item && item[key]) return arrayFromUnknown(item[key]);
-  }
-
-  const tindakan = item.tindakan || item.aktivitas || item.activities || item.action || null;
-
-  if(tindakan && typeof tindakan === "object"){
-    for(const key of keys){
-      if(tindakan[key]) return arrayFromUnknown(tindakan[key]);
-    }
-  }
-
-  return [];
-}
-
-function getSikiImplementations(item){
-  const observasi = getNestedAction(item, [
-    "observasi",
-    "observation",
-    "observations"
-  ]);
-
-  const terapeutik = getNestedAction(item, [
-    "terapeutik",
-    "therapeutic",
-    "terapi",
-    "therapy"
-  ]);
-
-  const edukasi = getNestedAction(item, [
-    "edukasi",
-    "education",
-    "pendidikan"
-  ]);
-
-  const kolaborasi = getNestedAction(item, [
-    "kolaborasi",
-    "collaboration",
-    "kolaboratif"
-  ]);
-
-  const aktivitas = getNestedAction(item, [
-    "aktivitas",
-    "tindakan",
-    "intervensi_tindakan",
-    "actions",
-    "activities"
-  ]);
-
-  let all = [
-    ...observasi,
-    ...terapeutik,
-    ...edukasi,
-    ...kolaborasi
-  ];
-
-  if(!all.length) all = aktivitas;
-
-  return all
-    .map(cleanActionText)
-    .filter(Boolean)
-    .slice(0, 8);
-}
-
-function cleanActionText(text){
-  return String(text || "")
-    .replace(/^\s*[-–—•\d.)]+\s*/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function itemToSearchObject(item, type){
-  const id = getId(item);
-  const title = getTitle(item, type);
-  const desc = getDesc(item);
-
-  return {
-    id,
-    title,
-    desc,
-    raw:item,
-    relationType:item?._relationType || "",
-    haystack:normalizeText([
-      id,
-      title,
-      desc,
-      stringifyDeep(item)
-    ].join(" "))
-  };
-}
-
-function scoreItem(item, keywords, query){
-  let score = 0;
-  const title = normalizeText(item.title);
-  const id = normalizeText(item.id);
-  const desc = normalizeText(item.desc);
-  const haystack = item.haystack;
-
-  if(title === query) score += 100;
-  if(title.includes(query)) score += 60;
-  if(id.includes(query)) score += 40;
-  if(desc.includes(query)) score += 18;
-
-  keywords.forEach(word => {
-    if(title.includes(word)) score += 22;
-    if(id.includes(word)) score += 12;
-    if(desc.includes(word)) score += 8;
-    if(haystack.includes(word)) score += 4;
-  });
-
-  return score;
-}
-
-function searchItems(list, type, query, limit = 40){
-  const q = normalizeText(query);
-  const stopwords = ["dan", "atau", "yang", "dengan", "pada", "di", "ke", "dari", "untuk"];
-
-  const keywords = q
-    .split(" ")
-    .filter(word => word.length > 1 && !stopwords.includes(word));
-
-  const mapped = list.map(item => itemToSearchObject(item, type));
-
-  if(!q){
-    return mapped.slice(0, limit);
-  }
-
-  return mapped
-    .map(item => ({
-      ...item,
-      score:scoreItem(item, keywords, q)
-    }))
-    .filter(item => item.score > 0)
-    .sort((a,b) => b.score - a.score)
-    .slice(0, limit);
-}
-
-function showToast(message, icon = "fa-circle-check"){
-  toastText.textContent = message;
-  toast.querySelector("i").className = "fa-solid " + icon;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 1800);
-}
-
-function scrollTopApp(){
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-}
-
-/* =========================
-   LOAD DATA
-========================= */
-async function fetchJsonSafe(path){
-  try{
-    const separator = path.includes("?") ? "&" : "?";
-    const res = await fetch(path + separator + "v=" + Date.now(), {
-      headers:{
-        "Accept":"application/json"
-      }
-    });
-
-    if(!res.ok){
-      throw new Error(`Gagal memuat ${path}. Status ${res.status}`);
-    }
-
-    const json = await res.json();
-
-    if(json && json.success === false){
-      throw new Error(json.message || `API gagal memuat ${path}`);
-    }
-
-    return json;
-  }catch(err){
-    console.warn(err.message);
-    return [];
-  }
-}
-
-async function loadAllData(){
-  loadingEl.style.display = "flex";
-
-  const [sdki, slki, siki, relations] = await Promise.all([
-    fetchJsonSafe(DATA_PATHS.sdki),
-    fetchJsonSafe(DATA_PATHS.slki),
-    fetchJsonSafe(DATA_PATHS.siki),
-    fetchJsonSafe(DATA_PATHS.relations)
-  ]);
-
-  DB.sdki = toArray(sdki);
-  DB.slki = toArray(slki);
-  DB.siki = toArray(siki);
-  DB.relations = toArray(relations);
-
-  console.log("Jumlah SDKI:", DB.sdki.length);
-  console.log("Jumlah SLKI:", DB.slki.length);
-  console.log("Jumlah SIKI:", DB.siki.length);
-  console.log("Jumlah relations:", DB.relations.length);
-
-  loadingEl.style.display = "none";
-
-  renderSdkiList();
-  showStep(1);
-
-  if(!DB.sdki.length){
-    showToast("Data SDKI kosong atau gagal dimuat", "fa-circle-exclamation");
-  }
-}
-
-/* =========================
-   MASTER RELATIONS
-========================= */
-function extractStandardCode(value){
-  const text = stringifyDeep(value);
-  const match = text.match(/\b([DLI])\s*[.\-]?\s*(\d{3,6})\b/i);
-
-  if(!match) return "";
-
-  return `${match[1].toUpperCase()}.${match[2]}`;
-}
-
-function normalizeRelationItem(item, type){
-  if(item === null || item === undefined){
-    return { code:"", title:"", raw:item };
-  }
-
-  if(typeof item === "string" || typeof item === "number"){
-    const text = String(item).trim();
-    const code = extractStandardCode(text);
-
-    let title = text;
-
-    if(code){
-      const codePattern = code
-        .replace(".", "[.\\-]?")
-        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-      title = text
-        .replace(new RegExp(`^${codePattern}\\s*[-–—:]?\\s*`, "i"), "")
-        .trim();
-    }
-
-    return {
-      code,
-      title,
-      raw:item
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="../index.html" class="bottom-item native-click"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="search.html" class="bottom-item native-click"><i class="fa-solid fa-magnifying-glass"></i><span>Cari</span></a>
+    <a href="quick-askep.html" class="bottom-item active native-click" aria-current="page"><i class="fa-solid fa-notes-medical"></i><span>Askep</span></a>
+    <a href="profil.html" class="bottom-item native-click"><i class="fa-solid fa-user-nurse"></i><span>Profil</span></a>
+  </nav>
+
+  <section id="printDocument" class="print-document"></section>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="loadingOverlay" class="loading-overlay"><div class="loading-card"><div class="spinner"></div><div><strong id="loadingTitle">Memproses...</strong><div id="loadingText" style="margin-top:3px;color:var(--muted);font-size:9px">Mohon tunggu.</div></div></div></div>
+
+  <script>
+    const API_BASE = "https://askep.mkhoirulzed.workers.dev";
+    const DATA_PATHS = {
+      sdki: `${API_BASE}/api/sdki`,
+      slki: `${API_BASE}/api/slki`,
+      siki: `${API_BASE}/api/siki`,
+      relations: `${API_BASE}/api/relations`
     };
-  }
+    const STORAGE_KEY = "askep-builder-v1";
 
-  if(typeof item !== "object"){
-    return {
-      code:"",
-      title:String(item),
-      raw:item
+    const STEPS = [
+      { id:1, key:"patient", title:"Data Pasien", short:"Identitas", icon:"fa-id-card", sub:"Opsional" },
+      { id:2, key:"assessment", title:"Pengkajian", short:"Pengkajian", icon:"fa-clipboard-list", sub:"Data klinis" },
+      { id:3, key:"analysis", title:"Analisis Data", short:"Analisis", icon:"fa-table-list", sub:"DS dan DO" },
+      { id:4, key:"diagnoses", title:"Diagnosis", short:"Diagnosis", icon:"fa-stethoscope", sub:"Prioritas masalah" },
+      { id:5, key:"outcomes", title:"Luaran SLKI", short:"Luaran", icon:"fa-chart-line", sub:"Target hasil" },
+      { id:6, key:"interventions", title:"Intervensi SIKI", short:"Intervensi", icon:"fa-hand-holding-medical", sub:"Rencana tindakan" },
+      { id:7, key:"review", title:"Review & Unduh", short:"Hasil", icon:"fa-file-arrow-down", sub:"DOCX dan PDF" }
+    ];
+
+    const DB = { sdki:[], slki:[], siki:[], relations:[] };
+    let activeDiagnosisId = null;
+    let currentStep = 1;
+    let toastTimer = null;
+    let saveTimer = null;
+
+    function createInitialState(){
+      const now = new Date();
+      return {
+        patient:{
+          name:"", age:"", gender:"", medicalRecord:"", room:"", medicalDiagnosis:"",
+          assessmentDate:now.toISOString().slice(0,10), nurseName:""
+        },
+        assessment:{
+          chiefComplaint:"", currentHistory:"", pastHistory:"", allergies:"", medications:"", additional:"",
+          vitals:{ generalCondition:"", consciousness:"", gcsE:"", gcsV:"", gcsM:"", bloodPressure:"", pulse:"", respiration:"", temperature:"", spo2:"", weight:"", height:"", painScale:"" },
+          physical:{ respiration:"", cardiovascular:"", digestive:"", urinary:"", neurological:"", integument:"", musculoskeletal:"" },
+          needs:{ nutrition:"", elimination:"", activity:"", sleep:"", psychosocial:"", spiritual:"" },
+          supportingExams:[], therapies:[], subjectiveCustom:[], objectiveCustom:[]
+        },
+        analysisRows:[],
+        diagnoses:[],
+        meta:{ createdAt:now.toISOString(), updatedAt:now.toISOString(), currentStep:1 }
+      };
+    }
+
+    let state = createInitialState();
+
+    const el = {
+      stepContainer:document.getElementById("stepContainer"),
+      mobileProgress:document.getElementById("mobileProgress"),
+      desktopStepMenu:document.getElementById("desktopStepMenu"),
+      summary:document.getElementById("summaryContent"),
+      toast:document.getElementById("toast"),
+      printDocument:document.getElementById("printDocument"),
+      loadingOverlay:document.getElementById("loadingOverlay"),
+      loadingTitle:document.getElementById("loadingTitle"),
+      loadingText:document.getElementById("loadingText")
     };
-  }
 
-  let code = "";
-  let title = "";
-
-  if(type === "slki"){
-    code = pick(item, [
-      "kodeSlki",
-      "kodeSLKI",
-      "kode_slki",
-      "kodeLuaran",
-      "kode_luaran",
-      "idSlki",
-      "id_slki",
-      "code",
-      "kode",
-      "id"
-    ]);
-
-    title = pick(item, [
-      "judulSlki",
-      "judulSLKI",
-      "judul_slki",
-      "namaSlki",
-      "nama_slki",
-      "judulLuaran",
-      "judul_luaran",
-      "namaLuaran",
-      "nama_luaran",
-      "luaran",
-      "title",
-      "judul",
-      "nama",
-      "label",
-      "name"
-    ]);
-  }
-
-  if(type === "siki"){
-    code = pick(item, [
-      "kodeSiki",
-      "kodeSIKI",
-      "kode_siki",
-      "kodeIntervensi",
-      "kode_intervensi",
-      "idSiki",
-      "id_siki",
-      "idIntervensi",
-      "id_intervensi",
-      "code",
-      "kode",
-      "id"
-    ]);
-
-    title = pick(item, [
-      "judulSiki",
-      "judulSIKI",
-      "judul_siki",
-      "namaSiki",
-      "nama_siki",
-      "judulIntervensi",
-      "judul_intervensi",
-      "namaIntervensi",
-      "nama_intervensi",
-      "intervensi",
-      "title",
-      "judul",
-      "nama",
-      "label",
-      "name"
-    ]);
-  }
-
-  if(!code){
-    code = extractStandardCode(item);
-  }
-
-  if(!title){
-    title = pick(item, [
-      "title",
-      "judul",
-      "nama",
-      "label",
-      "name"
-    ]);
-  }
-
-  return {
-    code:String(code || "").trim(),
-    title:String(title || "").trim(),
-    raw:item
-  };
-}
-
-function getSelectedRelation(){
-  if(!selected.sdki || !DB.relations.length){
-    return null;
-  }
-
-  const selectedCode = normalizeCode(
-    selected.sdki.id ||
-    getId(selected.sdki.raw)
-  );
-
-  const selectedTitle = normalizeText(
-    selected.sdki.title ||
-    getTitle(selected.sdki.raw, "sdki")
-  );
-
-  if(selectedCode){
-    const relationByCode = DB.relations.find(row => {
-      const relationCode = normalizeCode(
-        pick(row, [
-          "kodeSdki",
-          "kodeSDKI",
-          "kode_sdki",
-          "idSdki",
-          "id_sdki",
-          "kode",
-          "id"
-        ])
-      );
-
-      return relationCode && relationCode === selectedCode;
-    });
-
-    if(relationByCode){
-      return relationByCode;
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
     }
-  }
-
-  if(selectedTitle){
-    return DB.relations.find(row => {
-      const relationTitle = normalizeText(
-        pick(row, [
-          "judulSdki",
-          "judulSDKI",
-          "judul_sdki",
-          "namaSdki",
-          "nama_sdki",
-          "diagnosis",
-          "diagnosa",
-          "judul",
-          "nama"
-        ])
-      );
-
-      return (
-        relationTitle &&
-        (
-          relationTitle === selectedTitle ||
-          relationTitle.includes(selectedTitle) ||
-          selectedTitle.includes(relationTitle)
-        )
-      );
-    }) || null;
-  }
-
-  return null;
-}
-
-function getRelatedSlkiReferences(){
-  const relation = getSelectedRelation();
-
-  if(!relation){
-    return [];
-  }
-
-  const items = relationArray(
-    pick(relation, [
-      "slki",
-      "luaran",
-      "luaranKeperawatan",
-      "luaran_keperawatan"
-    ])
-  );
-
-  return items
-    .map(item => normalizeRelationItem(item, "slki"))
-    .filter(item => item.code || item.title);
-}
-
-function getRelatedSikiReferences(){
-  const relation = getSelectedRelation();
-
-  if(!relation){
-    return [];
-  }
-
-  const groups = [
-    {
-      type:"utama",
-      items:relationArray(
-        pick(relation, [
-          "sikiUtama",
-          "siki_utama",
-          "intervensiUtama",
-          "intervensi_utama"
-        ])
-      )
-    },
-    {
-      type:"pendukung",
-      items:relationArray(
-        pick(relation, [
-          "sikiPendukung",
-          "siki_pendukung",
-          "intervensiPendukung",
-          "intervensi_pendukung"
-        ])
-      )
-    },
-    {
-      type:"belum-terklasifikasi",
-      items:relationArray(
-        pick(relation, [
-          "sikiBelumTerklasifikasi",
-          "siki_belum_terklasifikasi",
-          "sikiLainnya",
-          "siki_lainnya"
-        ])
-      )
+    function escapeAttribute(value){ return escapeHtml(value).replace(/`/g,"&#096;"); }
+    function normalizeText(value){
+      return String(value ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
     }
-  ];
-
-  const result = [];
-
-  groups.forEach(group => {
-    group.items.forEach(item => {
-      const normalized = normalizeRelationItem(item, "siki");
-
-      if(normalized.code || normalized.title){
-        result.push({
-          ...normalized,
-          relationType:group.type
-        });
+    function normalizeCode(value){ return String(value ?? "").toUpperCase().replace(/\s+/g,"").replace(/-/g,".").trim(); }
+    function uid(prefix="id"){ return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
+    function cleanString(value){ return String(value ?? "").replace(/^[-•–—\s]+/,"").replace(/\s+/g," ").trim(); }
+    function uniqueStrings(values){
+      const seen = new Set();
+      return values.map(cleanString).filter(Boolean).filter(item=>{ const key=normalizeText(item); if(!key||seen.has(key)) return false; seen.add(key); return true; });
+    }
+    function toArray(value){
+      if(Array.isArray(value)) return value;
+      if(value === undefined || value === null || value === "") return [];
+      if(typeof value === "object"){
+        const candidates=[value.data,value.items,value.results,value.result,value.sdki,value.slki,value.siki,value.relations];
+        for(const candidate of candidates) if(Array.isArray(candidate)) return candidate;
+        return Object.values(value).flatMap(toArray);
       }
-    });
-  });
-
-  return result;
-}
-
-function matchRelationToDatabase(references, database, type){
-  const matched = [];
-  const seen = new Set();
-
-  references.forEach(reference => {
-    const referenceCode = normalizeCode(reference.code);
-    const referenceTitle = normalizeText(reference.title);
-
-    const found = database.find(item => {
-      const itemCode = normalizeCode(getId(item));
-      const itemTitle = normalizeText(getTitle(item, type));
-
-      if(referenceCode && itemCode && referenceCode === itemCode){
-        return true;
+      return [value];
+    }
+    function getPath(object,path){ return path.split(".").reduce((v,k)=>v && v[k] !== undefined ? v[k] : undefined,object); }
+    function setPath(object,path,value){
+      const keys=path.split("."); let cursor=object;
+      keys.slice(0,-1).forEach(key=>{ if(!cursor[key] || typeof cursor[key]!=="object") cursor[key]={}; cursor=cursor[key]; });
+      cursor[keys[keys.length-1]]=value;
+    }
+    function pick(object,paths,fallback=""){
+      for(const path of paths){ const value=getPath(object,path); if(value!==undefined && value!==null && value!=="") return value; }
+      return fallback;
+    }
+    function flattenText(value){
+      if(value===undefined||value===null) return [];
+      if(typeof value==="string"||typeof value==="number") return [cleanString(value)];
+      if(Array.isArray(value)) return value.flatMap(flattenText);
+      if(typeof value==="object"){
+        const preferred=pick(value,["nama","judul","label","kriteria","indikator","tindakan","deskripsi","text"],"");
+        return preferred ? flattenText(preferred) : Object.values(value).flatMap(flattenText);
       }
-
-      if(referenceTitle && itemTitle){
-        if(referenceTitle === itemTitle){
-          return true;
-        }
-
-        if(
-          referenceTitle.length >= 5 &&
-          (
-            itemTitle.includes(referenceTitle) ||
-            referenceTitle.includes(itemTitle)
-          )
-        ){
-          return true;
-        }
+      return [];
+    }
+    function collectByPaths(object,paths){ return uniqueStrings(paths.flatMap(path=>flattenText(getPath(object,path)))); }
+    function getCode(item,type=""){
+      const map={sdki:["kodeSdki","kodeSDKI","kode","code","id"],slki:["kodeSlki","kodeSLKI","kode","code","id"],siki:["kodeSiki","kodeSIKI","kode","code","id"]};
+      return cleanString(pick(item,map[type]||["kode","code","id"],""));
+    }
+    function getTitle(item,type=""){
+      const map={sdki:["judulSdki","judulSDKI","judul","nama","title","diagnosis","diagnosa"],slki:["judulSlki","judulSLKI","judul","nama","title","luaran"],siki:["judulSiki","judulSIKI","judul","nama","title","intervensi"]};
+      return cleanString(pick(item,map[type]||["judul","nama","title"],"Tanpa judul"));
+    }
+    function getDesc(item){ return cleanString(pick(item,["definisi","deskripsi","description","keterangan","tujuan","ekspektasi"],"")); }
+    function getOutcomeIndicators(item){
+      return collectByPaths(item,["kriteriaHasil","kriteria_hasil","indikator","indikatorLuaran","indikator_luaran","ekspektasi.kriteria","hasil","outcomes"]).slice(0,30);
+    }
+    function getInterventionActions(item){
+      const groups=[["Observasi",["tindakan.observasi","observasi","actions.observasi"]],["Terapeutik",["tindakan.terapeutik","terapeutik","actions.terapeutik"]],["Edukasi",["tindakan.edukasi","edukasi","actions.edukasi"]],["Kolaborasi",["tindakan.kolaborasi","kolaborasi","actions.kolaborasi"]]];
+      const output=[];
+      groups.forEach(([group,paths])=>collectByPaths(item,paths).forEach(text=>output.push({group,text})));
+      if(!output.length) collectByPaths(item,["tindakan","actions","intervensi","aktivitas"]).forEach(text=>output.push({group:"Tindakan",text}));
+      return output.slice(0,50);
+    }
+    function findRelationForDiagnosis(diagnosis){
+      const code=normalizeCode(diagnosis.code||getCode(diagnosis.raw||{},"sdki"));
+      const title=normalizeText(diagnosis.title||getTitle(diagnosis.raw||{},"sdki"));
+      return DB.relations.find(row=>normalizeCode(pick(row,["kodeSdki","kodeSDKI","kode_sdki","sdki.kode","kode"],""))===code)
+        || DB.relations.find(row=>normalizeText(pick(row,["judulSdki","judulSDKI","judul_sdki","sdki.judul","judul"],""))===title)
+        || null;
+    }
+    function relationValues(relation,paths){ return paths.flatMap(path=>toArray(getPath(relation,path))).filter(Boolean); }
+    function resolveReference(reference,collection,type){
+      if(!reference) return null;
+      if(typeof reference==="object"){
+        const code=getCode(reference,type),title=getTitle(reference,type);
+        return collection.find(item=>code && normalizeCode(getCode(item,type))===normalizeCode(code))
+          || collection.find(item=>title && normalizeText(getTitle(item,type))===normalizeText(title))
+          || reference;
       }
-
-      return false;
-    });
-
-    if(!found){
-      return;
+      const raw=cleanString(reference);
+      return collection.find(item=>normalizeCode(getCode(item,type))===normalizeCode(raw))
+        || collection.find(item=>normalizeText(getTitle(item,type))===normalizeText(raw))
+        || null;
     }
-
-    const foundKey = normalizeCode(getId(found)) ||
-      normalizeText(getTitle(found, type));
-
-    if(!foundKey || seen.has(foundKey)){
-      return;
+    function searchItems(collection,type,query,limit=30){
+      const q=normalizeText(query); const words=q.split(" ").filter(Boolean);
+      const mapped=collection.map(raw=>({raw,code:getCode(raw,type),title:getTitle(raw,type),desc:getDesc(raw)}));
+      if(!q) return mapped.slice(0,limit);
+      return mapped.map(item=>{
+        const title=normalizeText(item.title),code=normalizeText(item.code),desc=normalizeText(item.desc),hay=normalizeText(JSON.stringify(item.raw));
+        let score=0;if(title===q)score+=100;if(title.includes(q))score+=55;if(code.includes(q))score+=45;if(desc.includes(q))score+=15;
+        words.forEach(word=>{if(title.includes(word))score+=18;if(code.includes(word))score+=12;if(desc.includes(word))score+=7;if(hay.includes(word))score+=3;});
+        return {...item,score};
+      }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,limit);
     }
-
-    seen.add(foundKey);
-
-    matched.push({
-      ...found,
-      _relationType:reference.relationType || ""
-    });
-  });
-
-  return matched;
-}
-
-function getSuggestedSlki(){
-  const references = getRelatedSlkiReferences();
-
-  if(!references.length){
-    return [];
-  }
-
-  return matchRelationToDatabase(
-    references,
-    DB.slki,
-    "slki"
-  );
-}
-
-function getSuggestedSiki(){
-  const references = getRelatedSikiReferences();
-
-  if(!references.length){
-    return [];
-  }
-
-  return matchRelationToDatabase(
-    references,
-    DB.siki,
-    "siki"
-  );
-}
-
-/* =========================
-   RENDER OPTIONS
-========================= */
-function renderOptionList(container, items, type, selectedItem, onSelect){
-  if(!items.length){
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-        <div class="empty-title">Tidak ditemukan</div>
-        <div class="empty-desc">Coba gunakan kata kunci lain.</div>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = items.map((item, index) => {
-    const activeKey = selectedItem
-      ? normalizeCode(selectedItem.id) || normalizeText(selectedItem.title)
-      : "";
-
-    const thisKey = normalizeCode(item.id) || normalizeText(item.title);
-    const isActive = activeKey && activeKey === thisKey;
-
-    let relationLabel = "";
-
-    if(item.relationType === "utama"){
-      relationLabel = " • Intervensi utama";
-    }else if(item.relationType === "pendukung"){
-      relationLabel = " • Intervensi pendukung";
-    }else if(item.relationType === "belum-terklasifikasi"){
-      relationLabel = " • Belum terklasifikasi";
+    function formatDateID(value){
+      if(!value) return "";
+      const date=new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
     }
+    function sentence(value){ const text=cleanString(value); if(!text)return""; return /[.!?]$/.test(text)?text:`${text}.`; }
 
-    return `
-      <button class="option-card native-click ${isActive ? "active" : ""}" type="button" data-index="${index}">
-        <div class="option-check">
-          <i class="fa-solid ${isActive ? "fa-check" : "fa-plus"}"></i>
-        </div>
-        <div class="option-body">
-          <div class="option-title">${escapeHtml(item.title || "Tanpa Judul")}</div>
-          <div class="option-desc">${escapeHtml(item.desc || "Ketuk untuk memilih item ini.")}</div>
-          ${(item.id || relationLabel) ? `
-            <div class="option-meta">
-              ${item.id ? `Kode: ${escapeHtml(item.id)}` : ""}
-              ${escapeHtml(relationLabel)}
-            </div>
-          ` : ""}
-        </div>
-      </button>
-    `;
-  }).join("");
-
-  container.querySelectorAll(".option-card").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const index = Number(btn.dataset.index);
-      onSelect(items[index]);
-    });
-  });
-}
-
-function renderSdkiList(){
-  const query = sdkiSearch.value.trim();
-  const limit = query ? 50 : 20;
-  const items = searchItems(DB.sdki, "sdki", query, limit);
-
-  renderOptionList(sdkiList, items, "sdki", selected.sdki, item => {
-    selected.sdki = item;
-    selected.slki = null;
-    selected.siki = null;
-
-    selectedSdki.style.display = "block";
-    selectedSdkiText.textContent = item.title || "-";
-    toSlkiBtn.disabled = false;
-
-    selectedSlki.style.display = "none";
-    selectedSiki.style.display = "none";
-
-    toSikiBtn.disabled = true;
-    generateBtn.disabled = true;
-
-    slkiSearch.value = "";
-    sikiSearch.value = "";
-
-    renderSdkiList();
-    renderSlkiList();
-    renderSikiList();
-
-    showToast("Diagnosis dipilih");
-  });
-}
-
-function renderSlkiList(){
-  const query = slkiSearch.value.trim();
-  const suggested = getSuggestedSlki();
-
-  let source = DB.slki;
-
-  if(!query && suggested.length){
-    source = suggested;
-  }
-
-  const items = searchItems(
-    source,
-    "slki",
-    query,
-    query ? 50 : 30
-  );
-
-  renderOptionList(slkiList, items, "slki", selected.slki, item => {
-    selected.slki = item;
-    selected.siki = null;
-
-    selectedSlki.style.display = "block";
-    selectedSlkiText.textContent = item.title || "-";
-    toSikiBtn.disabled = false;
-
-    selectedSiki.style.display = "none";
-    generateBtn.disabled = true;
-
-    sikiSearch.value = "";
-
-    renderSlkiList();
-    renderSikiList();
-
-    showToast("Luaran dipilih");
-  });
-}
-
-function renderSikiList(){
-  const query = sikiSearch.value.trim();
-  const suggested = getSuggestedSiki();
-
-  let source = DB.siki;
-
-  if(!query && suggested.length){
-    source = suggested;
-  }
-
-  const items = searchItems(
-    source,
-    "siki",
-    query,
-    query ? 50 : 30
-  );
-
-  renderOptionList(sikiList, items, "siki", selected.siki, item => {
-    selected.siki = item;
-
-    selectedSiki.style.display = "block";
-    selectedSikiText.textContent = item.title || "-";
-    generateBtn.disabled = false;
-
-    renderSikiList();
-
-    showToast("Intervensi dipilih");
-  });
-}
-
-/* =========================
-   STEP
-========================= */
-function showStep(step){
-  currentStep = step;
-
-  stepSdki.style.display = step === 1 ? "block" : "none";
-  stepSlki.style.display = step === 2 ? "block" : "none";
-  stepSiki.style.display = step === 3 ? "block" : "none";
-  stepOutput.style.display = step === 4 ? "block" : "none";
-
-  updateProgress();
-  scrollTopApp();
-}
-
-function updateProgress(){
-  [1,2,3,4].forEach(num => {
-    const el = document.getElementById("progress" + num);
-    el.classList.remove("active", "done");
-
-    if(num < currentStep) el.classList.add("done");
-    if(num === currentStep) el.classList.add("active");
-  });
-}
-
-/* =========================
-   GENERATE
-========================= */
-function buildAskepText(){
-  const diagnosisCode = selected.sdki?.id || "";
-  const diagnosis = selected.sdki?.title || "-";
-
-  const luaranCode = selected.slki?.id || "";
-  const luaran = selected.slki?.title || "-";
-
-  const intervensiCode = selected.siki?.id || "";
-  const intervensi = selected.siki?.title || "-";
-
-  const implementasi = getSikiImplementations(selected.siki?.raw || {});
-
-  const implementationText = implementasi.length
-    ? implementasi.map((item, index) => `${index + 1}. ${item}`).join("\n")
-    : [
-        "1. Monitor kondisi pasien sesuai masalah keperawatan",
-        "2. Berikan tindakan keperawatan sesuai kebutuhan pasien",
-        "3. Edukasi pasien dan keluarga sesuai kondisi klinis"
-      ].join("\n");
-
-  return `Diagnosis Keperawatan:
-${diagnosisCode ? diagnosisCode + " - " : ""}${diagnosis}
-
-Luaran Keperawatan:
-${luaranCode ? luaranCode + " - " : ""}${luaran}
-
-Intervensi Keperawatan:
-${intervensiCode ? intervensiCode + " - " : ""}${intervensi}
-
-Implementasi:
-${implementationText}`;
-}
-
-function generateAskep(){
-  if(!selected.sdki || !selected.slki || !selected.siki){
-    showToast("Lengkapi pilihan dulu", "fa-circle-exclamation");
-    return;
-  }
-
-  askepOutput.value = buildAskepText();
-  showStep(4);
-  showToast("Askep berhasil dibuat");
-}
-
-async function copyAskep(){
-  const text = askepOutput.value.trim();
-
-  if(!text){
-    showToast("Belum ada teks untuk disalin", "fa-circle-exclamation");
-    return;
-  }
-
-  try{
-    await navigator.clipboard.writeText(text);
-    showToast("Askep berhasil disalin");
-  }catch(err){
-    askepOutput.removeAttribute("readonly");
-    askepOutput.select();
-    document.execCommand("copy");
-    askepOutput.setAttribute("readonly", "readonly");
-    showToast("Askep berhasil disalin");
-  }
-}
-
-async function shareAskep(){
-  const text = askepOutput.value.trim();
-
-  if(!text){
-    showToast("Belum ada teks untuk dibagikan", "fa-circle-exclamation");
-    return;
-  }
-
-  if(navigator.share){
-    try{
-      await navigator.share({
-        title:"Quick Askep",
-        text
+    function showToast(message){
+      el.toast.textContent=message; el.toast.classList.add("show"); clearTimeout(toastTimer);
+      toastTimer=setTimeout(()=>el.toast.classList.remove("show"),2200);
+    }
+    function showLoading(title,text="Mohon tunggu."){ el.loadingTitle.textContent=title; el.loadingText.textContent=text; el.loadingOverlay.classList.add("show"); }
+    function hideLoading(){ el.loadingOverlay.classList.remove("show"); }
+    function loadScript(src,globalName){
+      return new Promise((resolve,reject)=>{
+        if(globalName && window[globalName]) return resolve(window[globalName]);
+        const existing=document.querySelector(`script[data-src="${src}"]`);
+        if(existing){ existing.addEventListener("load",()=>resolve(globalName?window[globalName]:true),{once:true}); existing.addEventListener("error",reject,{once:true}); return; }
+        const script=document.createElement("script"); script.src=src; script.async=true; script.dataset.src=src;
+        script.onload=()=>resolve(globalName?window[globalName]:true); script.onerror=reject; document.head.appendChild(script);
       });
-    }catch(err){
-      if(err?.name !== "AbortError"){
-        console.warn(err);
-      }
     }
-  }else{
-    await copyAskep();
-  }
-}
 
-function resetAll(){
-  selected = {
-    sdki:null,
-    slki:null,
-    siki:null
-  };
+    function scheduleSave(){
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(()=>saveDraft(false),450);
+    }
+    function saveDraft(notify=true){
+      state.meta.updatedAt=new Date().toISOString(); state.meta.currentStep=currentStep;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      if(notify) showToast("Draft Askep tersimpan.");
+      renderSummary();
+    }
+    function restoreDraft(){
+      try{
+        const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return false;
+        const parsed=JSON.parse(raw); if(!parsed || typeof parsed!=="object") return false;
+        state={...createInitialState(),...parsed};
+        state.patient={...createInitialState().patient,...(parsed.patient||{})};
+        state.assessment={...createInitialState().assessment,...(parsed.assessment||{})};
+        state.assessment.vitals={...createInitialState().assessment.vitals,...(parsed.assessment?.vitals||{})};
+        state.assessment.physical={...createInitialState().assessment.physical,...(parsed.assessment?.physical||{})};
+        state.assessment.needs={...createInitialState().assessment.needs,...(parsed.assessment?.needs||{})};
+        state.analysisRows=Array.isArray(parsed.analysisRows)?parsed.analysisRows:[];
+        state.diagnoses=Array.isArray(parsed.diagnoses)?parsed.diagnoses:[];
+        currentStep=Math.min(7,Math.max(1,Number(parsed.meta?.currentStep)||1));
+        activeDiagnosisId=state.diagnoses[0]?.id||null;
+        return true;
+      }catch(error){ console.warn("Draft tidak dapat dipulihkan",error); return false; }
+    }
+    function newAskep(){
+      if(!confirm("Buat Askep baru? Draft yang tersimpan akan dihapus.")) return;
+      localStorage.removeItem(STORAGE_KEY); state=createInitialState(); currentStep=1; activeDiagnosisId=null; renderAll(); showToast("Askep baru dibuat.");
+    }
 
-  sdkiSearch.value = "";
-  slkiSearch.value = "";
-  sikiSearch.value = "";
+    function renderNavigation(){
+      el.mobileProgress.innerHTML=STEPS.map(step=>`<button class="progress-pill ${step.id===currentStep?"active":step.id<currentStep?"done":""}" data-step-nav="${step.id}" type="button"><span class="number">${step.id<currentStep?'<i class="fa-solid fa-check"></i>':step.id}</span><span>${step.short}</span></button>`).join("");
+      el.desktopStepMenu.innerHTML=STEPS.map(step=>`<button class="sidebar-step ${step.id===currentStep?"active":step.id<currentStep?"done":""}" data-step-nav="${step.id}" type="button"><span class="sidebar-number">${step.id<currentStep?'<i class="fa-solid fa-check"></i>':step.id}</span><span class="sidebar-copy"><span class="sidebar-title">${escapeHtml(step.title)}</span><span class="sidebar-sub">${escapeHtml(step.sub)}</span></span></button>`).join("");
+      document.querySelectorAll("[data-step-nav]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.stepNav))));
+      setTimeout(()=>document.querySelector(`.progress-pill[data-step-nav="${currentStep}"]`)?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),20);
+    }
 
-  selectedSdki.style.display = "none";
-  selectedSlki.style.display = "none";
-  selectedSiki.style.display = "none";
+    function goToStep(step){
+      currentStep=Math.min(7,Math.max(1,step)); state.meta.currentStep=currentStep; scheduleSave(); renderAll(); window.scrollTo({top:0,behavior:"smooth"});
+    }
 
-  toSlkiBtn.disabled = true;
-  toSikiBtn.disabled = true;
-  generateBtn.disabled = true;
+    function stepHeader(number,title,description,optional=false){
+      return `<div class="section-head"><div class="section-heading"><div class="eyebrow">Tahap ${number} dari 7</div><h2 class="section-title">${escapeHtml(title)}</h2><p class="section-desc">${escapeHtml(description)}</p></div>${optional?'<span class="optional-badge"><i class="fa-solid fa-circle-info"></i> Opsional</span>':""}</div>`;
+    }
+    function stepActions(back,next,nextLabel="Lanjut",nextClass="btn-primary"){
+      return `<div class="step-actions">${back?`<button class="btn btn-secondary native-click" data-go-step="${back}" type="button"><i class="fa-solid fa-arrow-left"></i> Kembali</button>`:'<span></span>'}<button class="btn ${nextClass} native-click" data-go-step="${next}" type="button">${escapeHtml(nextLabel)} <i class="fa-solid fa-arrow-right"></i></button></div>`;
+    }
 
-  askepOutput.value = "";
+    function renderPatientStep(){
+      const p=state.patient;
+      return `<section class="section-card">${stepHeader(1,"Data pasien","Isi seperlunya. Semua field boleh dikosongkan dan tidak akan menghambat pembuatan Askep.",true)}
+        <div class="info-card"><i class="fa-solid fa-shield-heart"></i><p>Gunakan inisial bila tidak perlu mencantumkan identitas lengkap. Baris yang kosong tidak akan ditampilkan pada hasil akhir.</p></div>
+        <div class="grid two">
+          ${fieldInput("Nama / inisial pasien","patient.name",p.name,"Contoh: Tn. A")}
+          ${fieldInput("Umur","patient.age",p.age,"Contoh: 45 tahun")}
+          ${fieldSelect("Jenis kelamin","patient.gender",p.gender,["","Laki-laki","Perempuan"],"Tidak dicantumkan")}
+          ${fieldInput("Nomor rekam medis","patient.medicalRecord",p.medicalRecord,"Opsional")}
+          ${fieldInput("Ruangan","patient.room",p.room,"Contoh: Mawar")}
+          ${fieldInput("Diagnosis medis","patient.medicalDiagnosis",p.medicalDiagnosis,"Opsional")}
+          ${fieldInput("Tanggal pengkajian","patient.assessmentDate",p.assessmentDate,"", "date")}
+          ${fieldInput("Nama perawat","patient.nurseName",p.nurseName,"Opsional")}
+        </div>
+        ${stepActions(null,2,"Lewati / Lanjut")}
+      </section>`;
+    }
 
-  renderSdkiList();
-  renderSlkiList();
-  renderSikiList();
+    function fieldInput(label,path,value,placeholder="",type="text",extra=""){
+      return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><input class="field-input" type="${type}" data-bind="${escapeAttribute(path)}" value="${escapeAttribute(value)}" placeholder="${escapeAttribute(placeholder)}" ${extra}></div>`;
+    }
+    function fieldTextarea(label,path,value,placeholder="",full=false){
+      return `<div class="field ${full?"full":""}"><label class="field-label">${escapeHtml(label)}</label><textarea class="field-textarea" data-bind="${escapeAttribute(path)}" placeholder="${escapeAttribute(placeholder)}">${escapeHtml(value)}</textarea></div>`;
+    }
+    function fieldSelect(label,path,value,options,emptyLabel="Pilih"){
+      return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><select class="field-select" data-bind="${escapeAttribute(path)}">${options.map((option,index)=>`<option value="${escapeAttribute(option)}" ${String(option)===String(value)?"selected":""}>${escapeHtml(index===0&&option===""?emptyLabel:option)}</option>`).join("")}</select></div>`;
+    }
 
-  showStep(1);
-  showToast("Pilihan direset");
-}
+    function renderAssessmentStep(){
+      const a=state.assessment,v=a.vitals,p=a.physical,n=a.needs;
+      return `<section class="section-card">${stepHeader(2,"Pengkajian keperawatan","Isi bagian yang relevan. Data yang dimasukkan dapat digunakan kembali dalam analisis DS dan DO.")}
+        <div class="accordion">
+          ${accordion("Keluhan dan riwayat kesehatan","Keluhan utama, riwayat sekarang, alergi, dan terapi","fa-comment-medical",`
+            <div class="grid two">
+              ${fieldTextarea("Keluhan utama","assessment.chiefComplaint",a.chiefComplaint,"Keluhan yang dirasakan pasien",true)}
+              ${fieldTextarea("Riwayat keluhan sekarang","assessment.currentHistory",a.currentHistory,"Kronologi, durasi, faktor pencetus",true)}
+              ${fieldTextarea("Riwayat penyakit dahulu","assessment.pastHistory",a.pastHistory,"Penyakit atau perawatan sebelumnya")}
+              ${fieldTextarea("Riwayat alergi","assessment.allergies",a.allergies,"Obat, makanan, atau lainnya")}
+              ${fieldTextarea("Obat/terapi yang sedang digunakan","assessment.medications",a.medications,"Tuliskan bila ada")}
+              ${fieldTextarea("Catatan tambahan","assessment.additional",a.additional,"Informasi lain yang relevan")}
+            </div>`,true)}
+          ${accordion("Pemeriksaan umum dan tanda vital","Keadaan umum, kesadaran, GCS, dan tanda-tanda vital","fa-heart-pulse",`
+            <div class="grid four">
+              ${fieldInput("Keadaan umum","assessment.vitals.generalCondition",v.generalCondition,"Baik / sedang / lemah")}
+              ${fieldInput("Kesadaran","assessment.vitals.consciousness",v.consciousness,"Compos mentis")}
+              ${fieldInput("GCS E","assessment.vitals.gcsE",v.gcsE,"4","number",'min="1" max="4"')}
+              ${fieldInput("GCS V","assessment.vitals.gcsV",v.gcsV,"5","number",'min="1" max="5"')}
+              ${fieldInput("GCS M","assessment.vitals.gcsM",v.gcsM,"6","number",'min="1" max="6"')}
+              ${fieldInput("Tekanan darah","assessment.vitals.bloodPressure",v.bloodPressure,"120/80 mmHg")}
+              ${fieldInput("Nadi","assessment.vitals.pulse",v.pulse,"x/menit")}
+              ${fieldInput("Pernapasan","assessment.vitals.respiration",v.respiration,"x/menit")}
+              ${fieldInput("Suhu","assessment.vitals.temperature",v.temperature,"°C")}
+              ${fieldInput("SpO₂","assessment.vitals.spo2",v.spo2,"%")}
+              ${fieldInput("Berat badan","assessment.vitals.weight",v.weight,"kg")}
+              ${fieldInput("Tinggi badan","assessment.vitals.height",v.height,"cm")}
+              ${fieldInput("Skala nyeri","assessment.vitals.painScale",v.painScale,"0–10")}
+            </div>`)}
+          ${accordion("Pemeriksaan fisik","Catat temuan normal maupun tidak normal pada sistem yang diperiksa","fa-user-doctor",`
+            <div class="grid two">
+              ${fieldTextarea("Pernapasan","assessment.physical.respiration",p.respiration,"Inspeksi, palpasi, perkusi, auskultasi")}
+              ${fieldTextarea("Kardiovaskular","assessment.physical.cardiovascular",p.cardiovascular,"Nadi, perfusi, edema, bunyi jantung")}
+              ${fieldTextarea("Pencernaan","assessment.physical.digestive",p.digestive,"Abdomen, mual, muntah, bising usus")}
+              ${fieldTextarea("Perkemihan","assessment.physical.urinary",p.urinary,"Pola BAK, karakter urine")}
+              ${fieldTextarea("Neurologis","assessment.physical.neurological",p.neurological,"Kesadaran, fungsi sensorik dan motorik")}
+              ${fieldTextarea("Integumen","assessment.physical.integument",p.integument,"Kulit, luka, kelembapan, warna")}
+              ${fieldTextarea("Muskuloskeletal","assessment.physical.musculoskeletal",p.musculoskeletal,"Kekuatan, ROM, mobilitas",true)}
+            </div>`)}
+          ${accordion("Pola kebutuhan dasar","Nutrisi, eliminasi, aktivitas, tidur, psikososial, dan spiritual","fa-person-circle-check",`
+            <div class="grid two">
+              ${fieldTextarea("Nutrisi dan cairan","assessment.needs.nutrition",n.nutrition,"Asupan, nafsu makan, diet")}
+              ${fieldTextarea("Eliminasi","assessment.needs.elimination",n.elimination,"BAK dan BAB")}
+              ${fieldTextarea("Aktivitas dan mobilitas","assessment.needs.activity",n.activity,"Kemampuan ADL, intoleransi aktivitas")}
+              ${fieldTextarea("Istirahat dan tidur","assessment.needs.sleep",n.sleep,"Durasi dan kualitas tidur")}
+              ${fieldTextarea("Psikososial dan koping","assessment.needs.psychosocial",n.psychosocial,"Respons emosional dan dukungan")}
+              ${fieldTextarea("Spiritual","assessment.needs.spiritual",n.spiritual,"Kebutuhan spiritual atau nilai")}
+            </div>`)}
+          ${accordion("Pemeriksaan penunjang","Tambahkan hasil laboratorium atau pemeriksaan diagnostik","fa-vials",renderSupportingExams())}
+          ${accordion("Terapi medis","Tambahkan obat, cairan, oksigen, atau terapi lainnya","fa-pills",renderTherapies())}
+          ${accordion("Data subjektif dan objektif tambahan","Tambahkan data manual yang ingin digunakan dalam analisis","fa-list-check",renderCustomAssessmentData())}
+        </div>
+        ${stepActions(1,3)}
+      </section>`;
+    }
 
-/* =========================
-   EVENTS
-========================= */
-let sdkiTimer = null;
-let slkiTimer = null;
-let sikiTimer = null;
+    function accordion(title,sub,icon,content,open=false){
+      return `<div class="accordion-item ${open?"open":""}"><button class="accordion-trigger native-click" type="button"><span class="accordion-icon"><i class="fa-solid ${icon}"></i></span><span class="accordion-copy"><span class="accordion-title">${escapeHtml(title)}</span><span class="accordion-sub">${escapeHtml(sub)}</span></span><i class="fa-solid fa-chevron-down accordion-chevron"></i></button><div class="accordion-panel">${content}</div></div>`;
+    }
 
-sdkiSearch.addEventListener("input", () => {
-  clearTimeout(sdkiTimer);
-  sdkiTimer = setTimeout(renderSdkiList, 150);
-});
+    function renderSupportingExams(){
+      const rows=state.assessment.supportingExams;
+      return `<div class="dynamic-list">${rows.length?rows.map((row,index)=>`<div class="dynamic-row">
+        ${fieldDynamic("Tanggal",`supportingExams.${index}.date`,row.date||"","date")}
+        ${fieldDynamic("Pemeriksaan",`supportingExams.${index}.name`,row.name||"","text","Contoh: Hb")}
+        ${fieldDynamic("Hasil",`supportingExams.${index}.result`,row.result||"","text")}
+        ${fieldDynamic("Nilai rujukan",`supportingExams.${index}.reference`,row.reference||"","text")}
+        ${fieldDynamic("Keterangan",`supportingExams.${index}.note`,row.note||"","text")}
+        <div class="row-actions"><button class="icon-btn danger" type="button" data-remove-support="${index}" aria-label="Hapus"><i class="fa-solid fa-trash"></i></button></div>
+      </div>`).join(""):'<div class="empty-state">Belum ada pemeriksaan penunjang.</div>'}</div>
+      <button class="btn btn-soft native-click" type="button" data-add-support style="margin-top:10px"><i class="fa-solid fa-plus"></i> Tambah pemeriksaan</button>`;
+    }
+    function renderTherapies(){
+      const rows=state.assessment.therapies;
+      return `<div class="dynamic-list">${rows.length?rows.map((row,index)=>`<div class="dynamic-row">
+        ${fieldDynamic("Nama terapi/obat",`therapies.${index}.name`,row.name||"","text")}
+        ${fieldDynamic("Dosis",`therapies.${index}.dose`,row.dose||"","text")}
+        ${fieldDynamic("Rute",`therapies.${index}.route`,row.route||"","text")}
+        ${fieldDynamic("Frekuensi",`therapies.${index}.frequency`,row.frequency||"","text")}
+        ${fieldDynamic("Keterangan",`therapies.${index}.note`,row.note||"","text")}
+        <div class="row-actions"><button class="icon-btn danger" type="button" data-remove-therapy="${index}" aria-label="Hapus"><i class="fa-solid fa-trash"></i></button></div>
+      </div>`).join(""):'<div class="empty-state">Belum ada terapi medis.</div>'}</div>
+      <button class="btn btn-soft native-click" type="button" data-add-therapy style="margin-top:10px"><i class="fa-solid fa-plus"></i> Tambah terapi</button>`;
+    }
+    function fieldDynamic(label,path,value,type="text",placeholder=""){
+      return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><input class="field-input" type="${type}" data-dynamic-bind="${escapeAttribute(path)}" value="${escapeAttribute(value)}" placeholder="${escapeAttribute(placeholder)}"></div>`;
+    }
+    function renderCustomAssessmentData(){
+      const s=state.assessment.subjectiveCustom,o=state.assessment.objectiveCustom;
+      return `<div class="grid two"><div><div class="field-label">Data subjektif tambahan</div><div class="dynamic-list">${s.length?s.map((item,index)=>`<div class="input-group"><input class="field-input" data-custom-subjective="${index}" value="${escapeAttribute(item)}"><button class="icon-btn danger" data-remove-custom-subjective="${index}" type="button"><i class="fa-solid fa-trash"></i></button></div>`).join(""):'<div class="empty-state">Belum ada data subjektif tambahan.</div>'}</div><button class="btn btn-soft" data-add-custom-subjective type="button" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Tambah DS</button></div>
+      <div><div class="field-label">Data objektif tambahan</div><div class="dynamic-list">${o.length?o.map((item,index)=>`<div class="input-group"><input class="field-input" data-custom-objective="${index}" value="${escapeAttribute(item)}"><button class="icon-btn danger" data-remove-custom-objective="${index}" type="button"><i class="fa-solid fa-trash"></i></button></div>`).join(""):'<div class="empty-state">Belum ada data objektif tambahan.</div>'}</div><button class="btn btn-soft" data-add-custom-objective type="button" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Tambah DO</button></div></div>`;
+    }
 
-slkiSearch.addEventListener("input", () => {
-  clearTimeout(slkiTimer);
-  slkiTimer = setTimeout(renderSlkiList, 150);
-});
+    function collectSubjectiveData(){
+      const a=state.assessment;
+      return uniqueStrings([a.chiefComplaint,a.currentHistory,a.pastHistory,a.allergies,a.medications,a.needs.nutrition,a.needs.elimination,a.needs.activity,a.needs.sleep,a.needs.psychosocial,a.needs.spiritual,...a.subjectiveCustom]);
+    }
+    function collectObjectiveData(){
+      const a=state.assessment,v=a.vitals,p=a.physical;
+      const vitals=[];
+      if(v.generalCondition) vitals.push(`Keadaan umum: ${v.generalCondition}`);
+      if(v.consciousness) vitals.push(`Kesadaran: ${v.consciousness}`);
+      const gcs=[v.gcsE&&`E${v.gcsE}`,v.gcsV&&`V${v.gcsV}`,v.gcsM&&`M${v.gcsM}`].filter(Boolean).join(" "); if(gcs) vitals.push(`GCS ${gcs}`);
+      if(v.bloodPressure) vitals.push(`Tekanan darah: ${v.bloodPressure}`);
+      if(v.pulse) vitals.push(`Nadi: ${v.pulse}`);
+      if(v.respiration) vitals.push(`Pernapasan: ${v.respiration}`);
+      if(v.temperature) vitals.push(`Suhu: ${v.temperature}`);
+      if(v.spo2) vitals.push(`SpO₂: ${v.spo2}`);
+      if(v.painScale) vitals.push(`Skala nyeri: ${v.painScale}`);
+      return uniqueStrings([...vitals,p.respiration,p.cardiovascular,p.digestive,p.urinary,p.neurological,p.integument,p.musculoskeletal,...a.objectiveCustom]);
+    }
+    function autoCreateAnalysis(){
+      const ds=collectSubjectiveData(),doData=collectObjectiveData();
+      if(!ds.length&&!doData.length){ showToast("Isi pengkajian atau tambahkan data manual terlebih dahulu."); return; }
+      if(state.analysisRows.length && !confirm("Analisis yang ada akan ditambah dengan data pengkajian. Lanjutkan?")) return;
+      const max=Math.max(ds.length,doData.length,1);
+      for(let i=0;i<max;i++) state.analysisRows.push({id:uid("analysis"),subjective:ds[i]||"",objective:doData[i]||"",etiology:"",suspectedProblem:""});
+      scheduleSave(); renderAll(); showToast("Data pengkajian ditambahkan ke tabel analisis.");
+    }
 
-sikiSearch.addEventListener("input", () => {
-  clearTimeout(sikiTimer);
-  sikiTimer = setTimeout(renderSikiList, 150);
-});
+    function renderAnalysisStep(){
+      const rows=state.analysisRows;
+      return `<section class="section-card">${stepHeader(3,"Analisis data","Kelompokkan data subjektif dan objektif, lalu tuliskan etiologi serta masalah yang diduga.")}
+        <div class="btn-row"><button class="btn btn-soft native-click" data-auto-analysis type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Ambil dari Pengkajian</button><button class="btn btn-secondary native-click" data-add-analysis type="button"><i class="fa-solid fa-plus"></i> Tambah Baris</button></div>
+        <div class="analysis-table-wrap" style="margin-top:12px"><table class="analysis-table"><thead><tr><th style="width:42px">No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi / penyebab</th><th>Masalah yang diduga</th><th style="width:60px">Aksi</th></tr></thead><tbody>${rows.length?rows.map((row,index)=>`<tr><td>${index+1}</td><td><textarea data-analysis="${index}:subjective" rows="4">${escapeHtml(row.subjective)}</textarea></td><td><textarea data-analysis="${index}:objective" rows="4">${escapeHtml(row.objective)}</textarea></td><td><textarea data-analysis="${index}:etiology" rows="4">${escapeHtml(row.etiology)}</textarea></td><td><textarea data-analysis="${index}:suspectedProblem" rows="4">${escapeHtml(row.suspectedProblem)}</textarea></td><td class="table-actions"><button class="icon-btn danger" data-remove-analysis="${index}" type="button"><i class="fa-solid fa-trash"></i></button></td></tr>`).join(""):`<tr><td colspan="6"><div class="empty-state">Belum ada analisis data. Gunakan tombol “Ambil dari Pengkajian” atau tambahkan baris manual.</div></td></tr>`}</tbody></table></div>
+        ${stepActions(2,4)}
+      </section>`;
+    }
 
-toSlkiBtn.addEventListener("click", () => {
-  renderSlkiList();
-  showStep(2);
-});
+    function renderDiagnosisStep(){
+      return `<section class="section-card">${stepHeader(4,"Diagnosis keperawatan dan prioritas","Pilih lebih dari satu SDKI. Urutan kartu menjadi urutan prioritas masalah.")}
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="sdkiSearch" class="search-input" type="search" placeholder="Cari kode, diagnosis, atau gejala..."></div>
+        <div id="sdkiResults" class="search-results"></div>
+        <div class="selected-list" id="diagnosisList">${renderDiagnosisCards()}</div>
+        ${stepActions(3,5)}
+      </section>`;
+    }
+    function renderDiagnosisCards(){
+      if(!state.diagnoses.length) return '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-stethoscope"></i></div><div class="empty-title">Belum ada diagnosis</div><div>Gunakan kotak pencarian untuk menambahkan SDKI.</div></div>';
+      return state.diagnoses.map((diagnosis,index)=>`<article class="diagnosis-card ${index===0?"priority-one":""}">
+        <div class="card-top"><div class="priority-badge">P${index+1}</div><div class="card-copy"><div class="card-title">${escapeHtml(diagnosis.code?`${diagnosis.code} — ${diagnosis.title}`:diagnosis.title)}</div><div class="card-meta">${index===0?"Prioritas utama":"Prioritas "+(index+1)} · ${diagnosis.outcomes?.length||0} luaran · ${diagnosis.interventions?.length||0} intervensi</div></div></div>
+        <div class="card-toolbar"><button class="mini-btn" data-move-diagnosis="${index}:-1" type="button" ${index===0?"disabled":""}><i class="fa-solid fa-arrow-up"></i> Naik</button><button class="mini-btn" data-move-diagnosis="${index}:1" type="button" ${index===state.diagnoses.length-1?"disabled":""}><i class="fa-solid fa-arrow-down"></i> Turun</button><button class="mini-btn primary" data-toggle-diagnosis-editor="${diagnosis.id}" type="button"><i class="fa-solid fa-pen"></i> Edit</button><button class="mini-btn danger" data-remove-diagnosis="${diagnosis.id}" type="button"><i class="fa-solid fa-trash"></i> Hapus</button></div>
+        <div class="inline-editor" data-diagnosis-editor="${diagnosis.id}" ${diagnosis.editing?"":"hidden"}>
+          <div class="grid two">
+            ${fieldDiagnosisTextarea("Rumusan diagnosis",diagnosis.id,"statement",diagnosis.statement||`${diagnosis.title}${diagnosis.code?` (${diagnosis.code})`:""}`)}
+            ${fieldDiagnosisTextarea("Etiologi / berhubungan dengan",diagnosis.id,"etiology",diagnosis.etiology||"")}
+            ${fieldDiagnosisTextarea("Data subjektif pendukung",diagnosis.id,"subjectiveDataText",diagnosis.subjectiveDataText||collectSubjectiveData().slice(0,4).join("\n"))}
+            ${fieldDiagnosisTextarea("Data objektif pendukung",diagnosis.id,"objectiveDataText",diagnosis.objectiveDataText||collectObjectiveData().slice(0,4).join("\n"))}
+            ${fieldDiagnosisTextarea("Alasan prioritas",diagnosis.id,"priorityReason",diagnosis.priorityReason||"")}
+          </div>
+        </div>
+      </article>`).join("");
+    }
+    function fieldDiagnosisTextarea(label,id,key,value){ return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><textarea class="field-textarea" data-diagnosis-field="${escapeAttribute(id)}:${escapeAttribute(key)}">${escapeHtml(value)}</textarea></div>`; }
+    function addDiagnosis(item){
+      const key=normalizeCode(item.code)||normalizeText(item.title);
+      if(state.diagnoses.some(d=>(normalizeCode(d.code)||normalizeText(d.title))===key)){ showToast("Diagnosis sudah dipilih."); return; }
+      const diagnosis={id:uid("diag"),code:item.code,title:item.title,statement:`${item.title}${item.code?` (${item.code})`:""}`,etiology:"",subjectiveDataText:collectSubjectiveData().slice(0,4).join("\n"),objectiveDataText:collectObjectiveData().slice(0,4).join("\n"),priorityReason:"",outcomes:[],interventions:[],editing:true};
+      state.diagnoses.push(diagnosis); activeDiagnosisId=diagnosis.id; scheduleSave(); renderAll(); showToast("Diagnosis ditambahkan.");
+    }
 
-toSikiBtn.addEventListener("click", () => {
-  renderSikiList();
-  showStep(3);
-});
+    function activeDiagnosis(){
+      if(!state.diagnoses.length) return null;
+      let found=state.diagnoses.find(d=>d.id===activeDiagnosisId);
+      if(!found){ found=state.diagnoses[0]; activeDiagnosisId=found.id; }
+      return found;
+    }
+    function diagnosisTabs(){
+      return `<div class="diagnosis-tabs">${state.diagnoses.map((d,index)=>`<button class="diagnosis-tab ${d.id===activeDiagnosisId?"active":""}" data-active-diagnosis="${d.id}" type="button">P${index+1} · ${escapeHtml(d.title)}</button>`).join("")}</div>`;
+    }
+    function getSuggestedItems(diagnosis,type){
+      const relation=findRelationForDiagnosis(diagnosis)||{};
+      const paths=type==="slki"?["slki","luaran","outcomes","slkiUtama","slkiPendukung"]:["sikiUtama","sikiPendukung","sikiBelumTerklasifikasi","siki","intervensi","interventions"];
+      const collection=type==="slki"?DB.slki:DB.siki;
+      const seen=new Set();
+      return relationValues(relation,paths).map(ref=>resolveReference(ref,collection,type)).filter(Boolean).filter(item=>{const key=normalizeCode(getCode(item,type))||normalizeText(getTitle(item,type));if(!key||seen.has(key))return false;seen.add(key);return true;});
+    }
 
-backToSdkiBtn.addEventListener("click", () => showStep(1));
-backToSlkiBtn.addEventListener("click", () => showStep(2));
-editAgainBtn.addEventListener("click", () => showStep(3));
+    function renderOutcomeStep(){
+      const diagnosis=activeDiagnosis();
+      if(!state.diagnoses.length) return `<section class="section-card">${stepHeader(5,"Luaran SLKI","Tambahkan diagnosis terlebih dahulu.")}<div class="empty-state">Belum ada diagnosis. Kembali ke tahap Diagnosis untuk menambahkan masalah keperawatan.</div>${stepActions(4,6)}</section>`;
+      return `<section class="section-card">${stepHeader(5,"Luaran SLKI","Pilih satu atau beberapa luaran untuk setiap diagnosis, lalu tentukan target dan indikator.")}${diagnosisTabs()}
+        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SLKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Anda tetap dapat mencari luaran lain.</span></div>
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="slkiSearch" class="search-input" type="search" placeholder="Cari luaran SLKI..."></div>
+        <div id="slkiResults" class="search-results"></div>
+        <div class="selected-list">${renderOutcomeCards(diagnosis)}</div>
+        ${stepActions(4,6)}
+      </section>`;
+    }
+    function renderOutcomeCards(diagnosis){
+      if(!diagnosis.outcomes.length) return '<div class="empty-state">Belum ada luaran untuk diagnosis ini.</div>';
+      return diagnosis.outcomes.map((outcome,index)=>`<article class="care-card"><div class="care-head"><div class="care-check"><i class="fa-solid fa-chart-line"></i></div><div class="care-copy"><span class="care-code">${escapeHtml(outcome.code||"SLKI")}</span><div class="care-title">${escapeHtml(outcome.title)}</div></div><button class="icon-btn danger" data-remove-outcome="${outcome.id}" type="button"><i class="fa-solid fa-trash"></i></button></div>
+        <div class="care-fields">
+          ${fieldCareInput("Target waktu",outcome.id,"duration",outcome.duration||"1 × 8 jam","outcome")}
+          ${fieldCareSelect("Ekspektasi",outcome.id,"expectation",outcome.expectation||"Membaik",["Meningkat","Menurun","Membaik","Dipertahankan"],"outcome")}
+        </div>
+        <div class="group-label">Indikator / kriteria hasil</div><div class="check-list">${outcome.indicators.length?outcome.indicators.map((indicator,i)=>`<label class="check-row"><input type="checkbox" data-outcome-indicator="${outcome.id}:${i}" ${indicator.checked?"checked":""}><span>${escapeHtml(indicator.text)}</span></label>`).join(""):'<div class="empty-state">Indikator belum terbaca dari data SLKI. Tambahkan catatan target manual di bawah.</div>'}</div>
+        <div class="field" style="margin-top:9px"><label class="field-label">Catatan target manual</label><textarea class="field-textarea" data-outcome-field="${outcome.id}:manualTarget">${escapeHtml(outcome.manualTarget||"")}</textarea></div>
+      </article>`).join("");
+    }
+    function fieldCareInput(label,id,key,value,type){ return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><input class="field-input" data-${type}-field="${escapeAttribute(id)}:${escapeAttribute(key)}" value="${escapeAttribute(value)}"></div>`; }
+    function fieldCareSelect(label,id,key,value,options,type){ return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><select class="field-select" data-${type}-field="${escapeAttribute(id)}:${escapeAttribute(key)}">${options.map(option=>`<option value="${escapeAttribute(option)}" ${option===value?"selected":""}>${escapeHtml(option)}</option>`).join("")}</select></div>`; }
+    function addOutcome(item){
+      const diagnosis=activeDiagnosis(); if(!diagnosis)return;
+      const key=normalizeCode(item.code)||normalizeText(item.title);
+      if(diagnosis.outcomes.some(o=>(normalizeCode(o.code)||normalizeText(o.title))===key)){showToast("Luaran sudah dipilih.");return;}
+      const indicators=getOutcomeIndicators(item.raw).map((text,index)=>({text,checked:index<5,initial:"",target:""}));
+      diagnosis.outcomes.push({id:uid("outcome"),code:item.code,title:item.title,duration:"1 × 8 jam",expectation:"Membaik",indicators,manualTarget:""});
+      scheduleSave(); renderAll(); showToast("Luaran ditambahkan.");
+    }
 
-generateBtn.addEventListener("click", generateAskep);
-copyBtn.addEventListener("click", copyAskep);
-shareBtn.addEventListener("click", shareAskep);
+    function renderInterventionStep(){
+      const diagnosis=activeDiagnosis();
+      if(!state.diagnoses.length) return `<section class="section-card">${stepHeader(6,"Intervensi SIKI","Tambahkan diagnosis terlebih dahulu.")}<div class="empty-state">Belum ada diagnosis.</div>${stepActions(5,7)}</section>`;
+      return `<section class="section-card">${stepHeader(6,"Intervensi SIKI","Pilih intervensi utama atau pendukung untuk setiap diagnosis, kemudian tentukan tindakan yang digunakan.")}${diagnosisTabs()}
+        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SIKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Intervensi lain tetap dapat dicari.</span></div>
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="sikiSearch" class="search-input" type="search" placeholder="Cari intervensi SIKI..."></div>
+        <div id="sikiResults" class="search-results"></div>
+        <div class="selected-list">${renderInterventionCards(diagnosis)}</div>
+        ${stepActions(5,7,"Review Askep","btn-success")}
+      </section>`;
+    }
+    function renderInterventionCards(diagnosis){
+      if(!diagnosis.interventions.length) return '<div class="empty-state">Belum ada intervensi untuk diagnosis ini.</div>';
+      return diagnosis.interventions.map(intervention=>`<article class="care-card"><div class="care-head"><div class="care-check"><i class="fa-solid fa-hand-holding-medical"></i></div><div class="care-copy"><span class="care-code">${escapeHtml(intervention.code||"SIKI")}</span><div class="care-title">${escapeHtml(intervention.title)}</div></div><button class="icon-btn danger" data-remove-intervention="${intervention.id}" type="button"><i class="fa-solid fa-trash"></i></button></div>
+        <div class="care-fields">
+          ${fieldCareInput("Frekuensi umum",intervention.id,"frequency",intervention.frequency||"Sesuai kebutuhan","intervention")}
+          ${fieldCareInput("Keterangan",intervention.id,"note",intervention.note||"","intervention")}
+        </div>
+        <div class="check-list">${renderActionGroups(intervention)}</div>
+        <div class="field" style="margin-top:9px"><label class="field-label">Tindakan tambahan manual</label><textarea class="field-textarea" data-intervention-field="${intervention.id}:manualActions" placeholder="Satu tindakan per baris">${escapeHtml(intervention.manualActions||"")}</textarea></div>
+      </article>`).join("");
+    }
+    function renderActionGroups(intervention){
+      if(!intervention.actions.length) return '<div class="empty-state">Rincian tindakan belum terbaca dari data SIKI.</div>';
+      let group=""; let html="";
+      intervention.actions.forEach((action,index)=>{ if(action.group!==group){group=action.group;html+=`<div class="group-label">${escapeHtml(group)}</div>`;} html+=`<label class="check-row"><input type="checkbox" data-intervention-action="${intervention.id}:${index}" ${action.checked?"checked":""}><span>${escapeHtml(action.text)}</span></label>`; });
+      return html;
+    }
+    function addIntervention(item){
+      const diagnosis=activeDiagnosis();if(!diagnosis)return;
+      const key=normalizeCode(item.code)||normalizeText(item.title);
+      if(diagnosis.interventions.some(o=>(normalizeCode(o.code)||normalizeText(o.title))===key)){showToast("Intervensi sudah dipilih.");return;}
+      const actions=getInterventionActions(item.raw).map((action,index)=>({...action,checked:index<8}));
+      diagnosis.interventions.push({id:uid("intervention"),code:item.code,title:item.title,frequency:"Sesuai kebutuhan",note:"",actions,manualActions:""});
+      scheduleSave();renderAll();showToast("Intervensi ditambahkan.");
+    }
 
-resetBtn1.addEventListener("click", resetAll);
-resetAllBtn.addEventListener("click", resetAll);
+    function renderReviewStep(){
+      const hasContent=state.diagnoses.length>0;
+      return `<section class="section-card">${stepHeader(7,"Review dan unduh","Periksa kembali seluruh isi. Gunakan tombol Edit untuk kembali ke bagian tertentu tanpa kehilangan data.")}
+        ${!hasContent?'<div class="review-note"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada diagnosis. Dokumen tetap dapat dilihat, tetapi tabel rencana keperawatan akan kosong.</div>':""}
+        ${renderReviewContent()}
+        <div class="download-grid">
+          <button class="btn btn-secondary native-click" data-edit-menu type="button"><i class="fa-solid fa-pen-to-square"></i> Edit Askep</button>
+          <button class="btn btn-primary native-click" data-download-docx type="button"><i class="fa-solid fa-file-word"></i> DOCX</button>
+          <button class="btn btn-danger-soft native-click" data-download-pdf type="button"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+          <button class="btn btn-secondary native-click" data-print type="button"><i class="fa-solid fa-print"></i> Cetak</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-secondary" data-save-draft type="button"><i class="fa-solid fa-floppy-disk"></i> Simpan Draft</button><button class="btn btn-danger-soft" data-new-askep type="button"><i class="fa-solid fa-file-circle-plus"></i> Askep Baru</button></div>
+        ${stepActions(6,7,"Tetap di Review","btn-success")}
+      </section>`;
+    }
 
-/* =========================
-   RIPPLE EFFECT
-========================= */
-document.addEventListener("click", function(e){
-  const el = e.target.closest(".native-click");
-  if(!el) return;
+    function renderReviewContent(){
+      const identity=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,value])=>cleanString(value));
+      const ds=collectSubjectiveData(),od=collectObjectiveData();
+      return `<div class="review-section"><div class="review-head"><div><div class="review-title">Identitas pasien</div><div class="review-sub">Hanya data yang diisi</div></div><button class="mini-btn primary" data-go-step="1" type="button"><i class="fa-solid fa-pen"></i> Edit</button></div>${identity.length?`<div class="identity-grid">${identity.map(([label,value])=>`<div class="identity-item"><div class="identity-label">${escapeHtml(label)}</div><div class="identity-value">${escapeHtml(value)}</div></div>`).join("")}</div>`:'<div class="empty-state">Identitas tidak dicantumkan.</div>'}</div>
+      <div class="review-section"><div class="review-head"><div><div class="review-title">Ringkasan pengkajian</div><div class="review-sub">${ds.length} data subjektif · ${od.length} data objektif</div></div><button class="mini-btn primary" data-go-step="2" type="button"><i class="fa-solid fa-pen"></i> Edit</button></div><div class="grid two"><div><div class="group-label">Data subjektif</div>${ds.length?`<ul>${ds.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:'<div class="empty-state">Tidak ada data.</div>'}</div><div><div class="group-label">Data objektif</div>${od.length?`<ul>${od.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:'<div class="empty-state">Tidak ada data.</div>'}</div></div></div>
+      <div class="review-section"><div class="review-head"><div><div class="review-title">Analisis data</div><div class="review-sub">${state.analysisRows.length} baris analisis</div></div><button class="mini-btn primary" data-go-step="3" type="button"><i class="fa-solid fa-pen"></i> Edit</button></div>${renderReviewAnalysisTable()}</div>
+      <div class="review-section"><div class="review-head"><div><div class="review-title">Diagnosis dan prioritas</div><div class="review-sub">${state.diagnoses.length} diagnosis dipilih</div></div><button class="mini-btn primary" data-go-step="4" type="button"><i class="fa-solid fa-pen"></i> Edit</button></div>${renderReviewDiagnosisTable()}</div>
+      <div class="review-section"><div class="review-head"><div><div class="review-title">Rencana asuhan keperawatan</div><div class="review-sub">Luaran SLKI dan intervensi SIKI per diagnosis</div></div><div style="display:flex;gap:6px"><button class="mini-btn primary" data-go-step="5" type="button">Edit SLKI</button><button class="mini-btn primary" data-go-step="6" type="button">Edit SIKI</button></div></div>${renderCarePlanTable()}</div>`;
+    }
+    function renderReviewAnalysisTable(){
+      if(!state.analysisRows.length)return'<div class="empty-state">Belum ada analisis data.</div>';
+      return `<div class="review-table-wrap"><table class="review-table"><thead><tr><th>No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi</th><th>Masalah</th></tr></thead><tbody>${state.analysisRows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.subjective||"-")}</td><td>${escapeHtml(r.objective||"-")}</td><td>${escapeHtml(r.etiology||"-")}</td><td>${escapeHtml(r.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table></div>`;
+    }
+    function renderReviewDiagnosisTable(){
+      if(!state.diagnoses.length)return'<div class="empty-state">Belum ada diagnosis keperawatan.</div>';
+      return `<div class="review-table-wrap"><table class="review-table"><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Etiologi</th><th>Data subjektif</th><th>Data objektif</th><th>Alasan prioritas</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||`${d.code} ${d.title}`)}</td><td>${escapeHtml(d.etiology||"-")}</td><td>${escapeHtml(d.subjectiveDataText||"-")}</td><td>${escapeHtml(d.objectiveDataText||"-")}</td><td>${escapeHtml(d.priorityReason||"-")}</td></tr>`).join("")}</tbody></table></div>`;
+    }
+    function selectedIndicators(outcome){ return outcome.indicators.filter(x=>x.checked).map(x=>x.text); }
+    function selectedActions(intervention){
+      const selected=intervention.actions.filter(x=>x.checked).map(x=>`${x.group}: ${x.text}`);
+      const manual=String(intervention.manualActions||"").split(/\n+/).map(cleanString).filter(Boolean);
+      return [...selected,...manual];
+    }
+    function renderCarePlanTable(){
+      if(!state.diagnoses.length)return'<div class="empty-state">Belum ada rencana keperawatan.</div>';
+      return `<div class="review-table-wrap"><table class="review-table"><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?selectedIndicators(o).map(x=>`• ${escapeHtml(x)}`).join("<br>"):"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?selectedActions(s).map(x=>`• ${escapeHtml(x)}`).join("<br>"):"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table></div>`;
+    }
 
-  const oldRipple = el.querySelector(".ripple");
-  if(oldRipple) oldRipple.remove();
+    function renderStep(){
+      const renderer=[null,renderPatientStep,renderAssessmentStep,renderAnalysisStep,renderDiagnosisStep,renderOutcomeStep,renderInterventionStep,renderReviewStep][currentStep];
+      el.stepContainer.innerHTML=renderer();
+      bindStepEvents();
+      if(currentStep===4) renderSdkISearch("");
+      if(currentStep===5) renderSlkiSearch("");
+      if(currentStep===6) renderSikiSearch("");
+      if(currentStep===7) buildPrintDocument();
+    }
 
-  const ripple = document.createElement("span");
-  ripple.className = "ripple";
+    function bindStepEvents(){
+      el.stepContainer.querySelectorAll("[data-go-step]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goStep))));
+      el.stepContainer.querySelectorAll("[data-bind]").forEach(input=>input.addEventListener("input",()=>{setPath(state,input.dataset.bind,input.value);scheduleSave();renderSummary();}));
+      el.stepContainer.querySelectorAll("[data-dynamic-bind]").forEach(input=>input.addEventListener("input",()=>{const [collection,index,key]=input.dataset.dynamicBind.split(".");state.assessment[collection][Number(index)][key]=input.value;scheduleSave();}));
+      el.stepContainer.querySelectorAll(".accordion-trigger").forEach(button=>button.addEventListener("click",()=>button.closest(".accordion-item").classList.toggle("open")));
 
-  const rect = el.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
+      el.stepContainer.querySelector("[data-add-support]")?.addEventListener("click",()=>{state.assessment.supportingExams.push({date:"",name:"",result:"",reference:"",note:""});renderAll();});
+      el.stepContainer.querySelectorAll("[data-remove-support]").forEach(button=>button.addEventListener("click",()=>{state.assessment.supportingExams.splice(Number(button.dataset.removeSupport),1);renderAll();scheduleSave();}));
+      el.stepContainer.querySelector("[data-add-therapy]")?.addEventListener("click",()=>{state.assessment.therapies.push({name:"",dose:"",route:"",frequency:"",note:""});renderAll();});
+      el.stepContainer.querySelectorAll("[data-remove-therapy]").forEach(button=>button.addEventListener("click",()=>{state.assessment.therapies.splice(Number(button.dataset.removeTherapy),1);renderAll();scheduleSave();}));
+      el.stepContainer.querySelector("[data-add-custom-subjective]")?.addEventListener("click",()=>{state.assessment.subjectiveCustom.push("");renderAll();});
+      el.stepContainer.querySelector("[data-add-custom-objective]")?.addEventListener("click",()=>{state.assessment.objectiveCustom.push("");renderAll();});
+      el.stepContainer.querySelectorAll("[data-custom-subjective]").forEach(input=>input.addEventListener("input",()=>{state.assessment.subjectiveCustom[Number(input.dataset.customSubjective)]=input.value;scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-custom-objective]").forEach(input=>input.addEventListener("input",()=>{state.assessment.objectiveCustom[Number(input.dataset.customObjective)]=input.value;scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-remove-custom-subjective]").forEach(button=>button.addEventListener("click",()=>{state.assessment.subjectiveCustom.splice(Number(button.dataset.removeCustomSubjective),1);renderAll();scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-remove-custom-objective]").forEach(button=>button.addEventListener("click",()=>{state.assessment.objectiveCustom.splice(Number(button.dataset.removeCustomObjective),1);renderAll();scheduleSave();}));
 
-  ripple.style.width = ripple.style.height = size + "px";
-  ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-  ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+      el.stepContainer.querySelector("[data-auto-analysis]")?.addEventListener("click",autoCreateAnalysis);
+      el.stepContainer.querySelector("[data-add-analysis]")?.addEventListener("click",()=>{state.analysisRows.push({id:uid("analysis"),subjective:"",objective:"",etiology:"",suspectedProblem:""});renderAll();});
+      el.stepContainer.querySelectorAll("[data-analysis]").forEach(input=>input.addEventListener("input",()=>{const [index,key]=input.dataset.analysis.split(":");state.analysisRows[Number(index)][key]=input.value;scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-remove-analysis]").forEach(button=>button.addEventListener("click",()=>{state.analysisRows.splice(Number(button.dataset.removeAnalysis),1);renderAll();scheduleSave();}));
 
-  el.appendChild(ripple);
+      const sdkiSearch=el.stepContainer.querySelector("#sdkiSearch"); if(sdkiSearch) sdkiSearch.addEventListener("input",()=>renderSdkISearch(sdkiSearch.value));
+      el.stepContainer.querySelectorAll("[data-move-diagnosis]").forEach(button=>button.addEventListener("click",()=>{const [index,delta]=button.dataset.moveDiagnosis.split(":").map(Number);const target=index+delta;if(target<0||target>=state.diagnoses.length)return;[state.diagnoses[index],state.diagnoses[target]]=[state.diagnoses[target],state.diagnoses[index]];renderAll();scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-toggle-diagnosis-editor]").forEach(button=>button.addEventListener("click",()=>{const d=state.diagnoses.find(x=>x.id===button.dataset.toggleDiagnosisEditor);if(d){d.editing=!d.editing;renderAll();}}));
+      el.stepContainer.querySelectorAll("[data-remove-diagnosis]").forEach(button=>button.addEventListener("click",()=>{if(!confirm("Hapus diagnosis beserta luaran dan intervensinya?"))return;state.diagnoses=state.diagnoses.filter(x=>x.id!==button.dataset.removeDiagnosis);if(activeDiagnosisId===button.dataset.removeDiagnosis)activeDiagnosisId=state.diagnoses[0]?.id||null;renderAll();scheduleSave();}));
+      el.stepContainer.querySelectorAll("[data-diagnosis-field]").forEach(input=>input.addEventListener("input",()=>{const [id,key]=input.dataset.diagnosisField.split(":");const d=state.diagnoses.find(x=>x.id===id);if(d){d[key]=input.value;scheduleSave();}}));
 
-  setTimeout(() => ripple.remove(), 600);
-});
+      el.stepContainer.querySelectorAll("[data-active-diagnosis]").forEach(button=>button.addEventListener("click",()=>{activeDiagnosisId=button.dataset.activeDiagnosis;renderAll();}));
+      const slkiSearch=el.stepContainer.querySelector("#slkiSearch"); if(slkiSearch) slkiSearch.addEventListener("input",()=>renderSlkiSearch(slkiSearch.value));
+      el.stepContainer.querySelectorAll("[data-remove-outcome]").forEach(button=>button.addEventListener("click",()=>{const d=activeDiagnosis();if(d){d.outcomes=d.outcomes.filter(x=>x.id!==button.dataset.removeOutcome);renderAll();scheduleSave();}}));
+      el.stepContainer.querySelectorAll("[data-outcome-field]").forEach(input=>input.addEventListener("input",()=>{const [id,key]=input.dataset.outcomeField.split(":");const d=activeDiagnosis(),o=d?.outcomes.find(x=>x.id===id);if(o){o[key]=input.value;scheduleSave();}}));
+      el.stepContainer.querySelectorAll("[data-outcome-indicator]").forEach(input=>input.addEventListener("change",()=>{const [id,index]=input.dataset.outcomeIndicator.split(":");const o=activeDiagnosis()?.outcomes.find(x=>x.id===id);if(o){o.indicators[Number(index)].checked=input.checked;scheduleSave();}}));
 
-/* =========================
-   BLOKIR SELECT
-========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
-});
+      const sikiSearch=el.stepContainer.querySelector("#sikiSearch"); if(sikiSearch) sikiSearch.addEventListener("input",()=>renderSikiSearch(sikiSearch.value));
+      el.stepContainer.querySelectorAll("[data-remove-intervention]").forEach(button=>button.addEventListener("click",()=>{const d=activeDiagnosis();if(d){d.interventions=d.interventions.filter(x=>x.id!==button.dataset.removeIntervention);renderAll();scheduleSave();}}));
+      el.stepContainer.querySelectorAll("[data-intervention-field]").forEach(input=>input.addEventListener("input",()=>{const [id,key]=input.dataset.interventionField.split(":");const d=activeDiagnosis(),s=d?.interventions.find(x=>x.id===id);if(s){s[key]=input.value;scheduleSave();}}));
+      el.stepContainer.querySelectorAll("[data-intervention-action]").forEach(input=>input.addEventListener("change",()=>{const [id,index]=input.dataset.interventionAction.split(":");const s=activeDiagnosis()?.interventions.find(x=>x.id===id);if(s){s.actions[Number(index)].checked=input.checked;scheduleSave();}}));
 
-/* =========================
-   INIT
-========================= */
-loadAllData().catch(err => {
-  console.error(err);
-  loadingEl.style.display = "none";
+      el.stepContainer.querySelector("[data-edit-menu]")?.addEventListener("click",showEditMenu);
+      el.stepContainer.querySelector("[data-download-docx]")?.addEventListener("click",downloadDocx);
+      el.stepContainer.querySelector("[data-download-pdf]")?.addEventListener("click",downloadPdf);
+      el.stepContainer.querySelector("[data-print]")?.addEventListener("click",printAskep);
+      el.stepContainer.querySelector("[data-save-draft]")?.addEventListener("click",()=>saveDraft(true));
+      el.stepContainer.querySelector("[data-new-askep]")?.addEventListener("click",newAskep);
+    }
 
-  stepSdki.style.display = "block";
-  sdkiList.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-icon">
-        <i class="fa-solid fa-circle-exclamation"></i>
-      </div>
-      <div class="empty-title">Data gagal dimuat</div>
-      <div class="empty-desc">Cek endpoint API SDKI, SLKI, SIKI, dan relations.</div>
-    </div>
-  `;
-});
-</script>
+    function renderSdkISearch(query){
+      const container=el.stepContainer.querySelector("#sdkiResults"); if(!container)return;
+      const items=searchItems(DB.sdki,"sdki",query,query?30:12);
+      container.innerHTML=items.length?items.map((item,index)=>searchResultHtml(item,"sdki",index)).join(""):'<div class="empty-state">Diagnosis tidak ditemukan.</div>';
+      container.querySelectorAll("[data-add-sdki]").forEach(button=>button.addEventListener("click",()=>addDiagnosis(items[Number(button.dataset.addSdki)])));
+    }
+    function renderSlkiSearch(query){
+      const container=el.stepContainer.querySelector("#slkiResults"); if(!container)return;
+      const d=activeDiagnosis(); const suggested=d?getSuggestedItems(d,"slki"):[];
+      const source=query?DB.slki:(suggested.length?suggested:DB.slki);
+      const items=searchItems(source,"slki",query,query?30:12);
+      container.innerHTML=items.length?items.map((item,index)=>searchResultHtml(item,"slki",index,suggested.length&&!query?"Saran relasi":"")).join(""):'<div class="empty-state">Luaran tidak ditemukan.</div>';
+      container.querySelectorAll("[data-add-slki]").forEach(button=>button.addEventListener("click",()=>addOutcome(items[Number(button.dataset.addSlki)])));
+    }
+    function renderSikiSearch(query){
+      const container=el.stepContainer.querySelector("#sikiResults"); if(!container)return;
+      const d=activeDiagnosis(); const suggested=d?getSuggestedItems(d,"siki"):[];
+      const source=query?DB.siki:(suggested.length?suggested:DB.siki);
+      const items=searchItems(source,"siki",query,query?30:12);
+      container.innerHTML=items.length?items.map((item,index)=>searchResultHtml(item,"siki",index,suggested.length&&!query?"Saran relasi":"")).join(""):'<div class="empty-state">Intervensi tidak ditemukan.</div>';
+      container.querySelectorAll("[data-add-siki]").forEach(button=>button.addEventListener("click",()=>addIntervention(items[Number(button.dataset.addSiki)])));
+    }
+    function searchResultHtml(item,type,index,badge=""){
+      const attr=type==="sdki"?"data-add-sdki":type==="slki"?"data-add-slki":"data-add-siki";
+      return `<button class="search-result native-click" ${attr}="${index}" type="button"><span class="result-code">${escapeHtml(item.code||type.toUpperCase())}</span><span class="result-body"><span class="result-title">${escapeHtml(item.title)}</span><span class="result-desc">${escapeHtml(item.desc||badge||"Ketuk untuk menambahkan")}${badge?` · ${escapeHtml(badge)}`:""}</span></span><i class="fa-solid fa-plus" style="margin-top:6px;color:var(--primary)"></i></button>`;
+    }
 
+    function renderSummary(){
+      const ds=collectSubjectiveData().length,od=collectObjectiveData().length;
+      const outcomeCount=state.diagnoses.reduce((sum,d)=>sum+d.outcomes.length,0);
+      const interventionCount=state.diagnoses.reduce((sum,d)=>sum+d.interventions.length,0);
+      el.summary.innerHTML=`<div class="summary-card"><div class="summary-row"><span>Identitas terisi</span><strong>${Object.values(state.patient).filter(cleanString).length}</strong></div><div class="summary-row"><span>Data subjektif</span><strong>${ds}</strong></div><div class="summary-row"><span>Data objektif</span><strong>${od}</strong></div><div class="summary-row"><span>Analisis data</span><strong>${state.analysisRows.length}</strong></div><div class="summary-row"><span>Diagnosis</span><strong>${state.diagnoses.length}</strong></div><div class="summary-row"><span>Luaran SLKI</span><strong>${outcomeCount}</strong></div><div class="summary-row"><span>Intervensi SIKI</span><strong>${interventionCount}</strong></div></div>
+      <div class="summary-card"><strong style="font-size:10px">Prioritas masalah</strong><div class="summary-diagnoses">${state.diagnoses.length?state.diagnoses.map((d,i)=>`<div class="summary-diagnosis"><b>P${i+1} · ${escapeHtml(d.code||"SDKI")}</b>${escapeHtml(d.title)}</div>`).join(""):'<div class="empty-state">Belum ada diagnosis.</div>'}</div></div>
+      <div class="summary-card"><div class="summary-row"><span>Draft terakhir</span><strong>${new Date(state.meta.updatedAt||Date.now()).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</strong></div></div>`;
+    }
+
+    function renderAll(){ renderNavigation(); renderStep(); renderSummary(); }
+
+    function showEditMenu(){
+      const input=prompt("Pilih bagian yang ingin diedit:\n1 Identitas\n2 Pengkajian\n3 Analisis data\n4 Diagnosis\n5 Luaran SLKI\n6 Intervensi SIKI","4");
+      const step=Number(input); if(step>=1&&step<=6) goToStep(step);
+    }
+
+    function fileBaseName(){
+      const name=cleanString(state.patient.name).replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"");
+      const date=state.patient.assessmentDate||new Date().toISOString().slice(0,10);
+      return `Askep${name?`-${name}`:""}-${date}`;
+    }
+
+    function buildPrintDocument(){
+      const identityRows=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,v])=>cleanString(v));
+      const ds=collectSubjectiveData(),od=collectObjectiveData();
+      el.printDocument.innerHTML=`<h1>ASUHAN KEPERAWATAN</h1><p style="text-align:center;margin:0">Dokumen rencana asuhan keperawatan</p>
+      ${identityRows.length?`<h2>Identitas Pasien</h2><table><tbody>${identityRows.map(([k,v])=>`<tr><th style="width:30%">${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`).join("")}</tbody></table>`:""}
+      <h2>Pengkajian Keperawatan</h2><table><thead><tr><th>Data subjektif</th><th>Data objektif</th></tr></thead><tbody><tr><td>${ds.length?`<ul>${ds.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td><td>${od.length?`<ul>${od.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td></tr></tbody></table>
+      <h2>Analisis Data</h2>${state.analysisRows.length?`<table><thead><tr><th>No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi</th><th>Masalah</th></tr></thead><tbody>${state.analysisRows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.subjective||"-")}</td><td>${escapeHtml(r.objective||"-")}</td><td>${escapeHtml(r.etiology||"-")}</td><td>${escapeHtml(r.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada analisis data.</p>"}
+      <h2>Diagnosis dan Prioritas</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Etiologi</th><th>Data pendukung</th><th>Alasan prioritas</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${escapeHtml(d.etiology||"-")}</td><td><b>DS:</b><br>${escapeHtml(d.subjectiveDataText||"-")}<br><br><b>DO:</b><br>${escapeHtml(d.objectiveDataText||"-")}</td><td>${escapeHtml(d.priorityReason||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada diagnosis.</p>"}
+      <h2>Rencana Asuhan Keperawatan</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?`<ul>${selectedIndicators(o).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}${s.note?`<br>${escapeHtml(s.note)}`:""}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?`<ul>${selectedActions(s).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada rencana asuhan keperawatan.</p>"}
+      <div style="margin-top:28px;text-align:right"><p>${escapeHtml(state.patient.room||"")}${state.patient.assessmentDate?`, ${escapeHtml(formatDateID(state.patient.assessmentDate))}`:""}</p><p style="margin-top:52px">${escapeHtml(state.patient.nurseName||"(........................................)")}</p></div>`;
+    }
+
+    async function downloadPdf(){
+      try{
+        showLoading("Membuat PDF","Memuat mesin PDF dan menyusun dokumen."); buildPrintDocument();
+        await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js","html2pdf");
+        const clone=el.printDocument.cloneNode(true); clone.style.display="block"; clone.style.padding="10px"; clone.style.background="#fff"; document.body.appendChild(clone);
+        await window.html2pdf().set({margin:[10,10,10,10],filename:`${fileBaseName()}.pdf`,image:{type:"jpeg",quality:.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"]}}).from(clone).save();
+        clone.remove(); showToast("PDF berhasil dibuat.");
+      }catch(error){ console.error(error); showToast("PDF gagal dibuat. Gunakan tombol Cetak sebagai alternatif."); }
+      finally{hideLoading();}
+    }
+
+    async function downloadDocx(){
+      try{
+        showLoading("Membuat DOCX","Memuat mesin dokumen dan menyusun tabel Askep.");
+        await loadScript("https://unpkg.com/docx@8.5.0/build/index.umd.js","docx");
+        const d=window.docx;
+        if(!d) throw new Error("Library DOCX tidak tersedia");
+        const {Document,Packer,Paragraph,TextRun,HeadingLevel,Table,TableRow,TableCell,WidthType,AlignmentType}=d;
+        const children=[];
+        children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"ASUHAN KEPERAWATAN",bold:true,size:30})]}));
+        children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Dokumen rencana asuhan keperawatan",size:20})]}));
+        const identity=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,v])=>cleanString(v));
+        if(identity.length){children.push(new Paragraph({text:"Identitas Pasien",heading:HeadingLevel.HEADING_2}));children.push(makeDocxTable(identity.map(([k,v])=>[k,v]),[35,65]));}
+        children.push(new Paragraph({text:"Pengkajian Keperawatan",heading:HeadingLevel.HEADING_2}));
+        children.push(makeDocxTable([["Data subjektif","Data objektif"],[collectSubjectiveData().map(x=>`• ${x}`).join("\n")||"-",collectObjectiveData().map(x=>`• ${x}`).join("\n")||"-"]],[50,50],true));
+        children.push(new Paragraph({text:"Analisis Data",heading:HeadingLevel.HEADING_2}));
+        const analysisRows=[["No.","Data subjektif","Data objektif","Etiologi","Masalah"],...state.analysisRows.map((r,i)=>[String(i+1),r.subjective||"-",r.objective||"-",r.etiology||"-",r.suspectedProblem||"-"])];
+        children.push(makeDocxTable(analysisRows,[7,24,24,22,23],true));
+        children.push(new Paragraph({text:"Diagnosis dan Prioritas",heading:HeadingLevel.HEADING_2}));
+        const diagRows=[["Prioritas","Diagnosis","Etiologi","Data pendukung","Alasan prioritas"],...state.diagnoses.map((x,i)=>[String(i+1),x.statement||x.title,x.etiology||"-",`DS:\n${x.subjectiveDataText||"-"}\n\nDO:\n${x.objectiveDataText||"-"}`,x.priorityReason||"-"])];
+        children.push(makeDocxTable(diagRows,[9,24,18,31,18],true));
+        children.push(new Paragraph({text:"Rencana Asuhan Keperawatan",heading:HeadingLevel.HEADING_2}));
+        const careRows=[["Prioritas","Diagnosis","Luaran & target","Indikator","Intervensi","Rencana tindakan"],...state.diagnoses.map((x,i)=>[
+          String(i+1),x.statement||x.title,
+          x.outcomes.map(o=>`${o.code?o.code+" — ":""}${o.title}\n${o.expectation} setelah ${o.duration}${o.manualTarget?"\n"+o.manualTarget:""}`).join("\n\n")||"-",
+          x.outcomes.map(o=>selectedIndicators(o).map(v=>`• ${v}`).join("\n")||"-").join("\n\n")||"-",
+          x.interventions.map(s=>`${s.code?s.code+" — ":""}${s.title}\n${s.frequency||""}${s.note?"\n"+s.note:""}`).join("\n\n")||"-",
+          x.interventions.map(s=>selectedActions(s).map(v=>`• ${v}`).join("\n")||"-").join("\n\n")||"-"
+        ])];
+        children.push(makeDocxTable(careRows,[7,18,20,18,17,20],true));
+        children.push(new Paragraph({text:`\n${state.patient.room||""}${state.patient.assessmentDate?`, ${formatDateID(state.patient.assessmentDate)}`:""}`,alignment:AlignmentType.RIGHT}));
+        children.push(new Paragraph({text:`\n\n\n${state.patient.nurseName||"(........................................)"}`,alignment:AlignmentType.RIGHT}));
+        const doc=new Document({sections:[{properties:{},children}]});
+        const blob=await Packer.toBlob(doc); downloadBlob(blob,`${fileBaseName()}.docx`); showToast("DOCX berhasil dibuat.");
+
+        function makeDocxTable(rows,widths,header=false){
+          return new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:rows.map((row,rowIndex)=>new TableRow({children:row.map((cell,index)=>new TableCell({width:{size:widths[index]||Math.floor(100/row.length),type:WidthType.PERCENTAGE},children:String(cell??"").split("\n").map(line=>new Paragraph({children:[new TextRun({text:line,bold:header&&rowIndex===0,size:16})]}))}))}))});
+        }
+      }catch(error){console.error(error);showToast("DOCX gagal dibuat. Periksa koneksi internet lalu coba lagi.");}
+      finally{hideLoading();}
+    }
+
+    function downloadBlob(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    function printAskep(){buildPrintDocument();window.print();}
+
+    async function fetchJsonSafe(url){
+      try{const response=await fetch(`${url}${url.includes("?")?"&":"?"}v=${Date.now()}`,{headers:{Accept:"application/json"}});if(!response.ok)throw new Error(`HTTP ${response.status}`);const json=await response.json();return toArray(json);}catch(error){console.warn("Gagal memuat",url,error);return[];}
+    }
+    async function loadData(){
+      showLoading("Memuat data SDKI, SLKI, dan SIKI","Data referensi sedang disiapkan.");
+      const [sdki,slki,siki,relations]=await Promise.all([fetchJsonSafe(DATA_PATHS.sdki),fetchJsonSafe(DATA_PATHS.slki),fetchJsonSafe(DATA_PATHS.siki),fetchJsonSafe(DATA_PATHS.relations)]);
+      DB.sdki=sdki;DB.slki=slki;DB.siki=siki;DB.relations=relations;hideLoading();
+      if(!DB.sdki.length)showToast("Data SDKI belum berhasil dimuat. Form lain tetap dapat digunakan.");
+      renderAll();
+    }
+
+    document.getElementById("mobileNewButton").addEventListener("click",newAskep);
+    document.getElementById("desktopNewButton").addEventListener("click",newAskep);
+    document.getElementById("desktopSaveButton").addEventListener("click",()=>saveDraft(true));
+
+    const restored=restoreDraft();
+    loadData().then(()=>{if(restored)showToast("Draft Askep sebelumnya dipulihkan.");});
+  </script>
 </body>
 </html>
