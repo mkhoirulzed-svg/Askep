@@ -149,9 +149,19 @@
     .soap-panel.active{display:block}
 
     @media (max-width:899px){
-      .soap-panels{display:block}
-      .soap-panel{display:none!important;width:100%}
-      .soap-panel.active{display:block!important}
+      .soap-tabs{
+        position:sticky;
+        top:8px;
+        z-index:20;
+        box-shadow:0 8px 22px rgba(15,23,42,.08);
+      }
+      .soap-panels{display:grid;gap:14px}
+      .soap-panel,
+      .soap-panel.active{
+        display:block!important;
+        width:100%;
+      }
+      .soap-panel{scroll-margin-top:76px}
     }
     .panel-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
     .panel-heading{display:flex;align-items:center;gap:9px}
@@ -1022,7 +1032,7 @@ ${formatResultDateTime()}	${els.result.value.replace(/\n/g," ")}	${els.resultPar
     els.etiology.addEventListener("change", updateAssessmentPreview);
     els.assessmentMode.addEventListener("change", updateAssessmentPreview);
 
-    function activateSoapTab(tabName) {
+    function activateSoapTab(tabName, shouldScroll = false) {
       document.querySelectorAll(".soap-tab").forEach(tab => {
         const active = tab.dataset.tab === tabName;
         tab.classList.toggle("active", active);
@@ -1030,24 +1040,29 @@ ${formatResultDateTime()}	${els.result.value.replace(/\n/g," ")}	${els.resultPar
         tab.tabIndex = active ? 0 : -1;
       });
 
+      let targetPanel = null;
       document.querySelectorAll(".soap-panel").forEach(panel => {
         const active = panel.dataset.panel === tabName;
         panel.classList.toggle("active", active);
-        panel.hidden = !active && window.innerWidth < 900;
+        panel.hidden = false;
+        if (active) targetPanel = panel;
       });
+
+      if (shouldScroll && targetPanel && window.innerWidth < 900) {
+        targetPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
     }
 
     document.querySelector(".soap-tabs")?.addEventListener("click", event => {
       const tab = event.target.closest(".soap-tab");
       if (!tab) return;
       event.preventDefault();
-      activateSoapTab(tab.dataset.tab);
+      activateSoapTab(tab.dataset.tab, true);
     });
 
     window.addEventListener("resize", () => {
       const activeTab = document.querySelector(".soap-tab.active")?.dataset.tab || "subjective";
-      if (window.innerWidth < 900) activateSoapTab(activeTab);
-      else document.querySelectorAll(".soap-panel").forEach(panel => panel.hidden = false);
+      activateSoapTab(activeTab, false);
     });
 
     activateSoapTab("subjective");
