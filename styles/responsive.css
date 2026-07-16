@@ -192,51 +192,6 @@
     font-size: 13px;
   }
 
-  .bottom-nav {
-    top: 0;
-    bottom: auto;
-    left: 0;
-    width: var(--desktop-sidebar-width);
-    max-width: none;
-    height: 100vh;
-    height: 100dvh;
-    padding: 28px 18px;
-    transform: none;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, 62px) 1fr;
-    align-content: start;
-    gap: 10px;
-    border-top: 0;
-    border-right: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.96);
-  }
-
-  .bottom-nav::before {
-    display: block;
-    margin: 4px 10px 18px;
-    color: var(--text);
-    content: "ASKEP";
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-  }
-
-  .bottom-item {
-    min-height: 56px;
-    padding: 0 16px;
-    justify-content: flex-start;
-    flex-direction: row;
-    gap: 14px;
-    border-radius: 16px;
-    font-size: 13px;
-  }
-
-  .bottom-item i {
-    width: 22px;
-    font-size: 18px;
-    text-align: center;
-  }
-
   .native-click:hover {
     transform: translateY(-2px);
   }
@@ -276,8 +231,8 @@
 
 /* =========================================================
    SIDEBAR DESKTOP — GAYA ASKEP
-   Tempelkan di bagian PALING BAWAH responsive.css.
-   Aturan ini hanya menimpa sidebar desktop.
+   Satu-satunya aturan sidebar untuk tampilan desktop.
+   Menu diberi jarak dari area identitas aplikasi.
    Layout mobile, tablet, hero, kartu, dan konten tidak berubah.
 ========================================================= */
 
@@ -307,8 +262,9 @@
     height: 100vh;
     height: 100dvh;
 
+    box-sizing: border-box;
     gap: 8px;
-    padding: 94px 18px 24px;
+    padding: 116px 18px 24px;
     overflow-x: hidden;
     overflow-y: auto;
 
@@ -325,7 +281,7 @@
   /* Kotak ikon brand tanpa perlu mengubah HTML */
   .bottom-nav::before {
     position: absolute;
-    top: 24px;
+    top: 28px;
     left: 22px;
 
     display: flex;
@@ -351,7 +307,7 @@
   /* Nama dan keterangan brand */
   .bottom-nav::after {
     position: absolute;
-    top: 27px;
+    top: 31px;
     left: 75px;
     right: 16px;
 
