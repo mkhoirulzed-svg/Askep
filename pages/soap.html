@@ -148,7 +148,7 @@
     .soap-panel{display:none}
     .soap-panel.active{display:block}
 
-    @media (max-width:899px){
+    @media (max-width:767px){
       .soap-tabs{
         position:sticky;
         top:8px;
@@ -247,8 +247,20 @@
       .button-row{grid-template-columns:repeat(4,1fr)}
     }
 
-    @media (min-width:900px){
-      .page-soap .app{width:calc(100% - var(--desktop-sidebar-width));max-width:none;min-height:100dvh;margin:0 0 0 var(--desktop-sidebar-width);padding-bottom:48px;background:radial-gradient(circle at 93% 4%,rgba(37,99,235,.10),transparent 28%),linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 460px)}
+    @media (min-width:768px){
+     body.page-soap{
+  padding-left:var(--desktop-sidebar-width);
+}
+.page-soap .app{
+  width:100%;
+  max-width:none;
+  min-height:100dvh;
+  margin:0;
+  padding-bottom:48px;
+  background:
+    radial-gradient(circle at 93% 4%,rgba(37,99,235,.10),transparent 28%),
+    linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 460px);
+}
       .page-header,.page-content{width:min(calc(100% - 64px),var(--content-max-width));margin-right:auto;margin-left:auto;padding-right:0;padding-left:0}
       .page-header{padding-top:32px}
       .page-heading h1{font-size:22px}.page-heading p{font-size:13px}
