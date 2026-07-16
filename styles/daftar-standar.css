@@ -763,3 +763,9 @@
     min-width:68px;
   }
 }
+
+@media (min-width: 900px) {
+  .page-detail-standar .bottom-nav {
+    padding-top: 150px !important;
+  }
+}
