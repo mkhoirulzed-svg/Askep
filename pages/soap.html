@@ -142,11 +142,17 @@
     .field-label{display:block;margin-bottom:6px;color:#334155;font-size:11px;font-weight:800}
 
     .soap-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:13px;padding:5px;border-radius:15px;background:#f1f5f9}
-    .soap-tab{min-width:0;padding:10px 5px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-size:11px;font-weight:800}
+    .soap-tab{min-width:0;padding:10px 5px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation}
     .soap-tab.active{background:#fff;box-shadow:0 3px 10px rgba(15,23,42,.08);color:var(--primary)}
 
     .soap-panel{display:none}
     .soap-panel.active{display:block}
+
+    @media (max-width:899px){
+      .soap-panels{display:block}
+      .soap-panel{display:none!important;width:100%}
+      .soap-panel.active{display:block!important}
+    }
     .panel-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
     .panel-heading{display:flex;align-items:center;gap:9px}
     .soap-letter{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;background:var(--primary-light);color:var(--primary);font-weight:800}
@@ -863,20 +869,20 @@
       els.planning.innerHTML = parts.join("");
       els.planning.querySelectorAll("[data-planning-action]").forEach(button => button.addEventListener("click", () => {
         const action = button.dataset.planningAction;
-        if (action === "select-outcomes") state.outcomes.forEach(entry => { entry.checked = true; entry.expanded = true; entry.criteria.forEach(item => item.checked = true); });
+        if (action === "select-outcomes") state.outcomes.forEach(entry => { entry.checked = true; entry.expanded = true; });
         if (action === "clear-outcomes") state.outcomes.forEach(entry => { entry.checked = false; entry.expanded = false; entry.criteria.forEach(item => item.checked = false); });
-        if (action === "select-interventions") state.interventions.forEach(entry => { entry.checked = true; entry.expanded = true; entry.actions.forEach(item => item.checked = true); });
+        if (action === "select-interventions") state.interventions.forEach(entry => { entry.checked = true; entry.expanded = true; });
         if (action === "clear-interventions") state.interventions.forEach(entry => { entry.checked = false; entry.expanded = false; entry.actions.forEach(item => item.checked = false); });
         renderPlanning();
       }));
       els.planning.querySelectorAll("[data-outcome]").forEach(input => input.addEventListener("change", () => {
         const entry = state.outcomes[Number(input.dataset.outcome)];
-        entry.checked = input.checked; entry.expanded = input.checked; entry.criteria.forEach(item => item.checked = input.checked); renderPlanning();
+        entry.checked = input.checked; entry.expanded = input.checked; if (!input.checked) entry.criteria.forEach(item => item.checked = false); renderPlanning();
       }));
       els.planning.querySelectorAll("[data-criterion]").forEach(input => input.addEventListener("change", () => { const [a,b] = input.dataset.criterion.split(":").map(Number); state.outcomes[a].criteria[b].checked = input.checked; }));
       els.planning.querySelectorAll("[data-intervention]").forEach(input => input.addEventListener("change", () => {
         const entry = state.interventions[Number(input.dataset.intervention)];
-        entry.checked = input.checked; entry.expanded = input.checked; entry.actions.forEach(item => item.checked = input.checked); renderPlanning();
+        entry.checked = input.checked; entry.expanded = input.checked; if (!input.checked) entry.actions.forEach(item => item.checked = false); renderPlanning();
       }));
       els.planning.querySelectorAll("[data-action]").forEach(input => input.addEventListener("change", () => { const [a,b] = input.dataset.action.split(":").map(Number); state.interventions[a].actions[b].checked = input.checked; }));
     }
@@ -1016,7 +1022,35 @@ ${formatResultDateTime()}	${els.result.value.replace(/\n/g," ")}	${els.resultPar
     els.etiology.addEventListener("change", updateAssessmentPreview);
     els.assessmentMode.addEventListener("change", updateAssessmentPreview);
 
-    document.querySelectorAll(".soap-tab").forEach(tab => tab.addEventListener("click", () => { document.querySelectorAll(".soap-tab").forEach(x=>x.classList.toggle("active",x===tab)); document.querySelectorAll(".soap-panel").forEach(panel=>panel.classList.toggle("active",panel.dataset.panel===tab.dataset.tab)); }));
+    function activateSoapTab(tabName) {
+      document.querySelectorAll(".soap-tab").forEach(tab => {
+        const active = tab.dataset.tab === tabName;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+
+      document.querySelectorAll(".soap-panel").forEach(panel => {
+        const active = panel.dataset.panel === tabName;
+        panel.classList.toggle("active", active);
+        panel.hidden = !active && window.innerWidth < 900;
+      });
+    }
+
+    document.querySelector(".soap-tabs")?.addEventListener("click", event => {
+      const tab = event.target.closest(".soap-tab");
+      if (!tab) return;
+      event.preventDefault();
+      activateSoapTab(tab.dataset.tab);
+    });
+
+    window.addEventListener("resize", () => {
+      const activeTab = document.querySelector(".soap-tab.active")?.dataset.tab || "subjective";
+      if (window.innerWidth < 900) activateSoapTab(activeTab);
+      else document.querySelectorAll(".soap-panel").forEach(panel => panel.hidden = false);
+    });
+
+    activateSoapTab("subjective");
     document.querySelectorAll("[data-select-all]").forEach(button => button.addEventListener("click", () => { state[button.dataset.selectAll].forEach(item=>item.checked=true); renderSuggestionList(button.dataset.selectAll); updateAssessmentPreview(); }));
     document.querySelectorAll("[data-clear-all]").forEach(button => button.addEventListener("click", () => { state[button.dataset.clearAll].forEach(item=>item.checked=false); renderSuggestionList(button.dataset.clearAll); updateAssessmentPreview(); }));
     document.querySelectorAll("[data-add-custom]").forEach(button => button.addEventListener("click", () => {
