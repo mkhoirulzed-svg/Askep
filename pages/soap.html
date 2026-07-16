@@ -176,6 +176,12 @@
     .related-code{display:inline-flex;margin-bottom:4px;padding:3px 7px;border-radius:999px;background:var(--primary-light);color:var(--primary);font-size:9px;font-weight:800}
     .related-title{font-size:11px;font-weight:800;line-height:1.45}
     .criteria-list,.action-list{display:grid;gap:6px;margin-top:9px;padding-left:25px}
+    .details-collapsed{display:none}
+    .planning-group-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 6px}
+    .planning-group-head .group-label{margin:0}
+    .planning-group-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .expand-indicator{margin-left:auto;color:#94a3b8;font-size:11px;transition:transform .18s ease}
+    .outcome-card.is-open .expand-indicator,.intervention-card.is-open .expand-indicator{transform:rotate(90deg)}
     .criteria-row,.action-row{display:flex;align-items:flex-start;gap:8px;font-size:10px;line-height:1.5}
     .criteria-row input,.action-row input{width:15px;height:15px;flex:0 0 15px;margin-top:1px;accent-color:var(--primary)}
     .group-label{margin:10px 0 6px;color:#475569;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
@@ -190,7 +196,18 @@
 
     .result-section{display:none}
     .result-section.show{display:block}
-    .result-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .result-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+    .result-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .result-meta .full{grid-column:1/-1}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:15px;background:#fff}
+    .soap-table{width:100%;min-width:720px;border-collapse:collapse;table-layout:fixed}
+    .soap-table th,.soap-table td{padding:12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;text-align:left;font-size:11px;line-height:1.6;white-space:pre-wrap}
+    .soap-table th{background:#f8fafc;font-weight:800}
+    .soap-table th:last-child,.soap-table td:last-child{border-right:0}
+    .soap-table tr:last-child td{border-bottom:0}
+    .soap-table .date-col{width:18%}.soap-table .soap-col{width:70%}.soap-table .sign-col{width:12%;text-align:center}
+    .textarea-panel{margin-top:12px}
+    .textarea-panel[hidden]{display:none!important}
 
     .toast{position:fixed;right:16px;bottom:calc(var(--bottom-nav-height) + 18px);left:16px;z-index:100;max-width:460px;margin:auto;padding:12px 14px;transform:translateY(20px);border-radius:14px;background:#0f172a;box-shadow:0 14px 32px rgba(15,23,42,.26);color:#fff;font-size:11px;line-height:1.5;opacity:0;pointer-events:none;transition:.22s ease}
     .toast.show{transform:translateY(0);opacity:1}
@@ -426,14 +443,42 @@
           <div class="section-head">
             <div>
               <h2 class="section-title">Hasil SOAP</h2>
-              <p class="section-desc">Hasil dapat diedit sebelum disalin.</p>
+              <p class="section-desc">Preview tabel siap disalin ke Word atau dokumen lainnya.</p>
             </div>
           </div>
-          <textarea id="soapResult" class="result-textarea" spellcheck="true"></textarea>
+
+          <div class="result-meta">
+            <div>
+              <label class="field-label" for="resultDate">Tanggal</label>
+              <input id="resultDate" class="field-input" type="date">
+            </div>
+            <div>
+              <label class="field-label" for="resultTime">Jam</label>
+              <input id="resultTime" class="field-input" type="time">
+            </div>
+            <div class="full">
+              <label class="field-label" for="resultParaf">Paraf / inisial (opsional)</label>
+              <input id="resultParaf" class="field-input" type="text" placeholder="Kosongkan bila akan ditulis manual">
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="soapTable" class="soap-table">
+              <thead><tr><th class="date-col">Tanggal/Jam</th><th class="soap-col">SOAP</th><th class="sign-col">Paraf</th></tr></thead>
+              <tbody><tr><td id="tableDateTime"></td><td id="tableSoap"></td><td id="tableParaf" class="sign-col"></td></tr></tbody>
+            </table>
+          </div>
+
           <div class="result-actions">
-            <button id="copyButton" class="btn btn-success native-click" type="button"><i class="fa-solid fa-copy"></i> Salin</button>
-            <button id="regenerateButton" class="btn btn-primary native-click" type="button"><i class="fa-solid fa-arrows-rotate"></i> Perbarui</button>
-            <button id="clearResultButton" class="btn btn-secondary native-click" type="button"><i class="fa-solid fa-eraser"></i> Hapus</button>
+            <button id="toggleTextareaButton" class="btn btn-secondary native-click" type="button"><i class="fa-solid fa-pen-to-square"></i> Lihat/Edit Teks</button>
+            <button id="copySoapButton" class="btn btn-success native-click" type="button"><i class="fa-solid fa-copy"></i> Salin SOAP</button>
+            <button id="copyTableButton" class="btn btn-primary native-click" type="button"><i class="fa-solid fa-table"></i> Salin Tabel</button>
+            <button id="regenerateButton" class="btn btn-secondary native-click" type="button"><i class="fa-solid fa-arrows-rotate"></i> Perbarui</button>
+            <button id="clearResultButton" class="btn btn-danger-soft native-click" type="button"><i class="fa-solid fa-eraser"></i> Hapus</button>
+          </div>
+
+          <div id="textareaPanel" class="textarea-panel" hidden>
+            <textarea id="soapResult" class="result-textarea" spellcheck="true"></textarea>
           </div>
         </div>
       </section>
@@ -490,6 +535,13 @@
       planning: document.getElementById("planningContent"),
       resultSection: document.getElementById("resultSection"),
       result: document.getElementById("soapResult"),
+      resultDate: document.getElementById("resultDate"),
+      resultTime: document.getElementById("resultTime"),
+      resultParaf: document.getElementById("resultParaf"),
+      tableDateTime: document.getElementById("tableDateTime"),
+      tableSoap: document.getElementById("tableSoap"),
+      tableParaf: document.getElementById("tableParaf"),
+      textareaPanel: document.getElementById("textareaPanel"),
       toast: document.getElementById("toast")
     };
 
@@ -715,10 +767,10 @@
       const interventionRefs = relationValues(relation, ["sikiUtama", "sikiPendukung", "siki", "intervensi", "interventions"]);
 
       state.outcomes = outcomeRefs.map(ref => resolveReference(ref, state.slki, "slki")).filter(Boolean).filter((item,index,array) => array.findIndex(x => normalizeCode(getCode(x,"slki")) === normalizeCode(getCode(item,"slki")) && normalizeText(getTitle(x,"slki")) === normalizeText(getTitle(item,"slki"))) === index)
-        .map(item => ({ item, checked:true, criteria:getOutcomeCriteria(item).map(text => ({ text, checked:true })) }));
+        .map(item => ({ item, checked:false, expanded:false, criteria:getOutcomeCriteria(item).map(text => ({ text, checked:false })) }));
 
       state.interventions = interventionRefs.map(ref => resolveReference(ref, state.siki, "siki")).filter(Boolean).filter((item,index,array) => array.findIndex(x => normalizeCode(getCode(x,"siki")) === normalizeCode(getCode(item,"siki")) && normalizeText(getTitle(x,"siki")) === normalizeText(getTitle(item,"siki"))) === index)
-        .map(item => ({ item, checked:true, actions:getInterventionActions(item).map(action => ({ ...action, checked:true })) }));
+        .map(item => ({ item, checked:false, expanded:false, actions:getInterventionActions(item).map(action => ({ ...action, checked:false })) }));
 
       els.selectedTitle.textContent = `${getCode(diagnosis,"sdki")} — ${getTitle(diagnosis,"sdki")}`;
       els.selectedMeta.textContent = state.selectedRelation ? "Relasi SLKI dan SIKI ditemukan." : "Relasi belum ditemukan; bagian planning dapat dilengkapi manual.";
@@ -785,15 +837,16 @@
     function renderPlanning() {
       const parts = [];
       if (state.outcomes.length) {
-        parts.push(`<div class="group-label">Luaran SLKI</div>`);
+        parts.push(`<div class="planning-group-head"><div class="group-label">Luaran SLKI</div><div class="planning-group-actions"><button class="mini-btn" type="button" data-planning-action="select-outcomes">Pilih Semua</button><button class="mini-btn" type="button" data-planning-action="clear-outcomes">Kosongkan</button></div></div>`);
         state.outcomes.forEach((entry, outcomeIndex) => {
           const code = getCode(entry.item,"slki"), title = getTitle(entry.item,"slki");
-          parts.push(`<div class="outcome-card"><label class="outcome-head"><input type="checkbox" data-outcome="${outcomeIndex}" ${entry.checked ? "checked" : ""}><span><span class="related-code">${escapeHtml(code || "SLKI")}</span><span class="related-title">${escapeHtml(title)}</span></span></label><div class="criteria-list">${entry.criteria.length ? entry.criteria.map((criterion,criterionIndex) => `<label class="criteria-row"><input type="checkbox" data-criterion="${outcomeIndex}:${criterionIndex}" ${criterion.checked ? "checked" : ""}><span>${escapeHtml(criterion.text)}</span></label>`).join("") : `<div class="empty-state">Kriteria hasil tidak terbaca dari data SLKI.</div>`}</div></div>`);
+          const open = entry.checked || entry.expanded;
+          parts.push(`<div class="outcome-card ${open ? "is-open" : ""}"><label class="outcome-head"><input type="checkbox" data-outcome="${outcomeIndex}" ${entry.checked ? "checked" : ""}><span><span class="related-code">${escapeHtml(code || "SLKI")}</span><span class="related-title">${escapeHtml(title)}</span></span><i class="fa-solid fa-chevron-right expand-indicator"></i></label><div class="criteria-list ${open ? "" : "details-collapsed"}">${entry.criteria.length ? entry.criteria.map((criterion,criterionIndex) => `<label class="criteria-row"><input type="checkbox" data-criterion="${outcomeIndex}:${criterionIndex}" ${criterion.checked ? "checked" : ""}><span>${escapeHtml(criterion.text)}</span></label>`).join("") : `<div class="empty-state">Kriteria hasil tidak terbaca dari data SLKI.</div>`}</div></div>`);
         });
       } else parts.push(`<div class="empty-state">Luaran SLKI terkait belum ditemukan pada relations.</div>`);
 
       if (state.interventions.length) {
-        parts.push(`<div class="group-label">Intervensi SIKI</div>`);
+        parts.push(`<div class="planning-group-head"><div class="group-label">Intervensi SIKI</div><div class="planning-group-actions"><button class="mini-btn" type="button" data-planning-action="select-interventions">Pilih Semua</button><button class="mini-btn" type="button" data-planning-action="clear-interventions">Kosongkan</button></div></div>`);
         state.interventions.forEach((entry, interventionIndex) => {
           const code = getCode(entry.item,"siki"), title = getTitle(entry.item,"siki");
           let currentGroup = "";
@@ -802,14 +855,29 @@
             currentGroup = action.group;
             return `${group}<label class="action-row"><input type="checkbox" data-action="${interventionIndex}:${actionIndex}" ${action.checked ? "checked" : ""}><span>${escapeHtml(action.text)}</span></label>`;
           }).join("");
-          parts.push(`<div class="intervention-card"><label class="intervention-head"><input type="checkbox" data-intervention="${interventionIndex}" ${entry.checked ? "checked" : ""}><span><span class="related-code">${escapeHtml(code || "SIKI")}</span><span class="related-title">${escapeHtml(title)}</span></span></label><div class="action-list">${actionHtml || `<div class="empty-state">Rincian tindakan tidak terbaca dari data SIKI.</div>`}</div></div>`);
+          const open = entry.checked || entry.expanded;
+          parts.push(`<div class="intervention-card ${open ? "is-open" : ""}"><label class="intervention-head"><input type="checkbox" data-intervention="${interventionIndex}" ${entry.checked ? "checked" : ""}><span><span class="related-code">${escapeHtml(code || "SIKI")}</span><span class="related-title">${escapeHtml(title)}</span></span><i class="fa-solid fa-chevron-right expand-indicator"></i></label><div class="action-list ${open ? "" : "details-collapsed"}">${actionHtml || `<div class="empty-state">Rincian tindakan tidak terbaca dari data SIKI.</div>`}</div></div>`);
         });
       } else parts.push(`<div class="empty-state" style="margin-top:10px">Intervensi SIKI terkait belum ditemukan pada relations.</div>`);
 
       els.planning.innerHTML = parts.join("");
-      els.planning.querySelectorAll("[data-outcome]").forEach(input => input.addEventListener("change", () => { state.outcomes[Number(input.dataset.outcome)].checked = input.checked; }));
+      els.planning.querySelectorAll("[data-planning-action]").forEach(button => button.addEventListener("click", () => {
+        const action = button.dataset.planningAction;
+        if (action === "select-outcomes") state.outcomes.forEach(entry => { entry.checked = true; entry.expanded = true; entry.criteria.forEach(item => item.checked = true); });
+        if (action === "clear-outcomes") state.outcomes.forEach(entry => { entry.checked = false; entry.expanded = false; entry.criteria.forEach(item => item.checked = false); });
+        if (action === "select-interventions") state.interventions.forEach(entry => { entry.checked = true; entry.expanded = true; entry.actions.forEach(item => item.checked = true); });
+        if (action === "clear-interventions") state.interventions.forEach(entry => { entry.checked = false; entry.expanded = false; entry.actions.forEach(item => item.checked = false); });
+        renderPlanning();
+      }));
+      els.planning.querySelectorAll("[data-outcome]").forEach(input => input.addEventListener("change", () => {
+        const entry = state.outcomes[Number(input.dataset.outcome)];
+        entry.checked = input.checked; entry.expanded = input.checked; entry.criteria.forEach(item => item.checked = input.checked); renderPlanning();
+      }));
       els.planning.querySelectorAll("[data-criterion]").forEach(input => input.addEventListener("change", () => { const [a,b] = input.dataset.criterion.split(":").map(Number); state.outcomes[a].criteria[b].checked = input.checked; }));
-      els.planning.querySelectorAll("[data-intervention]").forEach(input => input.addEventListener("change", () => { state.interventions[Number(input.dataset.intervention)].checked = input.checked; }));
+      els.planning.querySelectorAll("[data-intervention]").forEach(input => input.addEventListener("change", () => {
+        const entry = state.interventions[Number(input.dataset.intervention)];
+        entry.checked = input.checked; entry.expanded = input.checked; entry.actions.forEach(item => item.checked = input.checked); renderPlanning();
+      }));
       els.planning.querySelectorAll("[data-action]").forEach(input => input.addEventListener("change", () => { const [a,b] = input.dataset.action.split(":").map(Number); state.interventions[a].actions[b].checked = input.checked; }));
     }
 
@@ -837,8 +905,51 @@
       if (!planning.length) planning.push("Rencana keperawatan disesuaikan dengan luaran dan intervensi yang dipilih.");
 
       els.result.value = `S:\n${subjective.length ? subjective.join("\n") : "Belum ada data subjektif yang dipilih."}\n\nO:\n${objective.length ? objective.join("\n") : "Belum ada data objektif yang dipilih."}\n\nA:\n${assessment}\n\nP:\n${planning.join("\n")}`;
+      ensureResultDateTime();
+      updateResultTable();
+      els.textareaPanel.hidden = true;
+      document.getElementById("toggleTextareaButton").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Lihat/Edit Teks';
       els.resultSection.classList.add("show");
       setTimeout(() => els.resultSection.scrollIntoView({ behavior:"smooth", block:"start" }), 100);
+    }
+
+    function ensureResultDateTime() {
+      const now = new Date();
+      if (!els.resultDate.value) els.resultDate.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+      if (!els.resultTime.value) els.resultTime.value = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+    }
+
+    function formatResultDateTime() {
+      const date = els.resultDate.value ? new Date(`${els.resultDate.value}T00:00:00`) : null;
+      const formattedDate = date && !Number.isNaN(date.getTime()) ? new Intl.DateTimeFormat("id-ID", {day:"2-digit",month:"2-digit",year:"numeric"}).format(date) : "";
+      return [formattedDate, els.resultTime.value ? els.resultTime.value.replace(":", ".") : ""].filter(Boolean).join(" ");
+    }
+
+    function updateResultTable() {
+      els.tableDateTime.textContent = formatResultDateTime();
+      els.tableSoap.textContent = els.result.value;
+      els.tableParaf.textContent = els.resultParaf.value.trim();
+    }
+
+    async function copyPlainText(text, successMessage) {
+      if (!text.trim()) return showToast("Belum ada hasil untuk disalin.");
+      try { await navigator.clipboard.writeText(text); }
+      catch { const temp = document.createElement("textarea"); temp.value = text; document.body.appendChild(temp); temp.select(); document.execCommand("copy"); temp.remove(); }
+      showToast(successMessage);
+    }
+
+    async function copyTableToClipboard() {
+      if (!els.result.value.trim()) return showToast("Belum ada hasil untuk disalin.");
+      updateResultTable();
+      const plain = `Tanggal/Jam	SOAP	Paraf
+${formatResultDateTime()}	${els.result.value.replace(/\n/g," ")}	${els.resultParaf.value.trim()}`;
+      const html = `<table style="border-collapse:collapse;width:100%"><tr><th style="border:1px solid #000;padding:6px;width:18%">Tanggal/Jam</th><th style="border:1px solid #000;padding:6px;width:70%">SOAP</th><th style="border:1px solid #000;padding:6px;width:12%">Paraf</th></tr><tr><td style="border:1px solid #000;padding:6px;vertical-align:top">${escapeHtml(formatResultDateTime())}</td><td style="border:1px solid #000;padding:6px;vertical-align:top;white-space:pre-wrap">${escapeHtml(els.result.value)}</td><td style="border:1px solid #000;padding:6px;vertical-align:top;text-align:center">${escapeHtml(els.resultParaf.value.trim())}</td></tr></table>`;
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]);
+        } else { await navigator.clipboard.writeText(plain); }
+        showToast("Tabel SOAP berhasil disalin.");
+      } catch { await copyPlainText(plain, "Tabel SOAP berhasil disalin sebagai teks."); }
     }
 
     function sentence(value) { const text = cleanString(value); return !text ? "" : /[.!?]$/.test(text) ? text : `${text}.`; }
@@ -853,9 +964,9 @@
         diagnosisCode: getCode(state.selectedDiagnosis,"sdki"), diagnosisTitle: getTitle(state.selectedDiagnosis,"sdki"),
         subjective: state.subjective, objective: state.objective,
         etiology: els.etiology.value, duration: els.duration.value, assessmentMode: els.assessmentMode.value,
-        outcomeChecks: state.outcomes.map(x => ({ checked:x.checked, criteria:x.criteria.map(c=>c.checked) })),
-        interventionChecks: state.interventions.map(x => ({ checked:x.checked, actions:x.actions.map(a=>a.checked) })),
-        result: els.result.value
+        outcomeChecks: state.outcomes.map(x => ({ checked:x.checked, expanded:x.expanded, criteria:x.criteria.map(c=>c.checked) })),
+        interventionChecks: state.interventions.map(x => ({ checked:x.checked, expanded:x.expanded, actions:x.actions.map(a=>a.checked) })),
+        result: els.result.value, resultDate: els.resultDate.value, resultTime: els.resultTime.value, resultParaf: els.resultParaf.value
       };
       localStorage.setItem("askep-soap-draft", JSON.stringify(draft));
       showToast("Draft SOAP disimpan di perangkat ini.");
@@ -875,10 +986,10 @@
         els.etiology.value = [...els.etiology.options].some(option => option.value === draft.etiology) ? draft.etiology : "";
         els.duration.value = draft.duration || "1 × 8 jam";
         els.assessmentMode.value = draft.assessmentMode || "complete";
-        draft.outcomeChecks?.forEach((saved,i) => { if(state.outcomes[i]){state.outcomes[i].checked=saved.checked; saved.criteria?.forEach((v,j)=>{if(state.outcomes[i].criteria[j])state.outcomes[i].criteria[j].checked=v;});} });
-        draft.interventionChecks?.forEach((saved,i) => { if(state.interventions[i]){state.interventions[i].checked=saved.checked; saved.actions?.forEach((v,j)=>{if(state.interventions[i].actions[j])state.interventions[i].actions[j].checked=v;});} });
+        draft.outcomeChecks?.forEach((saved,i) => { if(state.outcomes[i]){state.outcomes[i].checked=saved.checked; state.outcomes[i].expanded=Boolean(saved.expanded ?? saved.checked); saved.criteria?.forEach((v,j)=>{if(state.outcomes[i].criteria[j])state.outcomes[i].criteria[j].checked=v;});} });
+        draft.interventionChecks?.forEach((saved,i) => { if(state.interventions[i]){state.interventions[i].checked=saved.checked; state.interventions[i].expanded=Boolean(saved.expanded ?? saved.checked); saved.actions?.forEach((v,j)=>{if(state.interventions[i].actions[j])state.interventions[i].actions[j].checked=v;});} });
         renderPlanning(); updateAssessmentPreview();
-        if (draft.result) { els.result.value = draft.result; els.resultSection.classList.add("show"); }
+        if (draft.result) { els.result.value = draft.result; els.resultDate.value = draft.resultDate || ""; els.resultTime.value = draft.resultTime || ""; els.resultParaf.value = draft.resultParaf || ""; ensureResultDateTime(); updateResultTable(); els.resultSection.classList.add("show"); }
         if (notify) showToast("Draft SOAP dipulihkan.");
       } catch (error) { console.warn("Draft tidak dapat dipulihkan", error); }
     }
@@ -886,7 +997,7 @@
     function resetAll() {
       if (!confirm("Reset seluruh pilihan dan hasil SOAP?")) return;
       state.selectedDiagnosis=null; state.selectedRelation=null; state.subjective=[]; state.objective=[]; state.outcomes=[]; state.interventions=[];
-      els.search.value=""; els.results.innerHTML=""; els.selectedBox.classList.remove("show"); els.configSection.hidden=true; els.builderSection.hidden=true; els.actionSection.hidden=true; els.resultSection.classList.remove("show"); els.result.value=""; els.clearSearch.classList.remove("show"); localStorage.removeItem("askep-soap-draft"); window.scrollTo({top:0,behavior:"smooth"});
+      els.search.value=""; els.results.innerHTML=""; els.selectedBox.classList.remove("show"); els.configSection.hidden=true; els.builderSection.hidden=true; els.actionSection.hidden=true; els.resultSection.classList.remove("show"); els.result.value=""; els.resultDate.value=""; els.resultTime.value=""; els.resultParaf.value=""; els.textareaPanel.hidden=true; els.clearSearch.classList.remove("show"); localStorage.removeItem("askep-soap-draft"); window.scrollTo({top:0,behavior:"smooth"});
     }
 
     function handleQueryParameter() {
@@ -919,8 +1030,17 @@
     document.getElementById("saveDraftButton").addEventListener("click",saveDraft);
     document.getElementById("resetButton").addEventListener("click",resetAll);
     document.getElementById("scrollTopButton").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-    document.getElementById("clearResultButton").addEventListener("click",()=>{els.result.value="";els.resultSection.classList.remove("show")});
-    document.getElementById("copyButton").addEventListener("click",async()=>{if(!els.result.value.trim())return showToast("Belum ada hasil untuk disalin.");try{await navigator.clipboard.writeText(els.result.value);showToast("Hasil SOAP berhasil disalin.");}catch{els.result.select();document.execCommand("copy");showToast("Hasil SOAP berhasil disalin.");}});
+    document.getElementById("clearResultButton").addEventListener("click",()=>{els.result.value="";els.resultSection.classList.remove("show");els.textareaPanel.hidden=true;});
+    document.getElementById("toggleTextareaButton").addEventListener("click", event => {
+      const willOpen = els.textareaPanel.hidden;
+      els.textareaPanel.hidden = !willOpen;
+      event.currentTarget.innerHTML = willOpen ? '<i class="fa-solid fa-eye-slash"></i> Tutup Teks' : '<i class="fa-solid fa-pen-to-square"></i> Lihat/Edit Teks';
+      if (willOpen) els.result.focus();
+    });
+    document.getElementById("copySoapButton").addEventListener("click",()=>copyPlainText(els.result.value,"Hasil SOAP berhasil disalin."));
+    document.getElementById("copyTableButton").addEventListener("click",copyTableToClipboard);
+    [els.resultDate,els.resultTime,els.resultParaf].forEach(input=>input.addEventListener("input",updateResultTable));
+    els.result.addEventListener("input",updateResultTable);
 
     document.addEventListener("click", event => {
       const element=event.target.closest(".native-click"); if(!element||element.disabled)return;
