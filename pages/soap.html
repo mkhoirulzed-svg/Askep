@@ -237,73 +237,8 @@
     .bottom-item{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;overflow:hidden;border-radius:16px;color:var(--muted);font-size:11px;font-weight:700}
     .bottom-item i{font-size:18px}
     .bottom-item.active{background:var(--primary-light);color:var(--primary)}
-   /* Logo sidebar khusus halaman SOAP */
-.soap-sidebar-brand{
-  display:none;
-}
-
-@media (min-width:768px){
-  .soap-sidebar-brand{
-    display:flex;
-    align-items:center;
-    flex-wrap:nowrap;
-    gap:11px;
-    width:100%;
-    min-width:0;
-    margin:0 4px 20px;
-    padding:4px;
-  }
-
-  .soap-sidebar-brand-icon{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:42px;
-    height:42px;
-    flex:0 0 42px;
-    border-radius:15px;
-    background:linear-gradient(
-      135deg,
-      var(--primary),
-      var(--primary-dark)
-    );
-    box-shadow:0 9px 20px rgba(37,99,235,.20);
-    color:#fff;
-    font-size:18px;
-  }
-
-  .soap-sidebar-brand-copy{
-    display:flex;
-    flex:1;
-    min-width:0;
-    flex-direction:column;
-    justify-content:center;
-    gap:2px;
-    overflow:hidden;
-  }
-
-  .soap-sidebar-brand-title{
-    margin:0;
-    overflow:hidden;
-    color:var(--text);
-    font-size:14px;
-    font-weight:800;
-    line-height:1.2;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .soap-sidebar-brand-subtitle{
-    margin:0;
-    overflow:hidden;
-    color:var(--muted);
-    font-size:10px;
-    font-weight:600;
-    line-height:1.3;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-}
+    /* Brand khusus halaman SOAP — diisolasi dari CSS global */
+    .soap-page-brand{display:none!important}
 
     @media (min-width:600px){
       .page-soap .app{max-width:760px}
@@ -337,9 +272,86 @@
       .soap-panel .section-card{height:100%}
       .result-section .section-card{padding:20px}
       .bottom-nav{top:0;right:auto;bottom:0;left:0;display:flex;flex-direction:column;gap:8px;width:var(--desktop-sidebar-width);max-width:none;height:100dvh;padding:24px 18px;transform:none;border-top:0;border-right:1px solid var(--border);background:rgba(255,255,255,.97);box-shadow:8px 0 30px rgba(15,23,42,.04)}
-      .desktop-brand{display:flex;align-items:center;gap:11px;min-width:0;margin:0 4px 20px;padding:4px}
-      .desktop-brand-icon{display:flex;align-items:center;justify-content:center;width:42px;height:42px;flex:0 0 42px;border-radius:15px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 9px 20px rgba(37,99,235,.20);color:#fff;font-size:18px}
-      .desktop-brand-title{font-size:14px;font-weight:800}.desktop-brand-subtitle{margin-top:2px;color:var(--muted);font-size:10px;font-weight:600}
+      .page-soap .bottom-nav > .soap-page-brand{
+        position:relative!important;
+        inset:auto!important;
+        display:grid!important;
+        grid-template-columns:42px minmax(0,1fr)!important;
+        grid-template-rows:auto!important;
+        align-items:center!important;
+        justify-content:stretch!important;
+        column-gap:11px!important;
+        width:100%!important;
+        height:auto!important;
+        min-height:50px!important;
+        margin:0 0 18px!important;
+        padding:4px!important;
+        transform:none!important;
+        overflow:visible!important;
+      }
+      .page-soap .soap-page-brand-icon{
+        position:relative!important;
+        inset:auto!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        grid-column:1!important;
+        grid-row:1!important;
+        width:42px!important;
+        height:42px!important;
+        min-width:42px!important;
+        min-height:42px!important;
+        margin:0!important;
+        padding:0!important;
+        transform:none!important;
+        border-radius:15px!important;
+        background:linear-gradient(135deg,var(--primary),var(--primary-dark))!important;
+        box-shadow:0 9px 20px rgba(37,99,235,.20)!important;
+        color:#fff!important;
+        font-size:18px!important;
+        line-height:1!important;
+      }
+      .page-soap .soap-page-brand-copy{
+        position:relative!important;
+        inset:auto!important;
+        display:flex!important;
+        grid-column:2!important;
+        grid-row:1!important;
+        min-width:0!important;
+        margin:0!important;
+        padding:0!important;
+        transform:none!important;
+        flex-direction:column!important;
+        align-items:flex-start!important;
+        justify-content:center!important;
+        gap:3px!important;
+      }
+      .page-soap .soap-page-brand-title,
+      .page-soap .soap-page-brand-subtitle{
+        position:static!important;
+        inset:auto!important;
+        display:block!important;
+        width:100%!important;
+        height:auto!important;
+        margin:0!important;
+        padding:0!important;
+        transform:none!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+      }
+      .page-soap .soap-page-brand-title{
+        color:var(--text)!important;
+        font-size:14px!important;
+        font-weight:800!important;
+        line-height:18px!important;
+      }
+      .page-soap .soap-page-brand-subtitle{
+        color:var(--muted)!important;
+        font-size:10px!important;
+        font-weight:600!important;
+        line-height:14px!important;
+      }
       .bottom-item{width:100%;height:52px;min-height:52px;padding:0 14px;flex-direction:row;justify-content:flex-start;gap:12px;border-radius:15px;font-size:12px}
       .bottom-item i{width:22px;font-size:17px;text-align:center}.bottom-item.active{box-shadow:inset 3px 0 0 var(--primary)}
       .toast{right:24px;bottom:24px;left:auto;width:360px}
@@ -580,22 +592,18 @@
   </div>
 
   <nav class="bottom-nav" aria-label="Navigasi utama">
-   <div class="soap-sidebar-brand" aria-hidden="true">
-  <div class="soap-sidebar-brand-icon">
-    <i class="fa-solid fa-book-medical"></i>
-  </div>
-
-  <div class="soap-sidebar-brand-copy">
-    <div class="soap-sidebar-brand-title">ASKEP</div>
-    <div class="soap-sidebar-brand-subtitle">
-      Asuhan Keperawatan
-    </div>
-  </div>
-</div>
+    <div class="soap-page-brand" aria-hidden="true">
+      <div class="soap-page-brand-icon">
+        <i class="fa-solid fa-book-medical"></i>
+      </div>
+      <div class="soap-page-brand-copy">
+        <div class="soap-page-brand-title">ASKEP</div>
+        <div class="soap-page-brand-subtitle">Asuhan Keperawatan</div>
+      </div>
     </div>
     <a href="../index.html" class="bottom-item native-click"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="search.html" class="bottom-item native-click"><i class="fa-solid fa-magnifying-glass"></i><span>Cari</span></a>
-    <a href="askep.html" class="bottom-item active native-click" aria-current="page"><i class="fa-solid fa-notes-medical"></i><span>Askep</span></a>
+    <a href="quick-askep.html" class="bottom-item active native-click" aria-current="page"><i class="fa-solid fa-notes-medical"></i><span>Askep</span></a>
     <a href="profil.html" class="bottom-item native-click"><i class="fa-solid fa-user-nurse"></i><span>Profil</span></a>
   </nav>
 
