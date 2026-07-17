@@ -279,6 +279,32 @@
     }
 
     @media (min-width:1024px){
+      .desktop-back-button{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  width:100%;
+  min-height:42px;
+  margin-bottom:14px;
+  padding:0 12px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#fff;
+  color:#475569;
+  font-size:10px;
+  font-weight:800;
+  text-align:left;
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease;
+}
+
+.desktop-back-button:hover{
+  border-color:#bfdbfe;
+  background:var(--primary-light);
+  color:var(--primary);
+}
       .app-shell{padding-bottom:0}
       .mobile-header{display:none}
       .workspace{display:grid;grid-template-columns:var(--sidebar-width) minmax(0,1fr) var(--summary-width);min-height:100vh}
@@ -346,8 +372,17 @@
     </header>
 
     <div class="workspace">
-      <aside class="step-sidebar">
-        <div class="brand">
+     <aside class="step-sidebar">
+  <button
+    class="desktop-back-button native-click"
+    type="button"
+    onclick="history.back()"
+  >
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Kembali</span>
+  </button>
+
+  <div class="brand">
           <div class="brand-icon"><i class="fa-solid fa-book-medical"></i></div>
           <div><div class="brand-title">ASKEP</div><div class="brand-sub">Asuhan Keperawatan</div></div>
         </div>
