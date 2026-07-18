@@ -39,6 +39,38 @@
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
     </div>
+    <div class="ai-search-control">
+  <label class="ai-toggle native-click" for="aiAssistantToggle">
+    <input
+      id="aiAssistantToggle"
+      class="ai-toggle-input"
+      type="checkbox"
+    >
+
+    <span class="ai-switch" aria-hidden="true"></span>
+
+    <span class="ai-toggle-content">
+      <span class="ai-toggle-title">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        AI Asisten
+      </span>
+
+      <span class="ai-toggle-desc">
+        Gunakan AI untuk menjelaskan hasil pencarian berdasarkan database ASKEP.
+      </span>
+    </span>
+  </label>
+
+  <button
+    id="askAiBtn"
+    class="ai-ask-btn native-click"
+    type="button"
+    disabled
+  >
+    <i class="fa-solid fa-sparkles"></i>
+    <span>Tanya AI</span>
+  </button>
+</div>
   </header>
 
   <main class="content">
@@ -71,13 +103,70 @@
       </section>
     </div>
 
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      <span>Memuat data...</span>
+   <div id="loading" class="loading">
+  <div class="spinner"></div>
+  <span>Memuat data...</span>
+</div>
+
+<section
+  id="aiResultPanel"
+  class="ai-result-panel"
+  aria-live="polite"
+  hidden
+>
+  <div class="ai-result-header">
+    <div class="ai-result-heading">
+      <div class="ai-result-icon">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+
+      <div>
+        <strong>Jawaban AI Asisten</strong>
+        <span>Berdasarkan database ASKEP</span>
+      </div>
     </div>
 
-    <div id="resultArea"></div>
+    <button
+      id="closeAiResultBtn"
+      class="ai-close-btn native-click"
+      type="button"
+      aria-label="Tutup jawaban AI"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
 
+  <div id="aiLoading" class="ai-loading" hidden>
+    <div class="ai-thinking">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <span>AI sedang menganalisis database ASKEP...</span>
+  </div>
+
+  <div id="aiError" class="ai-error" hidden></div>
+
+  <div id="aiAnswer" class="ai-answer" hidden></div>
+
+  <div id="aiSources" class="ai-sources" hidden>
+    <div class="ai-sources-title">
+      <i class="fa-solid fa-database"></i>
+      Sumber database
+    </div>
+
+    <div id="aiSourceList" class="ai-source-list"></div>
+  </div>
+
+  <div class="ai-disclaimer">
+    <i class="fa-solid fa-circle-info"></i>
+    Jawaban AI bersifat pendukung. Tetap sesuaikan dengan pengkajian dan
+    kondisi klinis pasien.
+  </div>
+</section>
+
+<div id="resultArea"></div>
   </main>
 </div>
 
@@ -112,7 +201,8 @@ const API_ENDPOINTS = {
   sdki: `${API_BASE}/api/sdki`,
   slki: `${API_BASE}/api/slki`,
   siki: `${API_BASE}/api/siki`,
-  relations: `${API_BASE}/api/relations`
+  relations: `${API_BASE}/api/relations`,
+  aiChat: `${API_BASE}/api/ai/chat`
 };
 
 /* =========================
@@ -127,7 +217,8 @@ const DB = {
 
 let SEARCH_INDEX = [];
 let activeFilter = "all";
-
+let aiRequestController = null;
+let lastAiQuery = "";
 /*
   Lookup dipakai agar kode dari master-relations.json
   dapat dipertemukan dengan data lengkap SDKI, SLKI, dan SIKI.
@@ -153,7 +244,32 @@ const searchInput = document.getElementById("searchInput");
 const clearBtn = document.getElementById("clearBtn");
 const resultArea = document.getElementById("resultArea");
 const loadingEl = document.getElementById("loading");
+const aiAssistantToggle =
+  document.getElementById("aiAssistantToggle");
 
+const askAiBtn =
+  document.getElementById("askAiBtn");
+
+const aiResultPanel =
+  document.getElementById("aiResultPanel");
+
+const closeAiResultBtn =
+  document.getElementById("closeAiResultBtn");
+
+const aiLoading =
+  document.getElementById("aiLoading");
+
+const aiError =
+  document.getElementById("aiError");
+
+const aiAnswer =
+  document.getElementById("aiAnswer");
+
+const aiSources =
+  document.getElementById("aiSources");
+
+const aiSourceList =
+  document.getElementById("aiSourceList");
 /* =========================
    HELPERS
 ========================= */
@@ -1166,6 +1282,269 @@ function escapeHtml(text){
     .replace(/'/g, "&#039;");
 }
 
+  /* =========================
+   AI ASSISTANT
+========================= */
+
+function syncAiControls(){
+  const aiEnabled = aiAssistantToggle.checked;
+  const hasQuery = searchInput.value.trim().length >= 2;
+
+  askAiBtn.disabled = !aiEnabled || !hasQuery;
+}
+
+function resetAiResult(){
+  if(aiRequestController){
+    aiRequestController.abort();
+    aiRequestController = null;
+  }
+
+  lastAiQuery = "";
+
+  aiResultPanel.hidden = true;
+  aiLoading.hidden = true;
+  aiError.hidden = true;
+  aiAnswer.hidden = true;
+  aiSources.hidden = true;
+
+  aiError.textContent = "";
+  aiAnswer.innerHTML = "";
+  aiSourceList.innerHTML = "";
+}
+
+function setAiLoadingState(){
+  aiResultPanel.hidden = false;
+  aiLoading.hidden = false;
+  aiError.hidden = true;
+  aiAnswer.hidden = true;
+  aiSources.hidden = true;
+
+  aiError.textContent = "";
+  aiAnswer.innerHTML = "";
+  aiSourceList.innerHTML = "";
+
+  askAiBtn.disabled = true;
+  askAiBtn.innerHTML = `
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <span>Menganalisis...</span>
+  `;
+
+  aiResultPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+
+function finishAiLoadingState(){
+  aiLoading.hidden = true;
+
+  askAiBtn.innerHTML = `
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <span>Tanya AI</span>
+  `;
+
+  syncAiControls();
+}
+
+function formatAiAnswer(text){
+  const safeText = escapeHtml(text || "");
+
+  return safeText
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .split(/\n{2,}/)
+    .map(paragraph => {
+      return `<p>${paragraph.replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("");
+}
+
+function getAiSourceLabel(source){
+  if(typeof source === "string"){
+    return source;
+  }
+
+  if(!source || typeof source !== "object"){
+    return "";
+  }
+
+  const type = pick(source, [
+    "type",
+    "jenis",
+    "category"
+  ]);
+
+  const code = pick(source, [
+    "kode",
+    "code",
+    "id",
+    "kodeSdki",
+    "kodeSlki",
+    "kodeSiki"
+  ]);
+
+  const title = pick(source, [
+    "judul",
+    "title",
+    "nama",
+    "name"
+  ]);
+
+  return [
+    type ? String(type).toUpperCase() : "",
+    code,
+    title
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+function renderAiSourceList(sources){
+  if(!Array.isArray(sources) || !sources.length){
+    aiSources.hidden = true;
+    aiSourceList.innerHTML = "";
+    return;
+  }
+
+  const uniqueLabels = [...new Set(
+    sources
+      .map(getAiSourceLabel)
+      .filter(Boolean)
+  )].slice(0, 12);
+
+  if(!uniqueLabels.length){
+    aiSources.hidden = true;
+    return;
+  }
+
+  aiSourceList.innerHTML = uniqueLabels
+    .map(label => {
+      return `
+        <span class="ai-source-chip">
+          ${escapeHtml(label)}
+        </span>
+      `;
+    })
+    .join("");
+
+  aiSources.hidden = false;
+}
+
+async function askAiAssistant(){
+  const message = searchInput.value.trim();
+
+  if(!aiAssistantToggle.checked){
+    return;
+  }
+
+  if(message.length < 2){
+    aiResultPanel.hidden = false;
+    aiLoading.hidden = true;
+    aiAnswer.hidden = true;
+    aiSources.hidden = true;
+
+    aiError.textContent =
+      "Masukkan pertanyaan atau kata kunci terlebih dahulu.";
+
+    aiError.hidden = false;
+    return;
+  }
+
+  if(aiRequestController){
+    aiRequestController.abort();
+  }
+
+  aiRequestController = new AbortController();
+  lastAiQuery = message;
+
+  setAiLoadingState();
+
+  try{
+    const response = await fetch(API_ENDPOINTS.aiChat, {
+      method: "POST",
+      signal: aiRequestController.signal,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message,
+        history: [],
+        context: {
+          page: "search",
+          activeFilter
+        }
+      })
+    });
+
+    let payload = null;
+
+    try{
+      payload = await response.json();
+    }catch{
+      throw new Error(
+        "Respons AI bukan JSON yang valid."
+      );
+    }
+
+    if(!response.ok){
+      throw new Error(
+        payload?.message ||
+        payload?.error?.message ||
+        `Permintaan AI gagal. Status HTTP: ${response.status}`
+      );
+    }
+
+    if(payload?.success === false){
+      throw new Error(
+        payload.message ||
+        "AI tidak dapat memproses permintaan."
+      );
+    }
+
+    const answer =
+      payload?.answer ||
+      payload?.data?.answer ||
+      payload?.result?.answer ||
+      payload?.message ||
+      "";
+
+    const sources =
+      payload?.sources ||
+      payload?.data?.sources ||
+      payload?.result?.sources ||
+      [];
+
+    if(!answer){
+      throw new Error(
+        "AI tidak mengirimkan jawaban."
+      );
+    }
+
+    aiError.hidden = true;
+    aiAnswer.innerHTML = formatAiAnswer(answer);
+    aiAnswer.hidden = false;
+
+    renderAiSourceList(sources);
+  }catch(error){
+    if(error.name === "AbortError"){
+      return;
+    }
+
+    console.error("AI Assistant Error:", error);
+
+    aiAnswer.hidden = true;
+    aiSources.hidden = true;
+
+    aiError.textContent =
+      error.message ||
+      "Terjadi kesalahan saat menghubungi AI Asisten.";
+
+    aiError.hidden = false;
+  }finally{
+    aiRequestController = null;
+    finishAiLoadingState();
+  }
+}
 /* =========================
    EVENTS
 ========================= */
@@ -1173,6 +1552,19 @@ let searchTimer = null;
 
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimer);
+
+  syncAiControls();
+
+  /*
+    Hasil AI sebelumnya disembunyikan apabila
+    isi pertanyaan sudah berubah.
+  */
+  if(
+    lastAiQuery &&
+    searchInput.value.trim() !== lastAiQuery
+  ){
+    resetAiResult();
+  }
 
   searchTimer = setTimeout(() => {
     runSearch();
@@ -1182,10 +1574,41 @@ searchInput.addEventListener("input", () => {
 clearBtn.addEventListener("click", () => {
   searchInput.value = "";
   clearBtn.style.display = "none";
+
+  resetAiResult();
+  syncAiControls();
+
   searchInput.focus();
   runSearch();
 });
 
+ aiAssistantToggle.addEventListener("change", () => {
+  syncAiControls();
+
+  if(!aiAssistantToggle.checked){
+    resetAiResult();
+  }
+});
+
+askAiBtn.addEventListener("click", () => {
+  askAiAssistant();
+});
+
+closeAiResultBtn.addEventListener("click", () => {
+  resetAiResult();
+});
+
+searchInput.addEventListener("keydown", event => {
+  if(
+    event.key === "Enter" &&
+    aiAssistantToggle.checked &&
+    !askAiBtn.disabled
+  ){
+    event.preventDefault();
+    askAiAssistant();
+  }
+}); 
+  
 document.querySelectorAll(".tab-btn").forEach(button => {
   button.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(item => {
@@ -1251,6 +1674,8 @@ document.addEventListener("selectstart", event => {
 /* =========================
    INIT
 ========================= */
+  syncAiControls();
+  
 loadAllData().catch(error => {
   console.error(error);
 
