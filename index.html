@@ -1,21 +1,240 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>SDKI SLKI SIKI</title>
-  
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/favicon.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
-<link rel="stylesheet" href="styles/global.css">
-<link rel="stylesheet" href="styles/layout.css">
-<link rel="stylesheet" href="styles/components.css">
-<link rel="stylesheet" href="styles/responsive.css">
+  <meta name="theme-color" content="#eff6ff" />
+
+  <title>ASKEP — SDKI SLKI SIKI</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
+
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+
+  <style>
+    /* =========================
+       LOGO APLIKASI
+    ========================= */
+    .brand-icon {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .brand-icon img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* =========================
+       MENU POJOK KANAN
+    ========================= */
+    .topbar {
+      position: relative;
+    }
+
+    .guide-menu-wrapper {
+      position: relative;
+      z-index: 100;
+    }
+
+    .guide-menu-button {
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .guide-menu-button.active {
+      color: var(--primary, #2563eb);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .guide-menu-button:active {
+      transform: scale(0.94);
+    }
+
+    .guide-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+
+      width: min(280px, calc(100vw - 32px));
+      padding: 8px;
+
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.14),
+        0 4px 14px rgba(15, 23, 42, 0.08);
+
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+
+      transform: translateY(-8px) scale(0.98);
+      transform-origin: top right;
+
+      transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .guide-dropdown.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .guide-dropdown-header {
+      padding: 10px 12px 8px;
+    }
+
+    .guide-dropdown-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .guide-dropdown-subtitle {
+      margin: 3px 0 0;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .guide-dropdown-divider {
+      height: 1px;
+      margin: 5px 6px;
+      background: #e2e8f0;
+    }
+
+    .guide-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .guide-menu-item {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      min-height: 48px;
+      padding: 9px 10px;
+
+      color: #0f172a;
+      text-decoration: none;
+
+      border-radius: 13px;
+      overflow: hidden;
+
+      transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .guide-menu-item:hover {
+      background: #f8fafc;
+    }
+
+    .guide-menu-item:active {
+      transform: scale(0.98);
+    }
+
+    .guide-menu-icon {
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 34px;
+      height: 34px;
+
+      color: var(--primary, #2563eb);
+      background: #eff6ff;
+      border-radius: 11px;
+
+      font-size: 14px;
+    }
+
+    .guide-menu-content {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .guide-menu-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .guide-menu-description {
+      display: block;
+      margin-top: 2px;
+
+      color: #64748b;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .guide-menu-chevron {
+      flex-shrink: 0;
+      color: #94a3b8;
+      font-size: 10px;
+    }
+
+    /* =========================
+       KARTU AKSES CEPAT
+    ========================= */
+    .quick-card {
+      min-width: 0;
+    }
+
+    .quick-label {
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 380px) {
+      .guide-dropdown {
+        position: fixed;
+        top: 72px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -24,201 +243,453 @@
 
   <header class="header">
     <div class="topbar">
+
       <div class="brand">
         <div class="brand-icon">
-          <i class="fa-solid fa-notes-medical"></i>
+          <img
+            src="icons/icon-512.png"
+            alt="Logo ASKEP"
+            width="48"
+            height="48"
+          >
         </div>
+
         <div>
           <div class="brand-title">Home</div>
           <div class="brand-subtitle">SDKI · SLKI · SIKI</div>
         </div>
       </div>
 
-      <button class="icon-btn native-click" aria-label="Notifikasi">
-        <i class="fa-regular fa-bell"></i>
-      </button>
+      <!-- MENU PANDUAN DAN PENGATURAN -->
+      <div class="guide-menu-wrapper">
+
+        <button
+          id="guideMenuButton"
+          class="icon-btn guide-menu-button native-click"
+          type="button"
+          aria-label="Buka panduan dan pengaturan"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="guideDropdown"
+        >
+          <i class="fa-solid fa-gear"></i>
+        </button>
+
+        <div
+          id="guideDropdown"
+          class="guide-dropdown"
+          aria-hidden="true"
+        >
+          <div class="guide-dropdown-header">
+            <p class="guide-dropdown-title">Menu Aplikasi</p>
+            <p class="guide-dropdown-subtitle">
+              Pengaturan, petunjuk, dan informasi aplikasi.
+            </p>
+          </div>
+
+          <div class="guide-dropdown-divider"></div>
+
+          <div class="guide-menu-list">
+
+            <a
+              href="pages/pengaturan.html"
+              class="guide-menu-item native-click"
+            >
+              <span class="guide-menu-icon">
+                <i class="fa-solid fa-sliders"></i>
+              </span>
+
+              <span class="guide-menu-content">
+                <span class="guide-menu-label">Pengaturan</span>
+                <span class="guide-menu-description">
+                  Sesuaikan preferensi aplikasi.
+                </span>
+              </span>
+
+              <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+            </a>
+
+            <a
+              href="pages/petunjuk.html"
+              class="guide-menu-item native-click"
+            >
+              <span class="guide-menu-icon">
+                <i class="fa-regular fa-circle-question"></i>
+              </span>
+
+              <span class="guide-menu-content">
+                <span class="guide-menu-label">Petunjuk</span>
+                <span class="guide-menu-description">
+                  Pelajari cara menggunakan aplikasi.
+                </span>
+              </span>
+
+              <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+            </a>
+
+            <a
+              href="pages/kontak.html"
+              class="guide-menu-item native-click"
+            >
+              <span class="guide-menu-icon">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+
+              <span class="guide-menu-content">
+                <span class="guide-menu-label">Kontak</span>
+                <span class="guide-menu-description">
+                  Hubungi pengembang aplikasi.
+                </span>
+              </span>
+
+              <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+            </a>
+
+            <a
+              href="pages/privasi.html"
+              class="guide-menu-item native-click"
+            >
+              <span class="guide-menu-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </span>
+
+              <span class="guide-menu-content">
+                <span class="guide-menu-label">Kebijakan Privasi</span>
+                <span class="guide-menu-description">
+                  Informasi penggunaan dan perlindungan data.
+                </span>
+              </span>
+
+              <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+            </a>
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <section class="hero">
-      <h1 class="hero-title">Asuhan keperawatan lebih cepat, rapi, dan terarah.</h1>
+      <h1 class="hero-title">
+        Asuhan keperawatan lebih cepat, rapi, dan terarah.
+      </h1>
+
       <p class="hero-desc">
-        Cari diagnosis dari gejala, hubungkan SDKI ke SLKI dan SIKI, lalu susun askep dengan lebih mudah.
+        Cari diagnosis dari gejala, hubungkan SDKI ke SLKI dan SIKI,
+        lalu susun askep dengan lebih mudah.
       </p>
     </section>
   </header>
 
+  <!-- PENCARIAN -->
   <div class="search-wrap">
-   <label class="search-box" onclick="location.href='pages/search.html'">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input id="homeSearch" type="search" placeholder="Cari gejala, diagnosis, luaran, intervensi..." onclick="event.stopPropagation()" />
-</label>
+    <label
+      class="search-box"
+      onclick="location.href='pages/search.html'"
+    >
+      <i class="fa-solid fa-magnifying-glass"></i>
+
+      <input
+        id="homeSearch"
+        type="search"
+        placeholder="Cari gejala, diagnosis, luaran, intervensi..."
+        autocomplete="off"
+        onclick="event.stopPropagation()"
+      >
+    </label>
   </div>
 
   <main class="content">
 
+    <!-- SEMUA MENU DIGABUNG DALAM AKSES CEPAT -->
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Akses Cepat</h2>
       </div>
 
       <div class="quick-grid">
-        <a href="pages/sdki.html" class="quick-card native-click">
-          <div class="quick-icon"><i class="fa-solid fa-stethoscope"></i></div>
+
+        <a
+          href="pages/sdki.html"
+          class="quick-card native-click"
+        >
+          <div class="quick-icon">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
           <div class="quick-label">SDKI</div>
         </a>
 
-        <a href="pages/slki.html" class="quick-card native-click">
-          <div class="quick-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <a
+          href="pages/slki.html"
+          class="quick-card native-click"
+        >
+          <div class="quick-icon">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
           <div class="quick-label">SLKI</div>
         </a>
 
-        <a href="pages/siki.html" class="quick-card native-click">
-          <div class="quick-icon"><i class="fa-solid fa-hand-holding-medical"></i></div>
+        <a
+          href="pages/siki.html"
+          class="quick-card native-click"
+        >
+          <div class="quick-icon">
+            <i class="fa-solid fa-hand-holding-medical"></i>
+          </div>
           <div class="quick-label">SIKI</div>
         </a>
 
-        <a href="pages/quick-askep.html" class="quick-card native-click">
-          <div class="quick-icon"><i class="fa-solid fa-file-medical"></i></div>
+        <a
+          href="pages/quick-askep.html"
+          class="quick-card native-click"
+        >
+          <div class="quick-icon">
+            <i class="fa-solid fa-file-medical"></i>
+          </div>
           <div class="quick-label">Askep</div>
         </a>
-      </div>
-    </section>
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Fitur Utama</h2>
-      </div>
 
-      <div class="feature-list">
-        <a href="pages/cari-gejala.html" class="feature-card native-click">
-          <div class="feature-icon">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-          </div>
-          <div class="feature-body">
-            <div class="feature-title">Cari Berdasarkan Gejala</div>
-            <div class="feature-desc">Ketik “sesak”, “nyeri”, “cemas”, atau keluhan pasien untuk menemukan diagnosis terkait.</div>
-          </div>
-          <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
-
-        <a href="pages/quick-askep.html" class="feature-card native-click">
-          <div class="feature-icon">
-            <i class="fa-solid fa-bolt"></i>
-          </div>
-          <div class="feature-body">
-            <div class="feature-title">Quick Askep</div>
-            <div class="feature-desc">Pilih diagnosis, luaran, dan intervensi lalu susun kerangka askep siap salin.</div>
-          </div>
-          <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
-
-        <a href="pages/kasus.html" class="feature-card native-click">
-          <div class="feature-icon">
+        <a
+          href="pages/kasus.html"
+          class="quick-card native-click"
+        >
+          <div class="quick-icon">
             <i class="fa-solid fa-layer-group"></i>
           </div>
-          <div class="feature-body">
-            <div class="feature-title">Paket Kasus Klinis</div>
-            <div class="feature-desc">Stroke, STEMI, CKD, pneumonia, sepsis, trauma, dan kasus umum ruangan.</div>
-          </div>
-          <i class="fa-solid fa-chevron-right chevron"></i>
+          <div class="quick-label">Kasus Klinis</div>
         </a>
+
       </div>
     </section>
 
+    <!-- KASUS SERING DICARI -->
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Kasus Sering Dicari</h2>
       </div>
 
       <div class="chip-row">
-        <a href="pages/kasus.html?q=stroke" class="chip native-click">Stroke</a>
-        <a href="pages/kasus.html?q=sesak" class="chip native-click">Sesak Napas</a>
-        <a href="pages/kasus.html?q=stemi" class="chip native-click">STEMI</a>
-        <a href="pages/kasus.html?q=ckd" class="chip native-click">CKD</a>
-        <a href="pages/kasus.html?q=dm" class="chip native-click">DM</a>
-        <a href="pages/kasus.html?q=sepsis" class="chip native-click">Sepsis</a>
+        <a
+          href="pages/kasus.html?q=stroke"
+          class="chip native-click"
+        >
+          Stroke
+        </a>
+
+        <a
+          href="pages/kasus.html?q=sesak"
+          class="chip native-click"
+        >
+          Sesak Napas
+        </a>
+
+        <a
+          href="pages/kasus.html?q=stemi"
+          class="chip native-click"
+        >
+          STEMI
+        </a>
+
+        <a
+          href="pages/kasus.html?q=ckd"
+          class="chip native-click"
+        >
+          CKD
+        </a>
+
+        <a
+          href="pages/kasus.html?q=dm"
+          class="chip native-click"
+        >
+          DM
+        </a>
+
+        <a
+          href="pages/kasus.html?q=sepsis"
+          class="chip native-click"
+        >
+          Sepsis
+        </a>
       </div>
     </section>
 
   </main>
 </div>
 
+<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
-  <a href="index.html" class="bottom-item active native-click">
+
+  <a
+    href="index.html"
+    class="bottom-item active native-click"
+  >
     <i class="fa-solid fa-house"></i>
     <span>Home</span>
   </a>
 
-  <a href="pages/search.html" class="bottom-item native-click">
+  <a
+    href="pages/search.html"
+    class="bottom-item native-click"
+  >
     <i class="fa-solid fa-magnifying-glass"></i>
     <span>Cari</span>
   </a>
 
-  <a href="pages/quick-askep.html" class="bottom-item native-click">
+  <a
+    href="pages/quick-askep.html"
+    class="bottom-item native-click"
+  >
     <i class="fa-solid fa-notes-medical"></i>
     <span>Askep</span>
   </a>
 
-  <a href="pages/profil.html" class="bottom-item native-click">
+  <a
+    href="pages/profil.html"
+    class="bottom-item native-click"
+  >
     <i class="fa-solid fa-user-nurse"></i>
     <span>Profil</span>
   </a>
+
 </nav>
 
 <script>
-/* =========================
-   ANDROID-LIKE RIPPLE
-========================= */
-document.querySelectorAll('.native-click').forEach(el => {
-  el.addEventListener('click', function(e){
-    const oldRipple = this.querySelector('.ripple');
-    if(oldRipple) oldRipple.remove();
+  /* =========================
+     RIPPLE ANDROID
+  ========================= */
+  function initializeRipple() {
+    document.querySelectorAll(".native-click").forEach((element) => {
+      if (element.dataset.rippleReady === "true") return;
 
-    const ripple = document.createElement('span');
-    ripple.className = 'ripple';
+      element.dataset.rippleReady = "true";
 
-    const rect = this.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = size + 'px';
-    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      element.addEventListener("click", function (event) {
+        const oldRipple = this.querySelector(":scope > .ripple");
 
-    this.appendChild(ripple);
+        if (oldRipple) {
+          oldRipple.remove();
+        }
 
-    setTimeout(() => ripple.remove(), 600);
-  });
-});
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
 
-/* =========================
-   BLOKIR SELECT UNTUK LINK/TOMBOL
-========================= */
-document.addEventListener('selectstart', function(e){
-  const allow = e.target.closest('input, textarea, select');
-  if(!allow) e.preventDefault();
-});
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
 
-/* =========================
-   BOTTOM NAV DEMO ACTIVE
-========================= */
-document.querySelectorAll('.bottom-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.bottom-item').forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
+        /*
+         * Keyboard click biasanya menghasilkan clientX dan clientY = 0.
+         * Dalam kondisi tersebut ripple ditempatkan di tengah elemen.
+         */
+        const clickX = event.clientX
+          ? event.clientX - rect.left
+          : rect.width / 2;
 
-const homeSearch = document.getElementById("homeSearch");
+        const clickY = event.clientY
+          ? event.clientY - rect.top
+          : rect.height / 2;
 
-homeSearch.addEventListener("keydown", function(e){
-  if(e.key === "Enter"){
-    const q = homeSearch.value.trim();
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+        ripple.style.left = `${clickX - size / 2}px`;
+        ripple.style.top = `${clickY - size / 2}px`;
 
-    if(q){
-      location.href = `pages/search.html?q=${encodeURIComponent(q)}`;
-    }else{
-      location.href = "pages/search.html";
-    }
+        this.appendChild(ripple);
+
+        window.setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
   }
-});
+
+  initializeRipple();
+
+
+  /* =========================
+     BLOKIR SELECT
+  ========================= */
+  document.addEventListener("selectstart", function (event) {
+    const allowedElement = event.target.closest(
+      "input, textarea, select"
+    );
+
+    if (!allowedElement) {
+      event.preventDefault();
+    }
+  });
+
+
+  /* =========================
+     PENCARIAN HOME
+  ========================= */
+  const homeSearch = document.getElementById("homeSearch");
+
+  homeSearch.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter") return;
+
+    event.preventDefault();
+
+    const query = homeSearch.value.trim();
+
+    if (query) {
+      window.location.href =
+        `pages/search.html?q=${encodeURIComponent(query)}`;
+    } else {
+      window.location.href = "pages/search.html";
+    }
+  });
+
+
+  /* =========================
+     MENU PANDUAN / PENGATURAN
+  ========================= */
+  const guideMenuButton =
+    document.getElementById("guideMenuButton");
+
+  const guideDropdown =
+    document.getElementById("guideDropdown");
+
+  function setGuideMenu(open) {
+    guideDropdown.classList.toggle("show", open);
+    guideMenuButton.classList.toggle("active", open);
+
+    guideMenuButton.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+
+    guideDropdown.setAttribute(
+      "aria-hidden",
+      String(!open)
+    );
+  }
+
+  function toggleGuideMenu() {
+    const isOpen =
+      guideDropdown.classList.contains("show");
+
+    setGuideMenu(!isOpen);
+  }
+
+  guideMenuButton.addEventListener("click", function (event) {
+    event.stopPropagation();
+    toggleGuideMenu();
+  });
+
+  guideDropdown.addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", function () {
+    setGuideMenu(false);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      setGuideMenu(false);
+      guideMenuButton.focus();
+    }
+  });
 </script>
 
 </body>
