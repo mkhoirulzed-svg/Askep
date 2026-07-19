@@ -17,10 +17,8 @@
 </head>
 
 <body class="page-search">
-
 <div class="app">
-
-  <header class="header">
+  <header class="header search-header">
     <div class="topbar">
       <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali">
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
@@ -28,145 +26,163 @@
 
       <div class="header-title">
         <h1>Pencarian</h1>
-        <p>SDKI, SLKI, SIKI, dan tautan intervensi</p>
+        <p>SDKI, SLKI, SIKI, gejala pasien, dan AI Asisten</p>
       </div>
     </div>
-
-    <div class="search-box" role="search">
-      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-      <input id="searchInput" type="search" aria-label="Cari SDKI, SLKI, atau SIKI" placeholder="Contoh: ansietas, sesak, nyeri, edukasi..." autocomplete="off">
-      <button id="clearBtn" class="clear-btn native-click" type="button" aria-label="Hapus pencarian">
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="ai-search-control">
-  <label class="ai-toggle native-click" for="aiAssistantToggle">
-    <input
-      id="aiAssistantToggle"
-      class="ai-toggle-input"
-      type="checkbox"
-    >
-
-    <span class="ai-switch" aria-hidden="true"></span>
-
-    <span class="ai-toggle-content">
-      <span class="ai-toggle-title">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-        AI Asisten
-      </span>
-
-      <span class="ai-toggle-desc">
-        Gunakan AI untuk menjelaskan hasil pencarian berdasarkan database ASKEP.
-      </span>
-    </span>
-  </label>
-
-  <button
-    id="askAiBtn"
-    class="ai-ask-btn native-click"
-    type="button"
-    disabled
-  >
-    <i class="fa-solid fa-sparkles"></i>
-    <span>Tanya AI</span>
-  </button>
-</div>
   </header>
 
-  <main class="content">
+  <main class="content search-content">
+    <section class="search-hero">
+      <div class="search-hero-copy">
+        <span class="hero-eyebrow">
+          <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+          Pencarian terpadu ASKEP
+        </span>
 
-    <div class="search-overview">
-      <section class="info-card">
-        <div class="info-title">Cari lebih fleksibel</div>
-        <div class="info-desc">
-          Kamu bisa mencari berdasarkan nama diagnosis, luaran, intervensi, atau kata kunci klinis.
-          Untuk pencarian diagnosis berdasarkan gejala pasien, gunakan menu
-          <button class="inline-link native-click" type="button" onclick="location.href='cari-gejala.html'">
-            Cari Gejala di sini
-            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          </button>
-        </div>
-      </section>
+        <h2>Cari lebih fleksibel</h2>
+        <p>
+          Cari diagnosis SDKI, luaran SLKI, intervensi SIKI, atau masukkan
+          tanda dan gejala pasien untuk menemukan kemungkinan diagnosis.
+        </p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+      </div>
+    </section>
+
+    <section class="search-workspace" aria-label="Pencarian ASKEP">
+      <div class="search-box" role="search">
+        <i id="searchModeIcon" class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+
+        <input
+          id="searchInput"
+          type="search"
+          aria-label="Cari data ASKEP"
+          placeholder="Contoh: ansietas, sesak, nyeri, edukasi..."
+          autocomplete="off"
+        >
+
+        <button id="clearBtn" class="clear-btn native-click" type="button" aria-label="Hapus pencarian">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="search-mode-help">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <span id="searchModeHelp">
+          Menampilkan hasil dari SDKI, SLKI, dan SIKI dalam satu pencarian.
+        </span>
+      </div>
+
+      <div class="example-chips" aria-label="Contoh pencarian">
+        <button class="example-chip native-click" type="button" data-query="nyeri akut, tampak meringis, sulit tidur">
+          Nyeri
+        </button>
+        <button class="example-chip native-click" type="button" data-query="sesak napas, dispnea, penggunaan otot bantu napas">
+          Sesak
+        </button>
+        <button class="example-chip native-click" type="button" data-query="mual, muntah, tidak nafsu makan">
+          Mual
+        </button>
+        <button class="example-chip native-click" type="button" data-query="cemas, gelisah, sulit tidur, khawatir">
+          Cemas
+        </button>
+      </div>
 
       <section class="filter-panel" aria-label="Filter hasil pencarian">
         <div class="filter-heading">
-          <strong>Filter standar</strong>
-          <span>Pilih jenis data yang ingin ditampilkan dari hasil pencarian.</span>
+          <div>
+            <strong>Jenis pencarian</strong>
+            <span>Pilih hasil yang ingin ditampilkan.</span>
+          </div>
         </div>
 
-        <div class="tabs">
-          <button class="tab-btn active native-click" type="button" data-filter="all">Semua</button>
-          <button class="tab-btn native-click" type="button" data-filter="sdki">SDKI</button>
-          <button class="tab-btn native-click" type="button" data-filter="slki">SLKI</button>
-          <button class="tab-btn native-click" type="button" data-filter="siki">SIKI</button>
+        <div class="tabs" role="tablist" aria-label="Jenis hasil pencarian">
+          <button class="tab-btn active native-click" type="button" data-filter="all" role="tab" aria-selected="true">
+            Semua
+          </button>
+          <button class="tab-btn native-click" type="button" data-filter="gejala" role="tab" aria-selected="false">
+            <i class="fa-solid fa-stethoscope" aria-hidden="true"></i>
+            Gejala
+          </button>
+          <button class="tab-btn native-click" type="button" data-filter="sdki" role="tab" aria-selected="false">SDKI</button>
+          <button class="tab-btn native-click" type="button" data-filter="slki" role="tab" aria-selected="false">SLKI</button>
+          <button class="tab-btn native-click" type="button" data-filter="siki" role="tab" aria-selected="false">SIKI</button>
         </div>
       </section>
+
+      <div class="ai-search-control">
+        <label class="ai-toggle native-click" for="aiAssistantToggle">
+          <input id="aiAssistantToggle" class="ai-toggle-input" type="checkbox">
+          <span class="ai-switch" aria-hidden="true"></span>
+
+          <span class="ai-toggle-content">
+            <span class="ai-toggle-title">
+              <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+              AI Asisten
+            </span>
+            <span class="ai-toggle-desc">
+              Minta AI menjelaskan pertanyaan berdasarkan database ASKEP.
+            </span>
+          </span>
+        </label>
+
+        <button id="askAiBtn" class="ai-ask-btn native-click" type="button" disabled>
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+          <span>Tanya AI</span>
+        </button>
+      </div>
+    </section>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <span>Memuat database ASKEP...</span>
     </div>
 
-   <div id="loading" class="loading">
-  <div class="spinner"></div>
-  <span>Memuat data...</span>
-</div>
+    <section id="aiResultPanel" class="ai-result-panel" aria-live="polite" hidden>
+      <div class="ai-result-header">
+        <div class="ai-result-heading">
+          <div class="ai-result-icon">
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+          </div>
 
-<section
-  id="aiResultPanel"
-  class="ai-result-panel"
-  aria-live="polite"
-  hidden
->
-  <div class="ai-result-header">
-    <div class="ai-result-heading">
-      <div class="ai-result-icon">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <div>
+            <strong>Jawaban AI Asisten</strong>
+            <span>Berdasarkan database ASKEP</span>
+          </div>
+        </div>
+
+        <button id="closeAiResultBtn" class="ai-close-btn native-click" type="button" aria-label="Tutup jawaban AI">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
 
-      <div>
-        <strong>Jawaban AI Asisten</strong>
-        <span>Berdasarkan database ASKEP</span>
+      <div id="aiLoading" class="ai-loading" hidden>
+        <div class="ai-thinking" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <span>AI sedang menganalisis database ASKEP...</span>
       </div>
-    </div>
 
-    <button
-      id="closeAiResultBtn"
-      class="ai-close-btn native-click"
-      type="button"
-      aria-label="Tutup jawaban AI"
-    >
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
+      <div id="aiError" class="ai-error" hidden></div>
+      <div id="aiAnswer" class="ai-answer" hidden></div>
 
-  <div id="aiLoading" class="ai-loading" hidden>
-    <div class="ai-thinking">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+      <div id="aiSources" class="ai-sources" hidden>
+        <div class="ai-sources-title">
+          <i class="fa-solid fa-database" aria-hidden="true"></i>
+          Sumber database
+        </div>
+        <div id="aiSourceList" class="ai-source-list"></div>
+      </div>
 
-    <span>AI sedang menganalisis database ASKEP...</span>
-  </div>
+      <div class="ai-disclaimer">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        Jawaban AI bersifat pendukung. Tetap sesuaikan dengan pengkajian dan kondisi klinis pasien.
+      </div>
+    </section>
 
-  <div id="aiError" class="ai-error" hidden></div>
-
-  <div id="aiAnswer" class="ai-answer" hidden></div>
-
-  <div id="aiSources" class="ai-sources" hidden>
-    <div class="ai-sources-title">
-      <i class="fa-solid fa-database"></i>
-      Sumber database
-    </div>
-
-    <div id="aiSourceList" class="ai-source-list"></div>
-  </div>
-
-  <div class="ai-disclaimer">
-    <i class="fa-solid fa-circle-info"></i>
-    Jawaban AI bersifat pendukung. Tetap sesuaikan dengan pengkajian dan
-    kondisi klinis pasien.
-  </div>
-</section>
-
-<div id="resultArea"></div>
+    <div id="resultArea" class="result-area" aria-live="polite"></div>
   </main>
 </div>
 
@@ -191,9 +207,10 @@
     <span>Profil</span>
   </a>
 </nav>
+
 <script>
 /* =========================
-   CONFIG PATH
+   CONFIG
 ========================= */
 const API_BASE = "https://askep.mkhoirulzed.workers.dev";
 
@@ -205,6 +222,8 @@ const API_ENDPOINTS = {
   aiChat: `${API_BASE}/api/ai/chat`
 };
 
+const PREVIEW_LIMIT = 3;
+
 /* =========================
    STATE
 ========================= */
@@ -215,27 +234,23 @@ const DB = {
   masterRelations: []
 };
 
-let SEARCH_INDEX = [];
-let activeFilter = "all";
-let aiRequestController = null;
-let lastAiQuery = "";
-/*
-  Lookup dipakai agar kode dari master-relations.json
-  dapat dipertemukan dengan data lengkap SDKI, SLKI, dan SIKI.
-*/
 const LOOKUP = {
   sdkiByCode: new Map(),
   sdkiByTitle: new Map(),
-
   slkiByCode: new Map(),
   slkiByTitle: new Map(),
-
   sikiByCode: new Map(),
   sikiByTitle: new Map(),
-
   relationBySdkiCode: new Map(),
   relationBySdkiTitle: new Map()
 };
+
+let SEARCH_INDEX = [];
+let activeFilter = "all";
+let searchTimer = null;
+let aiRequestController = null;
+let lastAiQuery = "";
+let expandedGroups = new Set();
 
 /* =========================
    ELEMENTS
@@ -244,34 +259,20 @@ const searchInput = document.getElementById("searchInput");
 const clearBtn = document.getElementById("clearBtn");
 const resultArea = document.getElementById("resultArea");
 const loadingEl = document.getElementById("loading");
-const aiAssistantToggle =
-  document.getElementById("aiAssistantToggle");
+const searchModeHelp = document.getElementById("searchModeHelp");
+const searchModeIcon = document.getElementById("searchModeIcon");
+const aiAssistantToggle = document.getElementById("aiAssistantToggle");
+const askAiBtn = document.getElementById("askAiBtn");
+const aiResultPanel = document.getElementById("aiResultPanel");
+const closeAiResultBtn = document.getElementById("closeAiResultBtn");
+const aiLoading = document.getElementById("aiLoading");
+const aiError = document.getElementById("aiError");
+const aiAnswer = document.getElementById("aiAnswer");
+const aiSources = document.getElementById("aiSources");
+const aiSourceList = document.getElementById("aiSourceList");
 
-const askAiBtn =
-  document.getElementById("askAiBtn");
-
-const aiResultPanel =
-  document.getElementById("aiResultPanel");
-
-const closeAiResultBtn =
-  document.getElementById("closeAiResultBtn");
-
-const aiLoading =
-  document.getElementById("aiLoading");
-
-const aiError =
-  document.getElementById("aiError");
-
-const aiAnswer =
-  document.getElementById("aiAnswer");
-
-const aiSources =
-  document.getElementById("aiSources");
-
-const aiSourceList =
-  document.getElementById("aiSourceList");
 /* =========================
-   HELPERS
+   GENERAL HELPERS
 ========================= */
 function normalizeText(text){
   return String(text || "")
@@ -292,33 +293,23 @@ function normalizeCode(value){
 
 function pick(obj, keys){
   for(const key of keys){
-    if(
-      obj &&
-      obj[key] !== undefined &&
-      obj[key] !== null &&
-      obj[key] !== ""
-    ){
+    if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== ""){
       return obj[key];
     }
   }
-
   return "";
 }
 
-function toArray(data){
-  if(Array.isArray(data)){
-    return data;
-  }
-
-  if(!data || typeof data !== "object"){
-    return [];
-  }
+function unwrapApiArray(data){
+  if(Array.isArray(data)) return data;
+  if(!data || typeof data !== "object") return [];
 
   const candidates = [
     data.data,
     data.items,
     data.diagnosis,
     data.diagnosa,
+    data.sdkis,
     data.luaran,
     data.intervensi,
     data.relations,
@@ -326,121 +317,66 @@ function toArray(data){
   ];
 
   for(const candidate of candidates){
-    if(Array.isArray(candidate)){
-      return candidate;
-    }
-
+    if(Array.isArray(candidate)) return candidate;
     if(candidate && typeof candidate === "object"){
-      const nested = toArray(candidate);
-
-      if(nested.length){
-        return nested;
-      }
+      const nested = unwrapApiArray(candidate);
+      if(nested.length) return nested;
     }
   }
 
-  /*
-    Hindari mengubah objek respons seperti
-    { success: true, message: "...", data: ... }
-    menjadi array yang tidak valid.
-  */
-  if(
-    "success" in data ||
-    "message" in data ||
-    "error" in data
-  ){
+  if("success" in data || "message" in data || "error" in data){
     return [];
   }
 
-  return Object.values(data).filter(item => {
-    return item && typeof item === "object";
-  });
+  return Object.values(data).filter(item => item && typeof item === "object");
 }
-  
+
+function flattenValues(value){
+  if(value === null || value === undefined || value === "") return [];
+  if(Array.isArray(value)) return value.flatMap(flattenValues);
+  if(typeof value === "string" || typeof value === "number") return [String(value)];
+  if(typeof value === "object") return Object.values(value).flatMap(flattenValues);
+  return [];
+}
+
 function stringifyDeep(value){
   if(value === null || value === undefined) return "";
-
-  if(
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  ){
-    return String(value);
-  }
-
-  if(Array.isArray(value)){
-    return value.map(stringifyDeep).join(" ");
-  }
-
-  if(typeof value === "object"){
-    return Object.values(value)
-      .map(stringifyDeep)
-      .join(" ");
-  }
-
+  if(["string", "number", "boolean"].includes(typeof value)) return String(value);
+  if(Array.isArray(value)) return value.map(stringifyDeep).join(" ");
+  if(typeof value === "object") return Object.values(value).map(stringifyDeep).join(" ");
   return "";
 }
 
+function uniqueArray(items){
+  return [...new Set(items.filter(Boolean))];
+}
+
 function getItemKey(item){
-  return pick(item, [
-    "kode",
-    "code",
-    "id",
-    "nomor",
-    "no"
-  ]);
+  return pick(item, ["kode", "code", "id", "nomor", "no"]);
 }
 
 function getItemCode(item){
-  return pick(item, [
-    "kode",
-    "code",
-    "nomor",
-    "no",
-    "id"
-  ]);
+  return pick(item, ["kode", "code", "nomor", "no", "id"]);
 }
 
 function getItemTitle(item){
   return pick(item, [
-    "title",
-    "judul",
-    "nama",
-    "diagnosis",
-    "diagnosa",
-    "luaran",
-    "intervensi",
-    "label",
-    "name"
+    "title", "judul", "nama", "diagnosis", "diagnosa",
+    "luaran", "intervensi", "label", "name"
   ]);
 }
 
 function getItemDesc(item){
   return pick(item, [
-    "definisi",
-    "deskripsi",
-    "description",
-    "keterangan",
-    "tujuan",
-    "ekspektasi"
+    "definisi", "deskripsi", "description", "keterangan", "tujuan", "ekspektasi"
   ]);
 }
 
 function getDetailUrl(type, id){
   const safeId = encodeURIComponent(id || "");
-
-  if(type === "sdki"){
-    return `diagnosis-detail.html?id=${safeId}`;
-  }
-
-  if(type === "slki"){
-    return `slki-detail.html?id=${safeId}`;
-  }
-
-  if(type === "siki"){
-    return `siki-detail.html?id=${safeId}`;
-  }
-
+  if(type === "sdki") return `diagnosis-detail.html?id=${safeId}`;
+  if(type === "slki") return `slki-detail.html?id=${safeId}`;
+  if(type === "siki") return `siki-detail.html?id=${safeId}`;
   return "#";
 }
 
@@ -448,7 +384,6 @@ function getIcon(type){
   if(type === "sdki") return "fa-stethoscope";
   if(type === "slki") return "fa-chart-line";
   if(type === "siki") return "fa-hand-holding-medical";
-
   return "fa-file-medical";
 }
 
@@ -456,179 +391,91 @@ function getTypeLabel(type){
   if(type === "sdki") return "SDKI";
   if(type === "slki") return "SLKI";
   if(type === "siki") return "SIKI";
-
   return String(type || "").toUpperCase();
+}
+
+function escapeHtml(text){
+  return String(text ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 /* =========================
    RELATION HELPERS
 ========================= */
-
-/*
-  Mengambil kode diagnosis dari master-relations.json.
-
-  Mendukung beberapa kemungkinan penamaan:
-  - kodeSdki
-  - kodeSDKI
-  - sdkiCode
-  - kode
-*/
 function getRelationSdkiCode(relation){
   return pick(relation, [
-    "kodeSdki",
-    "kodeSDKI",
-    "sdkiCode",
-    "kodeDiagnosis",
-    "kodeDiagnosa",
-    "kode"
+    "kodeSdki", "kodeSDKI", "sdkiCode", "kodeDiagnosis", "kodeDiagnosa", "kode"
   ]);
 }
 
 function getRelationSdkiTitle(relation){
   return pick(relation, [
-    "judulSdki",
-    "judulSDKI",
-    "diagnosis",
-    "diagnosa",
-    "judulDiagnosis",
-    "judulDiagnosa",
-    "namaSdki",
-    "namaSDKI"
+    "judulSdki", "judulSDKI", "diagnosis", "diagnosa", "judulDiagnosis",
+    "judulDiagnosa", "namaSdki", "namaSDKI"
   ]);
 }
 
-function getRelationSlki(relation){
-  return toReferenceArray(
-    pick(relation, [
-      "slki",
-      "luaran",
-      "luaranUtama",
-      "outcomes"
-    ])
-  );
-}
-
-function getRelationSikiUtama(relation){
-  return toReferenceArray(
-    pick(relation, [
-      "sikiUtama",
-      "intervensiUtama",
-      "utama",
-      "mainInterventions"
-    ])
-  );
-}
-
-function getRelationSikiPendukung(relation){
-  return toReferenceArray(
-    pick(relation, [
-      "sikiPendukung",
-      "intervensiPendukung",
-      "pendukung",
-      "supportingInterventions"
-    ])
-  );
-}
-
-/*
-  Master-relations bisa menyimpan relasi sebagai:
-
-  "L.01001"
-
-  atau:
-
-  {
-    "kode": "L.01001",
-    "judul": "Status Pernapasan"
-  }
-
-  atau array campuran keduanya.
-*/
 function toReferenceArray(value){
-  if(value === null || value === undefined || value === ""){
-    return [];
-  }
-
-  if(Array.isArray(value)){
-    return value.flatMap(item => toReferenceArray(item));
-  }
+  if(value === null || value === undefined || value === "") return [];
+  if(Array.isArray(value)) return value.flatMap(toReferenceArray);
 
   if(typeof value === "string" || typeof value === "number"){
-    return [{
-      kode: String(value),
-      judul: ""
-    }];
+    return [{ kode: String(value), judul: "" }];
   }
 
   if(typeof value === "object"){
-    /*
-      Bila objek merupakan satu referensi.
-    */
     const kode = pick(value, [
-      "kode",
-      "code",
-      "id",
-      "nomor",
-      "no",
-      "kodeSlki",
-      "kodeSLKI",
-      "kodeSiki",
-      "kodeSIKI"
+      "kode", "code", "id", "nomor", "no", "kodeSlki", "kodeSLKI", "kodeSiki", "kodeSIKI"
     ]);
-
     const judul = pick(value, [
-      "judul",
-      "title",
-      "nama",
-      "name",
-      "luaran",
-      "intervensi"
+      "judul", "title", "nama", "name", "luaran", "intervensi"
     ]);
 
     if(kode || judul){
-      return [{
-        kode: String(kode || ""),
-        judul: String(judul || ""),
-        raw: value
-      }];
+      return [{ kode: String(kode || ""), judul: String(judul || ""), raw: value }];
     }
 
-    /*
-      Bila objek berisi daftar dengan key tertentu.
-    */
-    return Object.values(value)
-      .flatMap(item => toReferenceArray(item));
+    return Object.values(value).flatMap(toReferenceArray);
   }
 
   return [];
 }
 
+function getRelationSlki(relation){
+  return toReferenceArray(pick(relation, ["slki", "luaran", "luaranUtama", "outcomes"]));
+}
+
+function getRelationSikiUtama(relation){
+  return toReferenceArray(pick(relation, [
+    "sikiUtama", "intervensiUtama", "utama", "mainInterventions"
+  ]));
+}
+
+function getRelationSikiPendukung(relation){
+  return toReferenceArray(pick(relation, [
+    "sikiPendukung", "intervensiPendukung", "pendukung", "supportingInterventions"
+  ]));
+}
+
 function resolveReference(reference, type){
   const code = normalizeCode(reference?.kode);
   const title = normalizeText(reference?.judul);
-
   let item = null;
 
   if(type === "slki"){
-    item =
-      LOOKUP.slkiByCode.get(code) ||
-      LOOKUP.slkiByTitle.get(title) ||
-      null;
+    item = LOOKUP.slkiByCode.get(code) || LOOKUP.slkiByTitle.get(title) || null;
   }
 
   if(type === "siki"){
-    item =
-      LOOKUP.sikiByCode.get(code) ||
-      LOOKUP.sikiByTitle.get(title) ||
-      null;
+    item = LOOKUP.sikiByCode.get(code) || LOOKUP.sikiByTitle.get(title) || null;
   }
 
   if(item){
-    return {
-      kode: getItemCode(item),
-      judul: getItemTitle(item),
-      item
-    };
+    return { kode: getItemCode(item), judul: getItemTitle(item), item };
   }
 
   return {
@@ -642,62 +489,33 @@ function getRelationForSdki(sdkiItem){
   const code = normalizeCode(getItemCode(sdkiItem));
   const title = normalizeText(getItemTitle(sdkiItem));
 
-  return (
-    LOOKUP.relationBySdkiCode.get(code) ||
+  return LOOKUP.relationBySdkiCode.get(code) ||
     LOOKUP.relationBySdkiTitle.get(title) ||
-    null
-  );
+    null;
 }
 
 function getResolvedRelationData(relation){
   if(!relation){
-    return {
-      slki: [],
-      sikiUtama: [],
-      sikiPendukung: []
-    };
+    return { slki: [], sikiUtama: [], sikiPendukung: [] };
   }
 
   return {
-    slki: getRelationSlki(relation)
-      .map(reference => resolveReference(reference, "slki")),
-
-    sikiUtama: getRelationSikiUtama(relation)
-      .map(reference => resolveReference(reference, "siki")),
-
-    sikiPendukung: getRelationSikiPendukung(relation)
-      .map(reference => resolveReference(reference, "siki"))
+    slki: getRelationSlki(relation).map(ref => resolveReference(ref, "slki")),
+    sikiUtama: getRelationSikiUtama(relation).map(ref => resolveReference(ref, "siki")),
+    sikiPendukung: getRelationSikiPendukung(relation).map(ref => resolveReference(ref, "siki"))
   };
 }
 
 function getRelationSearchText(relation){
   if(!relation) return "";
-
   const resolved = getResolvedRelationData(relation);
 
   return [
     getRelationSdkiCode(relation),
     getRelationSdkiTitle(relation),
-
-    ...resolved.slki.map(item => [
-      item.kode,
-      item.judul,
-      stringifyDeep(item.item)
-    ].join(" ")),
-
-    ...resolved.sikiUtama.map(item => [
-      item.kode,
-      item.judul,
-      "intervensi utama",
-      stringifyDeep(item.item)
-    ].join(" ")),
-
-    ...resolved.sikiPendukung.map(item => [
-      item.kode,
-      item.judul,
-      "intervensi pendukung",
-      stringifyDeep(item.item)
-    ].join(" "))
+    ...resolved.slki.map(item => `${item.kode} ${item.judul} ${stringifyDeep(item.item)}`),
+    ...resolved.sikiUtama.map(item => `${item.kode} ${item.judul} intervensi utama ${stringifyDeep(item.item)}`),
+    ...resolved.sikiPendukung.map(item => `${item.kode} ${item.judul} intervensi pendukung ${stringifyDeep(item.item)}`)
   ].join(" ");
 }
 
@@ -705,60 +523,162 @@ function uniqueReferences(items){
   const seen = new Set();
 
   return items.filter(item => {
-    const key = normalizeText(
-      item.kode ||
-      item.judul ||
-      stringifyDeep(item)
-    );
-
-    if(!key || seen.has(key)){
-      return false;
-    }
-
+    const key = normalizeText(item.kode || item.judul || stringifyDeep(item));
+    if(!key || seen.has(key)) return false;
     seen.add(key);
     return true;
   });
 }
 
 /* =========================
-   LOAD DATA
+   SYMPTOM HELPERS
+========================= */
+function symptomTokens(text){
+  const stopWords = new Set([
+    "dan", "atau", "yang", "dengan", "pada", "dari", "untuk", "dalam",
+    "ke", "di", "ini", "itu", "pasien", "klien", "mengeluh", "merasa",
+    "terasa", "ada", "tampak", "terlihat", "mengalami", "keluhan", "gejala"
+  ]);
+
+  return normalizeText(text)
+    .split(" ")
+    .filter(word => word.length >= 3 && !stopWords.has(word));
+}
+
+function getGejalaMayor(item){
+  return uniqueArray([
+    ...flattenValues(item.gejalaMayor),
+    ...flattenValues(item.tandaGejalaMayor),
+    ...flattenValues(item.tanda_dan_gejala_mayor),
+    ...flattenValues(item.tandaMayor),
+    ...flattenValues(item.mayor)
+  ]);
+}
+
+function getGejalaMinor(item){
+  return uniqueArray([
+    ...flattenValues(item.gejalaMinor),
+    ...flattenValues(item.tandaGejalaMinor),
+    ...flattenValues(item.tanda_dan_gejala_minor),
+    ...flattenValues(item.tandaMinor),
+    ...flattenValues(item.minor)
+  ]);
+}
+
+function buildSymptomSources(item){
+  return {
+    mayor: getGejalaMayor(item),
+    minor: getGejalaMinor(item),
+    penyebab: uniqueArray([
+      ...flattenValues(item.penyebab),
+      ...flattenValues(item.etiologi)
+    ]),
+    kondisiKlinis: uniqueArray([
+      ...flattenValues(item.kondisiKlinis),
+      ...flattenValues(item.kondisi_klinis)
+    ])
+  };
+}
+
+function matchDiagnosisBySymptoms(item, query){
+  const tokens = symptomTokens(query);
+  const sources = buildSymptomSources(item);
+  const mayorText = normalizeText(sources.mayor.join(" "));
+  const minorText = normalizeText(sources.minor.join(" "));
+  const penyebabText = normalizeText(sources.penyebab.join(" "));
+  const kondisiText = normalizeText(sources.kondisiKlinis.join(" "));
+  const diagnosisText = normalizeText(`${getItemTitle(item)} ${getItemDesc(item)}`);
+
+  let score = 0;
+  const matchedMayor = [];
+  const matchedMinor = [];
+  const matchedOther = [];
+
+  tokens.forEach(token => {
+    if(mayorText.includes(token)){
+      score += 5;
+      matchedMayor.push(token);
+    }
+
+    if(minorText.includes(token)){
+      score += 3;
+      matchedMinor.push(token);
+    }
+
+    if(penyebabText.includes(token) || kondisiText.includes(token) || diagnosisText.includes(token)){
+      score += 1;
+      matchedOther.push(token);
+    }
+  });
+
+  const fullQuery = normalizeText(query);
+
+  sources.mayor.forEach(symptom => {
+    const normalized = normalizeText(symptom);
+    if(normalized && (fullQuery.includes(normalized) || normalized.includes(fullQuery))){
+      score += 8;
+      matchedMayor.push(symptom);
+    }
+  });
+
+  sources.minor.forEach(symptom => {
+    const normalized = normalizeText(symptom);
+    if(normalized && (fullQuery.includes(normalized) || normalized.includes(fullQuery))){
+      score += 5;
+      matchedMinor.push(symptom);
+    }
+  });
+
+  return {
+    score,
+    sources,
+    matchedMayor: uniqueArray(matchedMayor),
+    matchedMinor: uniqueArray(matchedMinor),
+    matchedOther: uniqueArray(matchedOther)
+  };
+}
+
+function highlightMatchedSymptoms(symptoms, matches, query, max = 4){
+  const matchTokens = uniqueArray([
+    ...matches,
+    ...symptomTokens(query)
+  ]).map(normalizeText);
+
+  return symptoms
+    .filter(symptom => {
+      const normalizedSymptom = normalizeText(symptom);
+      return matchTokens.some(token =>
+        normalizedSymptom.includes(token) || token.includes(normalizedSymptom)
+      );
+    })
+    .slice(0, max);
+}
+
+/* =========================
+   DATA LOADING
 ========================= */
 async function fetchJsonSafe(path){
   const separator = path.includes("?") ? "&" : "?";
+  const response = await fetch(`${path}${separator}v=${Date.now()}`, {
+    method: "GET",
+    cache: "no-store",
+    headers: { "Accept": "application/json" }
+  });
 
-  const response = await fetch(
-    `${path}${separator}v=${Date.now()}`,
-    {
-      method: "GET",
-      cache: "no-store",
-      headers: {
-        "Accept": "application/json"
-      }
-    }
-  );
-
-  let payload = null;
+  let payload;
 
   try{
     payload = await response.json();
   }catch{
-    throw new Error(
-      `Respons dari ${path} bukan JSON yang valid.`
-    );
+    throw new Error(`Respons dari ${path} bukan JSON yang valid.`);
   }
 
   if(!response.ok){
-    throw new Error(
-      payload?.message ||
-      `Gagal memuat ${path}. Status HTTP: ${response.status}`
-    );
+    throw new Error(payload?.message || `Gagal memuat ${path}. Status HTTP: ${response.status}`);
   }
 
   if(payload?.success === false){
-    throw new Error(
-      payload.message ||
-      `API ${path} mengembalikan status gagal.`
-    );
+    throw new Error(payload.message || `API ${path} mengembalikan status gagal.`);
   }
 
   return payload;
@@ -767,53 +687,49 @@ async function fetchJsonSafe(path){
 async function loadAllData(){
   loadingEl.style.display = "flex";
 
-  const [
-    sdkiData,
-    slkiData,
-    sikiData,
-    masterRelationsData
-  ] = await Promise.all([
+  const [sdkiData, slkiData, sikiData, relationsData] = await Promise.all([
     fetchJsonSafe(API_ENDPOINTS.sdki),
     fetchJsonSafe(API_ENDPOINTS.slki),
     fetchJsonSafe(API_ENDPOINTS.siki),
     fetchJsonSafe(API_ENDPOINTS.relations)
   ]);
 
-  DB.sdki = toArray(sdkiData);
-  DB.slki = toArray(slkiData);
-  DB.siki = toArray(sikiData);
-  DB.masterRelations = toArray(masterRelationsData);
+  DB.sdki = unwrapApiArray(sdkiData);
+  DB.slki = unwrapApiArray(slkiData);
+  DB.siki = unwrapApiArray(sikiData);
+  DB.masterRelations = unwrapApiArray(relationsData);
 
   buildLookups();
   buildSearchIndex();
-
   loadingEl.style.display = "none";
 
-  console.info("Data pencarian berhasil dimuat:", {
+  console.info("Database pencarian berhasil dimuat:", {
     sdki: DB.sdki.length,
     slki: DB.slki.length,
     siki: DB.siki.length,
-    masterRelations: DB.masterRelations.length,
+    relations: DB.masterRelations.length,
     searchIndex: SEARCH_INDEX.length
   });
 
   const params = new URLSearchParams(location.search);
   const query = params.get("q") || "";
+  const mode = params.get("mode") || "all";
+
+  if(["all", "gejala", "sdki", "slki", "siki"].includes(mode)){
+    setActiveFilter(mode, false);
+  }
 
   if(query){
     searchInput.value = query;
     clearBtn.style.display = "flex";
     runSearch();
   }else{
-    renderEmpty(
-      "Mulai pencarian",
-      "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi."
-    );
+    renderInitialState();
   }
 }
 
 /* =========================
-   BUILD LOOKUPS
+   LOOKUPS AND INDEX
 ========================= */
 function buildLookups(){
   Object.values(LOOKUP).forEach(map => map.clear());
@@ -821,73 +737,73 @@ function buildLookups(){
   DB.sdki.forEach(item => {
     const code = normalizeCode(getItemCode(item));
     const title = normalizeText(getItemTitle(item));
-
-    if(code){
-      LOOKUP.sdkiByCode.set(code, item);
-    }
-
-    if(title){
-      LOOKUP.sdkiByTitle.set(title, item);
-    }
+    if(code) LOOKUP.sdkiByCode.set(code, item);
+    if(title) LOOKUP.sdkiByTitle.set(title, item);
   });
 
   DB.slki.forEach(item => {
     const code = normalizeCode(getItemCode(item));
     const title = normalizeText(getItemTitle(item));
-
-    if(code){
-      LOOKUP.slkiByCode.set(code, item);
-    }
-
-    if(title){
-      LOOKUP.slkiByTitle.set(title, item);
-    }
+    if(code) LOOKUP.slkiByCode.set(code, item);
+    if(title) LOOKUP.slkiByTitle.set(title, item);
   });
 
   DB.siki.forEach(item => {
     const code = normalizeCode(getItemCode(item));
     const title = normalizeText(getItemTitle(item));
-
-    if(code){
-      LOOKUP.sikiByCode.set(code, item);
-    }
-
-    if(title){
-      LOOKUP.sikiByTitle.set(title, item);
-    }
+    if(code) LOOKUP.sikiByCode.set(code, item);
+    if(title) LOOKUP.sikiByTitle.set(title, item);
   });
 
   DB.masterRelations.forEach(relation => {
     const code = normalizeCode(getRelationSdkiCode(relation));
     const title = normalizeText(getRelationSdkiTitle(relation));
-
-    if(code){
-      LOOKUP.relationBySdkiCode.set(code, relation);
-    }
-
-    if(title){
-      LOOKUP.relationBySdkiTitle.set(title, relation);
-    }
+    if(code) LOOKUP.relationBySdkiCode.set(code, relation);
+    if(title) LOOKUP.relationBySdkiTitle.set(title, relation);
   });
 }
 
-/* =========================
-   BUILD SEARCH INDEX
-========================= */
+function getRelatedSdkiText(type, itemCode, itemTitle){
+  const targetCode = normalizeCode(itemCode);
+  const targetTitle = normalizeText(itemTitle);
+  const relatedDiagnoses = [];
+
+  DB.masterRelations.forEach(relation => {
+    let references = [];
+
+    if(type === "slki") references = getRelationSlki(relation);
+    if(type === "siki"){
+      references = [
+        ...getRelationSikiUtama(relation),
+        ...getRelationSikiPendukung(relation)
+      ];
+    }
+
+    const matched = references.some(reference => {
+      const referenceCode = normalizeCode(reference.kode);
+      const referenceTitle = normalizeText(reference.judul);
+
+      return (targetCode && referenceCode === targetCode) ||
+        (targetTitle && referenceTitle === targetTitle);
+    });
+
+    if(matched){
+      relatedDiagnoses.push(getRelationSdkiCode(relation), getRelationSdkiTitle(relation));
+    }
+  });
+
+  return relatedDiagnoses.join(" ");
+}
+
 function buildSearchIndex(){
   SEARCH_INDEX = [];
 
-  /*
-    SDKI:
-    Selain isi diagnosis, haystack juga berisi
-    SLKI dan SIKI yang berhubungan berdasarkan master-relations.
-  */
   DB.sdki.forEach(item => {
     const id = getItemKey(item);
     const kode = getItemCode(item);
     const title = getItemTitle(item);
     const relation = getRelationForSdki(item);
-    const resolvedRelation = getResolvedRelationData(relation);
+    const resolved = getResolvedRelationData(relation);
 
     SEARCH_INDEX.push({
       type: "sdki",
@@ -897,24 +813,15 @@ function buildSearchIndex(){
       desc: getItemDesc(item),
       raw: item,
       relation,
-      relatedSlki: resolvedRelation.slki,
-      relatedSikiUtama: resolvedRelation.sikiUtama,
-      relatedSikiPendukung: resolvedRelation.sikiPendukung,
-
+      relatedSlki: resolved.slki,
+      relatedSikiUtama: resolved.sikiUtama,
+      relatedSikiPendukung: resolved.sikiPendukung,
       haystack: normalizeText([
-        id,
-        kode,
-        title,
-        stringifyDeep(item),
-        getRelationSearchText(relation)
+        id, kode, title, stringifyDeep(item), getRelationSearchText(relation)
       ].join(" "))
     });
   });
 
-  /*
-    SLKI:
-    Data lengkap SLKI tetap dapat dicari.
-  */
   DB.slki.forEach(item => {
     const id = getItemKey(item);
     const kode = getItemCode(item);
@@ -927,21 +834,12 @@ function buildSearchIndex(){
       title,
       desc: getItemDesc(item),
       raw: item,
-
       haystack: normalizeText([
-        id,
-        kode,
-        title,
-        stringifyDeep(item),
-        getRelatedSdkiText("slki", kode, title)
+        id, kode, title, stringifyDeep(item), getRelatedSdkiText("slki", kode, title)
       ].join(" "))
     });
   });
 
-  /*
-    SIKI:
-    Data lengkap SIKI tetap dapat dicari.
-  */
   DB.siki.forEach(item => {
     const id = getItemKey(item);
     const kode = getItemCode(item);
@@ -954,65 +852,11 @@ function buildSearchIndex(){
       title,
       desc: getItemDesc(item),
       raw: item,
-
       haystack: normalizeText([
-        id,
-        kode,
-        title,
-        stringifyDeep(item),
-        getRelatedSdkiText("siki", kode, title)
+        id, kode, title, stringifyDeep(item), getRelatedSdkiText("siki", kode, title)
       ].join(" "))
     });
   });
-}
-
-/*
-  Menambahkan nama diagnosis SDKI ke haystack SLKI/SIKI.
-
-  Contoh:
-  Saat pengguna mencari "bersihan jalan napas",
-  SLKI dan SIKI yang terhubung dengan diagnosis tersebut
-  juga dapat ditemukan.
-*/
-function getRelatedSdkiText(type, itemCode, itemTitle){
-  const targetCode = normalizeCode(itemCode);
-  const targetTitle = normalizeText(itemTitle);
-
-  const relatedDiagnoses = [];
-
-  DB.masterRelations.forEach(relation => {
-    let references = [];
-
-    if(type === "slki"){
-      references = getRelationSlki(relation);
-    }
-
-    if(type === "siki"){
-      references = [
-        ...getRelationSikiUtama(relation),
-        ...getRelationSikiPendukung(relation)
-      ];
-    }
-
-   const matched = references.some(reference => {
-  const referenceCode = normalizeCode(reference.kode);
-  const referenceTitle = normalizeText(reference.judul);
-
-  return (
-    (targetCode && referenceCode === targetCode) ||
-    (targetTitle && referenceTitle === targetTitle)
-  );
-});
-
-    if(matched){
-      relatedDiagnoses.push(
-        getRelationSdkiCode(relation),
-        getRelationSdkiTitle(relation)
-      );
-    }
-  });
-
-  return relatedDiagnoses.join(" ");
 }
 
 /* =========================
@@ -1020,7 +864,6 @@ function getRelatedSdkiText(type, itemCode, itemTitle){
 ========================= */
 function scoreItem(item, keywords, query){
   let score = 0;
-
   const title = normalizeText(item.title);
   const id = normalizeText(item.id);
   const kode = normalizeText(item.kode);
@@ -1030,7 +873,6 @@ function scoreItem(item, keywords, query){
   if(title === query) score += 120;
   if(kode === query) score += 110;
   if(id === query) score += 100;
-
   if(title.startsWith(query)) score += 70;
   if(title.includes(query)) score += 55;
   if(kode.includes(query)) score += 48;
@@ -1051,68 +893,79 @@ function scoreItem(item, keywords, query){
   return score;
 }
 
-function runSearch(){
-  const rawQuery = searchInput.value.trim();
+function getStandardResults(rawQuery){
+  const query = normalizeText(rawQuery);
+  const stopwords = new Set([
+    "dan", "atau", "yang", "dengan", "pada", "di", "ke", "dari", "untuk", "dalam"
+  ]);
+  const keywords = query
+    .split(" ")
+    .filter(word => word.length > 1 && !stopwords.has(word));
 
-  clearBtn.style.display = rawQuery ? "flex" : "none";
+  return SEARCH_INDEX
+    .filter(item => activeFilter === "all" || item.type === activeFilter)
+    .map(item => ({ ...item, score: scoreItem(item, keywords, query) }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => {
+      if(b.score !== a.score) return b.score - a.score;
+      return String(a.title || "").localeCompare(String(b.title || ""), "id");
+    });
+}
 
+function getSymptomResults(rawQuery){
+  return DB.sdki
+    .map(item => {
+      const match = matchDiagnosisBySymptoms(item, rawQuery);
+      const relation = getRelationForSdki(item);
+      const resolved = getResolvedRelationData(relation);
+
+      return {
+        type: "sdki",
+        id: getItemKey(item),
+        kode: getItemCode(item),
+        title: getItemTitle(item),
+        desc: getItemDesc(item),
+        raw: item,
+        relation,
+        relatedSlki: resolved.slki,
+        relatedSikiUtama: resolved.sikiUtama,
+        relatedSikiPendukung: resolved.sikiPendukung,
+        score: match.score,
+        symptomMatch: match
+      };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => {
+      if(b.score !== a.score) return b.score - a.score;
+      return String(a.title || "").localeCompare(String(b.title || ""), "id");
+    });
+}
+
+function updateUrl(rawQuery){
   const url = new URL(location.href);
 
-  if(rawQuery){
-    url.searchParams.set("q", rawQuery);
-  }else{
-    url.searchParams.delete("q");
-  }
+  if(rawQuery) url.searchParams.set("q", rawQuery);
+  else url.searchParams.delete("q");
+
+  if(activeFilter !== "all") url.searchParams.set("mode", activeFilter);
+  else url.searchParams.delete("mode");
 
   history.replaceState(null, "", url);
+}
+
+function runSearch(){
+  const rawQuery = searchInput.value.trim();
+  clearBtn.style.display = rawQuery ? "flex" : "none";
+  updateUrl(rawQuery);
 
   if(!rawQuery){
-    renderEmpty(
-      "Mulai pencarian",
-      "Ketik kata kunci seperti ansietas, sesak, nyeri, mobilitas, atau edukasi."
-    );
+    renderInitialState();
     return;
   }
 
-  const query = normalizeText(rawQuery);
-
-  const stopwords = [
-    "dan",
-    "atau",
-    "yang",
-    "dengan",
-    "pada",
-    "di",
-    "ke",
-    "dari",
-    "untuk",
-    "dalam"
-  ];
-
-  const keywords = query
-    .split(" ")
-    .filter(word => {
-      return word.length > 1 && !stopwords.includes(word);
-    });
-
-  const results = SEARCH_INDEX
-    .filter(item => {
-      return activeFilter === "all" || item.type === activeFilter;
-    })
-    .map(item => ({
-      ...item,
-      score: scoreItem(item, keywords, query)
-    }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => {
-      if(b.score !== a.score){
-        return b.score - a.score;
-      }
-
-      return String(a.title || "")
-        .localeCompare(String(b.title || ""), "id");
-    })
-    .slice(0, 80);
+  const results = activeFilter === "gejala"
+    ? getSymptomResults(rawQuery)
+    : getStandardResults(rawQuery);
 
   renderResults(results, rawQuery);
 }
@@ -1120,20 +973,24 @@ function runSearch(){
 /* =========================
    RENDER
 ========================= */
-function renderEmpty(title, desc){
+function renderInitialState(){
+  const gejalaMode = activeFilter === "gejala";
+
+  renderEmpty(
+    gejalaMode ? "Masukkan gejala pasien" : "Mulai pencarian",
+    gejalaMode
+      ? "Contoh: pasien sesak, batuk berdahak, terdengar ronki, dan sulit mengeluarkan sekret."
+      : "Ketik nama diagnosis, luaran, intervensi, kode standar, atau kata kunci klinis.",
+    gejalaMode ? "fa-stethoscope" : "fa-magnifying-glass"
+  );
+}
+
+function renderEmpty(title, desc, icon = "fa-magnifying-glass"){
   resultArea.innerHTML = `
     <div class="empty-state">
-      <div class="empty-icon">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </div>
-
-      <div class="empty-title">
-        ${escapeHtml(title)}
-      </div>
-
-      <div class="empty-desc">
-        ${escapeHtml(desc)}
-      </div>
+      <div class="empty-icon"><i class="fa-solid ${escapeHtml(icon)}"></i></div>
+      <div class="empty-title">${escapeHtml(title)}</div>
+      <div class="empty-desc">${escapeHtml(desc)}</div>
     </div>
   `;
 }
@@ -1142,53 +999,90 @@ function renderResults(results, query){
   if(!results.length){
     renderEmpty(
       "Tidak ditemukan",
-      `Belum ada hasil untuk kata kunci "${query}". Coba gunakan kata lain.`
+      activeFilter === "gejala"
+        ? `Belum ada diagnosis SDKI yang cocok dengan gejala “${query}”. Coba masukkan beberapa gejala yang lebih spesifik.`
+        : `Belum ada hasil untuk kata kunci “${query}”. Coba gunakan kata atau kode lain.`,
+      "fa-circle-exclamation"
     );
     return;
   }
 
-  const grouped = {
-    sdki: results.filter(item => item.type === "sdki"),
-    slki: results.filter(item => item.type === "slki"),
-    siki: results.filter(item => item.type === "siki")
-  };
-
-  let html = "";
-
-  if(activeFilter === "all"){
-    html += renderGroup("Diagnosis SDKI", grouped.sdki);
-    html += renderGroup("Luaran SLKI", grouped.slki);
-    html += renderGroup("Intervensi SIKI", grouped.siki);
-  }else{
-    html += renderGroup(
-      getTypeLabel(activeFilter),
-      results
+  if(activeFilter === "gejala"){
+    resultArea.innerHTML = renderGroup(
+      "Diagnosis berdasarkan gejala",
+      results,
+      "gejala",
+      query,
+      "Hasil disusun berdasarkan kecocokan tanda dan gejala mayor, minor, penyebab, dan kondisi klinis."
     );
+    return;
   }
 
-  resultArea.innerHTML = html;
+  if(activeFilter === "all"){
+    const grouped = {
+      sdki: results.filter(item => item.type === "sdki"),
+      slki: results.filter(item => item.type === "slki"),
+      siki: results.filter(item => item.type === "siki")
+    };
+
+    resultArea.innerHTML = [
+      renderGroup("Diagnosis SDKI", grouped.sdki, "sdki", query),
+      renderGroup("Luaran SLKI", grouped.slki, "slki", query),
+      renderGroup("Intervensi SIKI", grouped.siki, "siki", query)
+    ].join("");
+    return;
+  }
+
+  resultArea.innerHTML = renderGroup(
+    activeFilter === "sdki" ? "Diagnosis SDKI" :
+      activeFilter === "slki" ? "Luaran SLKI" : "Intervensi SIKI",
+    results,
+    activeFilter,
+    query
+  );
 }
 
-function renderGroup(title, items){
+function renderGroup(title, items, groupKey, query, description = ""){
   if(!items.length) return "";
 
+  const expanded = expandedGroups.has(groupKey);
+  const visibleItems = expanded ? items : items.slice(0, PREVIEW_LIMIT);
+  const remaining = Math.max(0, items.length - PREVIEW_LIMIT);
+
   return `
-    <section>
+    <section class="result-group" data-result-group="${escapeHtml(groupKey)}">
       <div class="section-title">
-        <span>${escapeHtml(title)}</span>
-        <span class="count">
-          ${items.length} hasil
-        </span>
+        <div class="section-heading-copy">
+          <span>${escapeHtml(title)}</span>
+          ${description ? `<small>${escapeHtml(description)}</small>` : ""}
+        </div>
+        <span class="count">${items.length} hasil</span>
       </div>
 
       <div class="result-list">
-        ${items.map(renderCard).join("")}
+        ${visibleItems.map(item => renderCard(item, query)).join("")}
       </div>
+
+      ${items.length > PREVIEW_LIMIT ? `
+        <button
+          class="show-all-btn native-click"
+          type="button"
+          data-toggle-group="${escapeHtml(groupKey)}"
+          aria-expanded="${expanded ? "true" : "false"}"
+        >
+          <span>
+            ${expanded
+              ? "Tampilkan lebih sedikit"
+              : `Lihat semua ${items.length} hasil`}
+          </span>
+          <i class="fa-solid ${expanded ? "fa-chevron-up" : "fa-chevron-down"}" aria-hidden="true"></i>
+        </button>
+      ` : ""}
     </section>
   `;
 }
 
-function renderCard(item){
+function renderCard(item, query){
   const type = item.type;
   const id = item.kode || item.id || "";
   const kode = item.kode || "";
@@ -1199,98 +1093,156 @@ function renderCard(item){
   let relationMeta = "";
 
   if(type === "sdki"){
-    const slkiCount = uniqueReferences(
-      item.relatedSlki || []
-    ).length;
-
-    const sikiUtamaCount = uniqueReferences(
-      item.relatedSikiUtama || []
-    ).length;
-
-    const sikiPendukungCount = uniqueReferences(
-      item.relatedSikiPendukung || []
-    ).length;
-
     const metaParts = [];
+    const slkiCount = uniqueReferences(item.relatedSlki || []).length;
+    const utamaCount = uniqueReferences(item.relatedSikiUtama || []).length;
+    const pendukungCount = uniqueReferences(item.relatedSikiPendukung || []).length;
 
-    if(slkiCount){
-      metaParts.push(`${slkiCount} luaran`);
-    }
-
-    if(sikiUtamaCount){
-      metaParts.push(`${sikiUtamaCount} intervensi utama`);
-    }
-
-    if(sikiPendukungCount){
-      metaParts.push(`${sikiPendukungCount} intervensi pendukung`);
-    }
+    if(slkiCount) metaParts.push(`${slkiCount} luaran`);
+    if(utamaCount) metaParts.push(`${utamaCount} intervensi utama`);
+    if(pendukungCount) metaParts.push(`${pendukungCount} intervensi pendukung`);
 
     if(metaParts.length){
-      relationMeta = `
-        <div class="result-meta">
-          ${metaParts.map(escapeHtml).join(" • ")}
-        </div>
-      `;
+      relationMeta = `<div class="result-meta relation-meta">${metaParts.map(escapeHtml).join(" • ")}</div>`;
     }
   }
 
-  return `
-    <a href="${escapeHtml(url)}"
-       class="result-card native-click">
+  let symptomMatchHtml = "";
 
+  if(item.symptomMatch){
+    const mayorHits = highlightMatchedSymptoms(
+      item.symptomMatch.sources.mayor,
+      item.symptomMatch.matchedMayor,
+      query
+    );
+    const minorHits = highlightMatchedSymptoms(
+      item.symptomMatch.sources.minor,
+      item.symptomMatch.matchedMinor,
+      query
+    );
+
+    const matchSections = [];
+
+    if(mayorHits.length){
+      matchSections.push(`
+        <div class="symptom-match-row">
+          <strong>Mayor</strong>
+          <ul>${mayorHits.map(symptom => `<li>${escapeHtml(symptom)}</li>`).join("")}</ul>
+        </div>
+      `);
+    }
+
+    if(minorHits.length){
+      matchSections.push(`
+        <div class="symptom-match-row">
+          <strong>Minor</strong>
+          <ul>${minorHits.map(symptom => `<li>${escapeHtml(symptom)}</li>`).join("")}</ul>
+        </div>
+      `);
+    }
+
+    if(!matchSections.length){
+      const matchedWords = uniqueArray([
+        ...item.symptomMatch.matchedMayor,
+        ...item.symptomMatch.matchedMinor,
+        ...item.symptomMatch.matchedOther
+      ]).slice(0, 8);
+
+      matchSections.push(`
+        <div class="symptom-match-row symptom-keywords">
+          <strong>Kata cocok</strong>
+          <span>${escapeHtml(matchedWords.join(", ") || query)}</span>
+        </div>
+      `);
+    }
+
+    symptomMatchHtml = `
+      <div class="symptom-match-box">
+        <div class="symptom-score">
+          <i class="fa-solid fa-check" aria-hidden="true"></i>
+          Skor kecocokan ${item.score}
+        </div>
+        ${matchSections.join("")}
+      </div>
+    `;
+  }
+
+  return `
+    <a href="${escapeHtml(url)}" class="result-card native-click">
       <div class="result-icon ${escapeHtml(type)}">
-        <i class="fa-solid ${getIcon(type)}"></i>
+        <i class="fa-solid ${getIcon(type)}" aria-hidden="true"></i>
       </div>
 
       <div class="result-body">
-        <div class="badge ${escapeHtml(type)}">
-          ${escapeHtml(getTypeLabel(type))}
-        </div>
-
-        <div class="result-title">
-          ${escapeHtml(title)}
-        </div>
-
-        <div class="result-desc">
-          ${escapeHtml(desc)}
-        </div>
-
-        ${
-          kode
-            ? `
-              <div class="result-meta">
-                Kode: ${escapeHtml(kode)}
-              </div>
-            `
-            : ""
-        }
-
+        <div class="badge ${escapeHtml(type)}">${escapeHtml(getTypeLabel(type))}</div>
+        <div class="result-title">${escapeHtml(title)}</div>
+        <div class="result-desc">${escapeHtml(desc)}</div>
+        ${kode ? `<div class="result-meta">Kode: ${escapeHtml(kode)}</div>` : ""}
         ${relationMeta}
+        ${symptomMatchHtml}
       </div>
 
-      <i class="fa-solid fa-chevron-right chevron"></i>
+      <i class="fa-solid fa-chevron-right chevron" aria-hidden="true"></i>
     </a>
   `;
 }
 
-function escapeHtml(text){
-  return String(text || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+/* =========================
+   FILTER MODE
+========================= */
+function setActiveFilter(filter, shouldSearch = true){
+  activeFilter = filter;
+  expandedGroups.clear();
+
+  document.querySelectorAll(".tab-btn").forEach(button => {
+    const isActive = button.dataset.filter === filter;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+
+  const modeConfig = {
+    all: {
+      placeholder: "Contoh: ansietas, sesak, nyeri, edukasi...",
+      help: "Menampilkan hasil dari SDKI, SLKI, dan SIKI dalam satu pencarian.",
+      icon: "fa-magnifying-glass"
+    },
+    gejala: {
+      placeholder: "Contoh: pasien sesak, batuk berdahak, terdengar ronki...",
+      help: "Masukkan tanda dan gejala pasien. Hasil hanya berupa kemungkinan diagnosis SDKI.",
+      icon: "fa-stethoscope"
+    },
+    sdki: {
+      placeholder: "Cari diagnosis SDKI atau kode diagnosis...",
+      help: "Pencarian dibatasi pada diagnosis SDKI.",
+      icon: "fa-stethoscope"
+    },
+    slki: {
+      placeholder: "Cari luaran SLKI atau kode luaran...",
+      help: "Pencarian dibatasi pada luaran SLKI.",
+      icon: "fa-chart-line"
+    },
+    siki: {
+      placeholder: "Cari intervensi SIKI atau kode intervensi...",
+      help: "Pencarian dibatasi pada intervensi SIKI.",
+      icon: "fa-hand-holding-medical"
+    }
+  };
+
+  const config = modeConfig[filter] || modeConfig.all;
+  searchInput.placeholder = config.placeholder;
+  searchModeHelp.textContent = config.help;
+  searchModeIcon.className = `fa-solid ${config.icon}`;
+
+  if(shouldSearch) runSearch();
 }
 
-  /* =========================
+/* =========================
    AI ASSISTANT
 ========================= */
-
 function syncAiControls(){
-  const aiEnabled = aiAssistantToggle.checked;
+  const enabled = aiAssistantToggle.checked;
   const hasQuery = searchInput.value.trim().length >= 2;
-
-  askAiBtn.disabled = !aiEnabled || !hasQuery;
+  askAiBtn.disabled = !enabled || !hasQuery;
 }
 
 function resetAiResult(){
@@ -1300,13 +1252,11 @@ function resetAiResult(){
   }
 
   lastAiQuery = "";
-
   aiResultPanel.hidden = true;
   aiLoading.hidden = true;
   aiError.hidden = true;
   aiAnswer.hidden = true;
   aiSources.hidden = true;
-
   aiError.textContent = "";
   aiAnswer.innerHTML = "";
   aiSourceList.innerHTML = "";
@@ -1318,82 +1268,47 @@ function setAiLoadingState(){
   aiError.hidden = true;
   aiAnswer.hidden = true;
   aiSources.hidden = true;
-
   aiError.textContent = "";
   aiAnswer.innerHTML = "";
   aiSourceList.innerHTML = "";
 
   askAiBtn.disabled = true;
   askAiBtn.innerHTML = `
-    <i class="fa-solid fa-spinner fa-spin"></i>
+    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
     <span>Menganalisis...</span>
   `;
 
-  aiResultPanel.scrollIntoView({
-    behavior: "smooth",
-    block: "nearest"
-  });
+  aiResultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 function finishAiLoadingState(){
   aiLoading.hidden = true;
-
   askAiBtn.innerHTML = `
-    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
     <span>Tanya AI</span>
   `;
-
   syncAiControls();
 }
 
 function formatAiAnswer(text){
-  const safeText = escapeHtml(text || "");
-
-  return safeText
+  return escapeHtml(text || "")
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .split(/\n{2,}/)
-    .map(paragraph => {
-      return `<p>${paragraph.replace(/\n/g, "<br>")}</p>`;
-    })
+    .map(paragraph => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
     .join("");
 }
 
 function getAiSourceLabel(source){
-  if(typeof source === "string"){
-    return source;
-  }
+  if(typeof source === "string") return source;
+  if(!source || typeof source !== "object") return "";
 
-  if(!source || typeof source !== "object"){
-    return "";
-  }
-
-  const type = pick(source, [
-    "type",
-    "jenis",
-    "category"
-  ]);
-
+  const type = pick(source, ["type", "jenis", "category"]);
   const code = pick(source, [
-    "kode",
-    "code",
-    "id",
-    "kodeSdki",
-    "kodeSlki",
-    "kodeSiki"
+    "kode", "code", "id", "kodeSdki", "kodeSlki", "kodeSiki"
   ]);
+  const title = pick(source, ["judul", "title", "nama", "name"]);
 
-  const title = pick(source, [
-    "judul",
-    "title",
-    "nama",
-    "name"
-  ]);
-
-  return [
-    type ? String(type).toUpperCase() : "",
-    code,
-    title
-  ]
+  return [type ? String(type).toUpperCase() : "", code, title]
     .filter(Boolean)
     .join(" · ");
 }
@@ -1405,11 +1320,7 @@ function renderAiSourceList(sources){
     return;
   }
 
-  const uniqueLabels = [...new Set(
-    sources
-      .map(getAiSourceLabel)
-      .filter(Boolean)
-  )].slice(0, 12);
+  const uniqueLabels = [...new Set(sources.map(getAiSourceLabel).filter(Boolean))].slice(0, 12);
 
   if(!uniqueLabels.length){
     aiSources.hidden = true;
@@ -1417,13 +1328,7 @@ function renderAiSourceList(sources){
   }
 
   aiSourceList.innerHTML = uniqueLabels
-    .map(label => {
-      return `
-        <span class="ai-source-chip">
-          ${escapeHtml(label)}
-        </span>
-      `;
-    })
+    .map(label => `<span class="ai-source-chip">${escapeHtml(label)}</span>`)
     .join("");
 
   aiSources.hidden = false;
@@ -1432,30 +1337,22 @@ function renderAiSourceList(sources){
 async function askAiAssistant(){
   const message = searchInput.value.trim();
 
-  if(!aiAssistantToggle.checked){
-    return;
-  }
+  if(!aiAssistantToggle.checked) return;
 
   if(message.length < 2){
     aiResultPanel.hidden = false;
     aiLoading.hidden = true;
     aiAnswer.hidden = true;
     aiSources.hidden = true;
-
-    aiError.textContent =
-      "Masukkan pertanyaan atau kata kunci terlebih dahulu.";
-
+    aiError.textContent = "Masukkan pertanyaan atau kata kunci terlebih dahulu.";
     aiError.hidden = false;
     return;
   }
 
-  if(aiRequestController){
-    aiRequestController.abort();
-  }
+  if(aiRequestController) aiRequestController.abort();
 
   aiRequestController = new AbortController();
   lastAiQuery = message;
-
   setAiLoadingState();
 
   try{
@@ -1471,202 +1368,158 @@ async function askAiAssistant(){
         history: [],
         context: {
           page: "search",
-          activeFilter
+          activeFilter,
+          searchMode: activeFilter === "gejala" ? "symptom" : "standard"
         }
       })
     });
 
-    let payload = null;
+    let payload;
 
     try{
       payload = await response.json();
     }catch{
-      throw new Error(
-        "Respons AI bukan JSON yang valid."
-      );
+      throw new Error("Respons AI bukan JSON yang valid.");
     }
 
     if(!response.ok){
       throw new Error(
-        payload?.message ||
-        payload?.error?.message ||
+        payload?.message || payload?.error?.message ||
         `Permintaan AI gagal. Status HTTP: ${response.status}`
       );
     }
 
     if(payload?.success === false){
-      throw new Error(
-        payload.message ||
-        "AI tidak dapat memproses permintaan."
-      );
+      throw new Error(payload.message || "AI tidak dapat memproses permintaan.");
     }
 
-    const answer =
-      payload?.answer ||
-      payload?.data?.answer ||
-      payload?.result?.answer ||
-      payload?.message ||
-      "";
+    const answer = payload?.answer || payload?.data?.answer ||
+      payload?.result?.answer || payload?.message || "";
+    const sources = payload?.sources || payload?.data?.sources ||
+      payload?.result?.sources || [];
 
-    const sources =
-      payload?.sources ||
-      payload?.data?.sources ||
-      payload?.result?.sources ||
-      [];
-
-    if(!answer){
-      throw new Error(
-        "AI tidak mengirimkan jawaban."
-      );
-    }
+    if(!answer) throw new Error("AI tidak mengirimkan jawaban.");
 
     aiError.hidden = true;
     aiAnswer.innerHTML = formatAiAnswer(answer);
     aiAnswer.hidden = false;
-
     renderAiSourceList(sources);
   }catch(error){
-    if(error.name === "AbortError"){
-      return;
-    }
+    if(error.name === "AbortError") return;
 
     console.error("AI Assistant Error:", error);
-
     aiAnswer.hidden = true;
     aiSources.hidden = true;
-
-    aiError.textContent =
-      error.message ||
-      "Terjadi kesalahan saat menghubungi AI Asisten.";
-
+    aiError.textContent = error.message || "Terjadi kesalahan saat menghubungi AI Asisten.";
     aiError.hidden = false;
   }finally{
     aiRequestController = null;
     finishAiLoadingState();
   }
 }
+
 /* =========================
    EVENTS
 ========================= */
-let searchTimer = null;
-
 searchInput.addEventListener("input", () => {
   clearTimeout(searchTimer);
-
+  expandedGroups.clear();
   syncAiControls();
 
-  /*
-    Hasil AI sebelumnya disembunyikan apabila
-    isi pertanyaan sudah berubah.
-  */
-  if(
-    lastAiQuery &&
-    searchInput.value.trim() !== lastAiQuery
-  ){
+  if(lastAiQuery && searchInput.value.trim() !== lastAiQuery){
     resetAiResult();
   }
 
-  searchTimer = setTimeout(() => {
-    runSearch();
-  }, 180);
+  searchTimer = setTimeout(runSearch, 180);
+});
+
+searchInput.addEventListener("keydown", event => {
+  if(event.key === "Enter" && aiAssistantToggle.checked && !askAiBtn.disabled){
+    event.preventDefault();
+    askAiAssistant();
+  }
 });
 
 clearBtn.addEventListener("click", () => {
   searchInput.value = "";
   clearBtn.style.display = "none";
-
+  expandedGroups.clear();
   resetAiResult();
   syncAiControls();
-
   searchInput.focus();
   runSearch();
 });
 
- aiAssistantToggle.addEventListener("change", () => {
-  syncAiControls();
-
-  if(!aiAssistantToggle.checked){
-    resetAiResult();
-  }
-});
-
-askAiBtn.addEventListener("click", () => {
-  askAiAssistant();
-});
-
-closeAiResultBtn.addEventListener("click", () => {
-  resetAiResult();
-});
-
-searchInput.addEventListener("keydown", event => {
-  if(
-    event.key === "Enter" &&
-    aiAssistantToggle.checked &&
-    !askAiBtn.disabled
-  ){
-    event.preventDefault();
-    askAiAssistant();
-  }
-}); 
-  
 document.querySelectorAll(".tab-btn").forEach(button => {
   button.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach(item => {
-      item.classList.remove("active");
-    });
-
-    button.classList.add("active");
-    activeFilter = button.dataset.filter || "all";
-
-    runSearch();
+    setActiveFilter(button.dataset.filter || "all");
   });
 });
+
+document.querySelectorAll(".example-chip[data-query]").forEach(chip => {
+  chip.addEventListener("click", () => {
+    searchInput.value = chip.dataset.query || "";
+    expandedGroups.clear();
+    syncAiControls();
+    runSearch();
+    searchInput.focus();
+  });
+});
+
+resultArea.addEventListener("click", event => {
+  const button = event.target.closest("[data-toggle-group]");
+  if(!button) return;
+
+  const groupKey = button.dataset.toggleGroup;
+
+  if(expandedGroups.has(groupKey)) expandedGroups.delete(groupKey);
+  else expandedGroups.add(groupKey);
+
+  runSearch();
+
+  const group = resultArea.querySelector(`[data-result-group="${CSS.escape(groupKey)}"]`);
+  if(group){
+    group.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
+aiAssistantToggle.addEventListener("change", () => {
+  syncAiControls();
+  if(!aiAssistantToggle.checked) resetAiResult();
+});
+
+askAiBtn.addEventListener("click", askAiAssistant);
+closeAiResultBtn.addEventListener("click", resetAiResult);
 
 /* =========================
    RIPPLE EFFECT
 ========================= */
 document.addEventListener("click", event => {
   const element = event.target.closest(".native-click");
-
   if(!element) return;
 
   const oldRipple = element.querySelector(".ripple");
-
-  if(oldRipple){
-    oldRipple.remove();
-  }
+  if(oldRipple) oldRipple.remove();
 
   const ripple = document.createElement("span");
   ripple.className = "ripple";
 
   const rect = element.getBoundingClientRect();
   const size = Math.max(rect.width, rect.height);
-
-  ripple.style.width = size + "px";
-  ripple.style.height = size + "px";
-
-  ripple.style.left =
-    event.clientX - rect.left - size / 2 + "px";
-
-  ripple.style.top =
-    event.clientY - rect.top - size / 2 + "px";
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
+  ripple.style.left = `${event.clientX - rect.left - size / 2}px`;
+  ripple.style.top = `${event.clientY - rect.top - size / 2}px`;
 
   element.appendChild(ripple);
-
-  setTimeout(() => {
-    ripple.remove();
-  }, 600);
+  setTimeout(() => ripple.remove(), 600);
 });
 
 /* =========================
-   BLOKIR SELECT
+   BLOCK SELECT OUTSIDE INPUT
 ========================= */
 document.addEventListener("selectstart", event => {
-  const allowedElement = event.target.closest(
-    "input, textarea, select"
-  );
-
-  if(!allowedElement){
+  if(!event.target.closest("input, textarea, select, .ai-answer")){
     event.preventDefault();
   }
 });
@@ -1674,29 +1527,17 @@ document.addEventListener("selectstart", event => {
 /* =========================
    INIT
 ========================= */
-  syncAiControls();
-  
+syncAiControls();
+
 loadAllData().catch(error => {
   console.error(error);
-
   loadingEl.style.display = "none";
 
-  resultArea.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-icon">
-        <i class="fa-solid fa-circle-exclamation"></i>
-      </div>
-
-      <div class="empty-title">
-        Terjadi kesalahan
-      </div>
-
-      <div class="empty-desc">
-        Data gagal dimuat atau format JSON tidak sesuai.
-        Periksa Console browser dan alamat file JSON.
-      </div>
-    </div>
-  `;
+  renderEmpty(
+    "Terjadi kesalahan",
+    error.message || "Data gagal dimuat atau format JSON tidak sesuai.",
+    "fa-circle-exclamation"
+  );
 });
 </script>
 </body>
