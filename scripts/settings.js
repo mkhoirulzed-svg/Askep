@@ -4,7 +4,7 @@
   const STORAGE_KEY = "askep_ui_settings";
 
   const DEFAULTS = Object.freeze({
-    theme: "system",
+    theme: "light",
     accent: "blue",
     fontSize: "normal",
     density: "comfortable",
