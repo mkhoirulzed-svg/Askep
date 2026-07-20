@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#eff6ff" />
+  <meta
+    name="description"
+    content="Pengaturan tampilan aplikasi ASKEP."
+  />
+
+  <title>Pengaturan — ASKEP</title>
+
+  <link rel="icon" href="../icons/favicon.png" />
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="../styles/global.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <link rel="stylesheet" href="../styles/responsive.css" />
+  <link rel="stylesheet" href="../styles/pengaturan.css" />
+
+  <!-- Dipasang di head agar tema diterapkan sebelum halaman terlihat. -->
+  <script src="../scripts/settings.js"></script>
+</head>
+
+<body class="page-settings">
+  <div class="app">
+    <header class="header">
+      <div class="topbar">
+        <div class="brand">
+          <button
+            id="backButton"
+            class="icon-btn back-button native-click"
+            type="button"
+            aria-label="Kembali ke halaman sebelumnya"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+
+          <div>
+            <div class="brand-title">Pengaturan</div>
+            <div class="brand-subtitle">Tampilan dan kenyamanan aplikasi</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="settings-intro" aria-labelledby="introTitle">
+        <div class="settings-intro-icon" aria-hidden="true">
+          <i class="fa-solid fa-sliders"></i>
+        </div>
+        <h1 id="introTitle" class="settings-intro-title">
+          Sesuaikan tampilan ASKEP
+        </h1>
+        <p class="settings-intro-desc">
+          Perubahan diterapkan langsung dan tersimpan otomatis hanya di perangkat ini.
+        </p>
+      </section>
+
+      <form id="settingsForm" autocomplete="off">
+        <div class="settings-grid">
+          <section class="settings-card" aria-labelledby="appearanceTitle">
+            <div class="settings-card-header">
+              <div class="settings-card-icon" aria-hidden="true">
+                <i class="fa-solid fa-palette"></i>
+              </div>
+              <div class="settings-card-heading">
+                <h2 id="appearanceTitle" class="settings-card-title">
+                  Tampilan
+                </h2>
+                <p class="settings-card-subtitle">
+                  Pilih tema, warna utama, dan ukuran tulisan.
+                </p>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <span class="setting-label">Tema aplikasi</span>
+              <div class="choice-grid" role="radiogroup" aria-label="Tema aplikasi">
+                <div>
+                  <input
+                    id="themeLight"
+                    class="choice-input"
+                    type="radio"
+                    name="theme"
+                    value="light"
+                  />
+                  <label class="choice-label native-click" for="themeLight">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>Terang</span>
+                  </label>
+                </div>
+
+                <div>
+                  <input
+                    id="themeDark"
+                    class="choice-input"
+                    type="radio"
+                    name="theme"
+                    value="dark"
+                  />
+                  <label class="choice-label native-click" for="themeDark">
+                    <i class="fa-solid fa-moon"></i>
+                    <span>Gelap</span>
+                  </label>
+                </div>
+
+                <div>
+                  <input
+                    id="themeSystem"
+                    class="choice-input"
+                    type="radio"
+                    name="theme"
+                    value="system"
+                  />
+                  <label class="choice-label native-click" for="themeSystem">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <span>Sistem</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <span class="setting-label">Warna utama</span>
+              <p class="setting-help">
+                Warna ikon, tombol, menu aktif, dan elemen pilihan.
+              </p>
+
+              <div class="accent-list" role="radiogroup" aria-label="Warna utama">
+                <div class="accent-option">
+                  <input
+                    id="accentBlue"
+                    class="accent-input"
+                    type="radio"
+                    name="accent"
+                    value="blue"
+                  />
+                  <label
+                    class="accent-label"
+                    for="accentBlue"
+                    style="--accent-color: #2563eb"
+                    title="Biru ASKEP"
+                    aria-label="Biru ASKEP"
+                  ></label>
+                </div>
+
+                <div class="accent-option">
+                  <input
+                    id="accentGreen"
+                    class="accent-input"
+                    type="radio"
+                    name="accent"
+                    value="green"
+                  />
+                  <label
+                    class="accent-label"
+                    for="accentGreen"
+                    style="--accent-color: #16a34a"
+                    title="Hijau"
+                    aria-label="Hijau"
+                  ></label>
+                </div>
+
+                <div class="accent-option">
+                  <input
+                    id="accentPurple"
+                    class="accent-input"
+                    type="radio"
+                    name="accent"
+                    value="purple"
+                  />
+                  <label
+                    class="accent-label"
+                    for="accentPurple"
+                    style="--accent-color: #7c3aed"
+                    title="Ungu"
+                    aria-label="Ungu"
+                  ></label>
+                </div>
+
+                <div class="accent-option">
+                  <input
+                    id="accentTeal"
+                    class="accent-input"
+                    type="radio"
+                    name="accent"
+                    value="teal"
+                  />
+                  <label
+                    class="accent-label"
+                    for="accentTeal"
+                    style="--accent-color: #0f766e"
+                    title="Teal"
+                    aria-label="Teal"
+                  ></label>
+                </div>
+
+                <div class="accent-option">
+                  <input
+                    id="accentOrange"
+                    class="accent-input"
+                    type="radio"
+                    name="accent"
+                    value="orange"
+                  />
+                  <label
+                    class="accent-label"
+                    for="accentOrange"
+                    style="--accent-color: #ea580c"
+                    title="Jingga"
+                    aria-label="Jingga"
+                  ></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <span class="setting-label">Ukuran teks</span>
+              <div
+                class="segmented-control"
+                role="radiogroup"
+                aria-label="Ukuran teks"
+              >
+                <div>
+                  <input
+                    id="fontSmall"
+                    class="choice-input"
+                    type="radio"
+                    name="fontSize"
+                    value="small"
+                  />
+                  <label class="choice-label native-click" for="fontSmall">
+                    <span>Kecil</span>
+                  </label>
+                </div>
+
+                <div>
+                  <input
+                    id="fontNormal"
+                    class="choice-input"
+                    type="radio"
+                    name="fontSize"
+                    value="normal"
+                  />
+                  <label class="choice-label native-click" for="fontNormal">
+                    <span>Normal</span>
+                  </label>
+                </div>
+
+                <div>
+                  <input
+                    id="fontLarge"
+                    class="choice-input"
+                    type="radio"
+                    name="fontSize"
+                    value="large"
+                  />
+                  <label class="choice-label native-click" for="fontLarge">
+                    <span>Besar</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-card" aria-labelledby="comfortTitle">
+            <div class="settings-card-header">
+              <div class="settings-card-icon" aria-hidden="true">
+                <i class="fa-solid fa-universal-access"></i>
+              </div>
+              <div class="settings-card-heading">
+                <h2 id="comfortTitle" class="settings-card-title">
+                  Kenyamanan
+                </h2>
+                <p class="settings-card-subtitle">
+                  Atur kepadatan halaman dan gerakan antarmuka.
+                </p>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <span class="setting-label">Kepadatan tampilan</span>
+              <div
+                class="segmented-control"
+                role="radiogroup"
+                aria-label="Kepadatan tampilan"
+              >
+                <div>
+                  <input
+                    id="densityComfortable"
+                    class="choice-input"
+                    type="radio"
+                    name="density"
+                    value="comfortable"
+                  />
+                  <label
+                    class="choice-label native-click"
+                    for="densityComfortable"
+                  >
+                    <span>Nyaman</span>
+                  </label>
+                </div>
+
+                <div>
+                  <input
+                    id="densityCompact"
+                    class="choice-input"
+                    type="radio"
+                    name="density"
+                    value="compact"
+                  />
+                  <label
+                    class="choice-label native-click"
+                    for="densityCompact"
+                  >
+                    <span>Ringkas</span>
+                  </label>
+                </div>
+
+                <div aria-hidden="true"></div>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <div class="setting-row">
+                <div class="setting-row-icon" aria-hidden="true">
+                  <i class="fa-solid fa-person-walking-arrow-right"></i>
+                </div>
+
+                <label class="setting-row-content" for="reduceMotion">
+                  <span class="setting-row-title">Kurangi animasi</span>
+                  <span class="setting-row-desc">
+                    Meminimalkan transisi, efek gerak, dan ripple.
+                  </span>
+                </label>
+
+                <label class="switch" aria-label="Kurangi animasi">
+                  <input id="reduceMotion" type="checkbox" name="reduceMotion" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-note">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              <span>
+                Pengaturan ini hanya mengubah tampilan CSS. Data SDKI, SLKI,
+                SIKI, dan isi askep tidak ikut berubah.
+              </span>
+            </div>
+          </section>
+
+          <section class="settings-card preview-card" aria-labelledby="previewTitle">
+            <div class="settings-card-header">
+              <div class="settings-card-icon" aria-hidden="true">
+                <i class="fa-regular fa-eye"></i>
+              </div>
+              <div class="settings-card-heading">
+                <h2 id="previewTitle" class="settings-card-title">
+                  Pratinjau
+                </h2>
+                <p class="settings-card-subtitle">
+                  Perubahan dapat dilihat langsung pada contoh kartu berikut.
+                </p>
+              </div>
+            </div>
+
+            <div class="preview-box">
+              <div class="preview-top">
+                <div class="preview-icon" aria-hidden="true">
+                  <i class="fa-solid fa-stethoscope"></i>
+                </div>
+
+                <div class="preview-body">
+                  <span class="preview-code">SDKI · D.0001</span>
+                  <h3 class="preview-title">
+                    Bersihan Jalan Napas Tidak Efektif
+                  </h3>
+                </div>
+              </div>
+
+              <p class="preview-desc">
+                Ketidakmampuan membersihkan sekret atau obstruksi jalan napas
+                untuk mempertahankan jalan napas tetap paten.
+              </p>
+
+              <button class="preview-button native-click" type="button">
+                <i class="fa-solid fa-arrow-right"></i>
+                Lihat Diagnosis
+              </button>
+            </div>
+
+            <div class="reset-wrap">
+              <div class="reset-copy">
+                <span class="reset-title">Kembalikan pengaturan awal</span>
+                <span class="reset-desc">
+                  Tema sistem, warna biru, teks normal, dan tampilan nyaman.
+                </span>
+              </div>
+
+              <button
+                id="resetButton"
+                class="reset-button native-click"
+                type="button"
+              >
+                <i class="fa-solid fa-rotate-left"></i>
+                Reset
+              </button>
+            </div>
+          </section>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="../index.html" class="bottom-item native-click">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+
+    <a href="search.html" class="bottom-item native-click">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Cari</span>
+    </a>
+
+    <a href="quick-askep.html" class="bottom-item native-click">
+      <i class="fa-solid fa-notes-medical"></i>
+      <span>Askep</span>
+    </a>
+
+    <a href="profil.html" class="bottom-item native-click">
+      <i class="fa-solid fa-user-nurse"></i>
+      <span>Profil</span>
+    </a>
+  </nav>
+
+  <div
+    id="settingsToast"
+    class="settings-toast"
+    role="status"
+    aria-live="polite"
+  >
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="settingsToastText">Pengaturan disimpan</span>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const form = document.getElementById("settingsForm");
+      const resetButton = document.getElementById("resetButton");
+      const backButton = document.getElementById("backButton");
+      const toast = document.getElementById("settingsToast");
+      const toastText = document.getElementById("settingsToastText");
+
+      let toastTimer = null;
+
+      function initializeRipple() {
+        document.querySelectorAll(".native-click").forEach((element) => {
+          if (element.dataset.rippleReady === "true") return;
+
+          element.dataset.rippleReady = "true";
+
+          element.addEventListener("click", function (event) {
+            if (document.documentElement.dataset.reduceMotion === "true") {
+              return;
+            }
+
+            const oldRipple = this.querySelector(":scope > .ripple");
+            if (oldRipple) oldRipple.remove();
+
+            const ripple = document.createElement("span");
+            ripple.className = "ripple";
+
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const clickX = event.clientX
+              ? event.clientX - rect.left
+              : rect.width / 2;
+            const clickY = event.clientY
+              ? event.clientY - rect.top
+              : rect.height / 2;
+
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            ripple.style.left = `${clickX - size / 2}px`;
+            ripple.style.top = `${clickY - size / 2}px`;
+
+            this.appendChild(ripple);
+            window.setTimeout(() => ripple.remove(), 600);
+          });
+        });
+      }
+
+      function setChecked(name, value) {
+        const input = form.querySelector(
+          `[name="${name}"][value="${CSS.escape(value)}"]`
+        );
+
+        if (input) input.checked = true;
+      }
+
+      function syncForm(settings) {
+        setChecked("theme", settings.theme);
+        setChecked("accent", settings.accent);
+        setChecked("fontSize", settings.fontSize);
+        setChecked("density", settings.density);
+        form.elements.reduceMotion.checked = Boolean(settings.reduceMotion);
+      }
+
+      function getFormSettings() {
+        const data = new FormData(form);
+
+        return {
+          theme: data.get("theme"),
+          accent: data.get("accent"),
+          fontSize: data.get("fontSize"),
+          density: data.get("density"),
+          reduceMotion: form.elements.reduceMotion.checked,
+        };
+      }
+
+      function showToast(message) {
+        toastText.textContent = message;
+        toast.classList.add("show");
+
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          toast.classList.remove("show");
+        }, 1700);
+      }
+
+      function applyFormSettings(message) {
+        window.AskepSettings.set(getFormSettings());
+        showToast(message || "Pengaturan disimpan");
+      }
+
+      form.addEventListener("change", function (event) {
+        const labelMap = {
+          theme: "Tema diperbarui",
+          accent: "Warna utama diperbarui",
+          fontSize: "Ukuran teks diperbarui",
+          density: "Kepadatan tampilan diperbarui",
+          reduceMotion: "Pengaturan animasi diperbarui",
+        };
+
+        applyFormSettings(labelMap[event.target.name]);
+      });
+
+      resetButton.addEventListener("click", function () {
+        const settings = window.AskepSettings.reset();
+        syncForm(settings);
+        showToast("Pengaturan awal dipulihkan");
+      });
+
+      backButton.addEventListener("click", function () {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "../index.html";
+        }
+      });
+
+      window.addEventListener("askep:settingschange", function (event) {
+        if (event.detail && event.detail.settings) {
+          syncForm(event.detail.settings);
+        }
+      });
+
+      document.addEventListener("selectstart", function (event) {
+        const allowedElement = event.target.closest(
+          "input, textarea, select"
+        );
+
+        if (!allowedElement) event.preventDefault();
+      });
+
+      syncForm(window.AskepSettings.get());
+      initializeRipple();
+    })();
+  </script>
+</body>
+</html>
