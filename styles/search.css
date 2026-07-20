@@ -1201,3 +1201,120 @@
   margin-top: 0 !important;
   transform: none !important;
 }
+
+/* =========================================================
+   DARK MODE — SEARCH PAGE
+========================================================= */
+
+/* Input pencarian tetap transparan karena warna ada di search-box */
+.search-box input {
+  background: transparent;
+  color: var(--text);
+  caret-color: var(--primary);
+}
+
+.search-box input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+html[data-resolved-theme="dark"] .search-box {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+html[data-resolved-theme="dark"] .search-box input {
+  background: transparent;
+  color: var(--text);
+}
+
+/* Filter desktop */
+html[data-resolved-theme="dark"] .filter-panel {
+  border-color: var(--border);
+  background: color-mix(
+    in srgb,
+    var(--card) 92%,
+    transparent
+  );
+}
+
+/* Tombol AI */
+html[data-resolved-theme="dark"] .ai-toggle {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+html[data-resolved-theme="dark"] .ai-toggle:hover {
+  border-color: var(--primary);
+  background: color-mix(
+    in srgb,
+    var(--card) 92%,
+    var(--primary-light)
+  );
+}
+
+html[data-resolved-theme="dark"]
+.ai-toggle:has(.ai-toggle-input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Panel jawaban AI */
+html[data-resolved-theme="dark"] .ai-result-panel {
+  border-color: var(--border);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--primary-light) 45%, var(--card)),
+      var(--card)
+    );
+}
+
+html[data-resolved-theme="dark"] .ai-result-header,
+html[data-resolved-theme="dark"] .ai-sources,
+html[data-resolved-theme="dark"] .ai-disclaimer {
+  border-color: var(--border);
+}
+
+html[data-resolved-theme="dark"] .ai-source-chip {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] .ai-close-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] .ai-disclaimer {
+  background: color-mix(
+    in srgb,
+    var(--primary-light) 50%,
+    var(--card)
+  );
+}
+
+/* Sidebar dan bottom navigation */
+html[data-resolved-theme="dark"] .bottom-nav {
+  background: color-mix(
+    in srgb,
+    var(--card) 94%,
+    transparent
+  );
+}
+
+/* Badge SLKI dan SIKI */
+html[data-resolved-theme="dark"] .result-icon.slki,
+html[data-resolved-theme="dark"] .badge.slki {
+  background: rgba(22, 163, 74, 0.16);
+}
+
+html[data-resolved-theme="dark"] .result-icon.siki,
+html[data-resolved-theme="dark"] .badge.siki {
+  background: rgba(245, 158, 11, 0.16);
+}
+
+html[data-resolved-theme="dark"] .badge.siki {
+  color: #fbbf24;
+}
