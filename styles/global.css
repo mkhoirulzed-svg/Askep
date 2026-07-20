@@ -96,3 +96,48 @@ svg {
   outline: 3px solid rgba(37, 99, 235, 0.28);
   outline-offset: 3px;
 }
+
+/* =========================================================
+   FORM CONTROL — MENGIKUTI TEMA
+========================================================= */
+
+input,
+textarea,
+select {
+  border-color: var(--border);
+  background-color: var(--card);
+  color: var(--text);
+  caret-color: var(--primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+textarea {
+  resize: vertical;
+}
+
+html[data-resolved-theme="dark"] input,
+html[data-resolved-theme="dark"] textarea,
+html[data-resolved-theme="dark"] select {
+  background-color: var(--card);
+  color: var(--text);
+  border-color: var(--border);
+  color-scheme: dark;
+}
+
+/* Memperbaiki background putih dari autofill Chrome */
+html[data-resolved-theme="dark"] input:-webkit-autofill,
+html[data-resolved-theme="dark"] input:-webkit-autofill:hover,
+html[data-resolved-theme="dark"] input:-webkit-autofill:focus,
+html[data-resolved-theme="dark"] textarea:-webkit-autofill,
+html[data-resolved-theme="dark"] select:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  box-shadow: 0 0 0 1000px var(--card) inset;
+  -webkit-box-shadow: 0 0 0 1000px var(--card) inset;
+  transition: background-color 9999s ease-out 0s;
+}
