@@ -32,15 +32,6 @@
   </header>
 
   <main class="content search-content">
-    <section class="search-hero" aria-labelledby="searchHeroTitle">
-      <div class="search-hero-copy">
-        <h2 id="searchHeroTitle">Pencarian Data Flexibel</h2>
-        <p id="searchModeHelp">
-          Menampilkan hasil dari SDKI, SLKI, dan SIKI dalam satu pencarian.
-        </p>
-      </div>
-    </section>
-
     <section class="search-workspace" aria-label="Pencarian ASKEP">
       <div class="search-box" role="search">
         <i id="searchModeIcon" class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
@@ -226,7 +217,6 @@ const searchInput = document.getElementById("searchInput");
 const clearBtn = document.getElementById("clearBtn");
 const resultArea = document.getElementById("resultArea");
 const loadingEl = document.getElementById("loading");
-const searchModeHelp = document.getElementById("searchModeHelp");
 const searchModeIcon = document.getElementById("searchModeIcon");
 const aiAssistantToggle = document.getElementById("aiAssistantToggle");
 const askAiBtn = document.getElementById("askAiBtn");
@@ -1197,7 +1187,6 @@ function setActiveFilter(filter, shouldSearch = true){
 
   const config = modeConfig[filter] || modeConfig.all;
   searchInput.placeholder = config.placeholder;
-  searchModeHelp.textContent = config.help;
   searchModeIcon.className = `fa-solid ${config.icon}`;
 
   if(shouldSearch) runSearch();
