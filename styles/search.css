@@ -1101,7 +1101,7 @@
   }
 
   .page-search .search-workspace{
-    margin-top:-24px;
+    margin-top: 24px;
     padding:19px;
     box-shadow:var(--shadow-md);
   }
@@ -1191,4 +1191,13 @@
     animation-iteration-count:1 !important;
     transition-duration:.01ms !important;
   }
+}
+
+.search-content {
+  padding-top: 16px;
+}
+
+.search-workspace {
+  margin-top: 0 !important;
+  transform: none !important;
 }
