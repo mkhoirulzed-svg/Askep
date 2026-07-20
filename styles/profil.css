@@ -186,11 +186,4 @@ textarea.form-control{min-height:108px;resize:vertical;line-height:1.6}
 }
 
 /* Perbaikan setelah hero pencarian dihapus */
-.search-content {
-  padding-top: 16px;
-}
 
-.search-workspace {
-  margin-top: 0 !important;
-  transform: none !important;
-}
