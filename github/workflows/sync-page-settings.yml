@@ -22,11 +22,12 @@ jobs:
       - name: Sinkronkan pengaturan halaman
         run: node scripts/sync-page-settings.mjs
 
-      - name: Tampilkan perubahan
-        run: git diff --stat && git diff --check
+      - name: Periksa perubahan
+        run: |
+          git diff --stat
+          git diff --check
 
       - name: Commit perubahan
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Sinkronkan settings, manifest, favicon, dan mode gelap"
-          file_pattern: "*.html pages/*.html styles/settings-fixes.css"
