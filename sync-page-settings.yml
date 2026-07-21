@@ -1,0 +1,32 @@
+name: Sinkronisasi Pengaturan Semua Halaman
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sinkronkan pengaturan halaman
+        run: node scripts/sync-page-settings.mjs
+
+      - name: Tampilkan perubahan
+        run: git diff --stat && git diff --check
+
+      - name: Commit perubahan
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Sinkronkan settings, manifest, favicon, dan mode gelap"
+          file_pattern: "*.html pages/*.html styles/settings-fixes.css"
