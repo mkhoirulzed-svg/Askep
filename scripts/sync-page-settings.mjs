@@ -7,6 +7,7 @@ const FIX_CSS_PATH = path.join(ROOT, "styles", "settings-fixes.css");
 
 const DARK_FIX_CSS = `@import url("askep-lengkap-dark.css");
 @import url("askep-lengkap-desktop.css");
+@import url("kasus-responsive.css");
 
 /* Dibuat/diperbarui otomatis oleh scripts/sync-page-settings.mjs */
 
