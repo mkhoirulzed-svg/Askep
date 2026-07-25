@@ -1,0 +1,116 @@
+/* Tema gelap bersama halaman detail SLKI dan SIKI. */
+
+html[data-resolved-theme="dark"] .page-detail-standar {
+  --bg:#0b1220;
+  --card:#111827;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#263244;
+}
+
+html[data-resolved-theme="dark"] .page-slki-detail {
+  --primary:#4ade80;
+  --primary-dark:#22c55e;
+  --primary-soft:#15351f;
+  --primary-light:#10291a;
+  --detail-shadow:rgba(22,163,74,.28);
+}
+
+html[data-resolved-theme="dark"] .page-siki-detail {
+  --primary:#fbbf24;
+  --primary-dark:#f59e0b;
+  --primary-soft:#4a3212;
+  --primary-light:#362814;
+  --detail-shadow:rgba(245,158,11,.28);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar,
+html[data-resolved-theme="dark"] .page-detail-standar .app {
+  background-color:var(--bg);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar .app {
+  background-image:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 340px);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar :where(
+  .nav-btn,
+  .detail-card,
+  .detail-panel,
+  .meta-card,
+  .indicator-card,
+  .action-card,
+  .related-card
+) {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar :where(
+  .meta-card,
+  .simple-item,
+  .related-icon,
+  .empty-icon,
+  .indicator-icon,
+  .action-icon.observasi
+) {
+  border-color:var(--border);
+  background:var(--primary-light);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar :where(
+  .detail-heading h1,
+  .section-title,
+  .meta-value,
+  .indicator-title,
+  .action-title,
+  .related-title,
+  .empty-title
+) {
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar :where(
+  .detail-heading p,
+  .meta-label,
+  .related-desc,
+  .scale-label,
+  .loading,
+  .empty-state
+) {
+  color:var(--muted);
+}
+
+/* Skala penilaian SLKI */
+html[data-resolved-theme="dark"] .page-slki-detail .scale-item {
+  border-color:var(--border);
+  background:var(--card);
+}
+
+html[data-resolved-theme="dark"] .page-slki-detail .scale-number {
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+/* Warna ikon kategori tindakan SIKI agar tidak menyala putih. */
+html[data-resolved-theme="dark"] .page-siki-detail .action-icon.terapeutik {
+  background:rgba(34,197,94,.16);
+  color:#4ade80;
+}
+
+html[data-resolved-theme="dark"] .page-siki-detail .action-icon.edukasi {
+  background:rgba(245,158,11,.16);
+  color:#fbbf24;
+}
+
+html[data-resolved-theme="dark"] .page-siki-detail .action-icon.kolaborasi {
+  background:rgba(239,68,68,.16);
+  color:#f87171;
+}
+
+html[data-resolved-theme="dark"] .page-detail-standar .bottom-nav {
+  border-color:var(--border);
+  background:rgba(17,24,39,.95);
+}
