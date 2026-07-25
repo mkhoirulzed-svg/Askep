@@ -1,0 +1,123 @@
+/* Tema gelap khusus halaman daftar SDKI, SLKI, dan SIKI. */
+
+html[data-resolved-theme="dark"] .page-daftar-standar {
+  --bg: #0b1220;
+  --card: #111827;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #263244;
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar.theme-sdki {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-soft: #172554;
+  --primary-light: #111f3d;
+  --theme-shadow: rgba(37, 99, 235, 0.28);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar.theme-slki {
+  --primary: #4ade80;
+  --primary-dark: #22c55e;
+  --primary-soft: #15351f;
+  --primary-light: #10291a;
+  --theme-shadow: rgba(22, 163, 74, 0.26);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar.theme-siki {
+  --primary: #fbbf24;
+  --primary-dark: #f59e0b;
+  --primary-soft: #4a3212;
+  --primary-light: #362814;
+  --theme-shadow: rgba(245, 158, 11, 0.28);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar,
+html[data-resolved-theme="dark"] .page-daftar-standar .app {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .app {
+  background-image: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 300px);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar :where(
+  .search-card,
+  .category-chip,
+  .diagnosis-card,
+  .outcome-card,
+  .intervention-card,
+  .page-btn,
+  .nav-btn
+) {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .search-box {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 86%, var(--primary-light));
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .search-box input {
+  background: transparent !important;
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .search-box input::placeholder {
+  color: var(--muted) !important;
+  opacity: 1;
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .clear-btn {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .category-chip:not(.active) {
+  color: var(--muted);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar :where(
+  .diagnosis-icon,
+  .outcome-icon,
+  .intervention-icon,
+  .diagnosis-code,
+  .outcome-code,
+  .intervention-code,
+  .empty-icon
+) {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar :where(
+  .diagnosis-title,
+  .outcome-title,
+  .intervention-title,
+  .empty-title,
+  .header-title h1
+) {
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar :where(
+  .diagnosis-desc,
+  .outcome-desc,
+  .intervention-desc,
+  .diagnosis-category,
+  .outcome-category,
+  .intervention-category,
+  .result-count,
+  .header-title p
+) {
+  color: var(--muted);
+}
+
+html[data-resolved-theme="dark"] .page-daftar-standar .bottom-nav {
+  border-color: var(--border);
+  background: rgba(17, 24, 39, 0.95);
+}
