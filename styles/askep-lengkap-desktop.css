@@ -1,0 +1,180 @@
+/* Layout desktop khusus pages/askep-lengkap.html. */
+
+@media (min-width: 900px) {
+  body:has(.app-shell) {
+    overflow-x: hidden;
+  }
+
+  body:has(.app-shell) .app-shell {
+    min-height: 100dvh;
+    padding-bottom: 0;
+  }
+
+  body:has(.app-shell) .mobile-header,
+  body:has(.app-shell) .mobile-progress,
+  body:has(.app-shell) .bottom-nav {
+    display: none !important;
+  }
+
+  body:has(.app-shell) .workspace {
+    display: grid !important;
+    grid-template-columns: 244px minmax(0, 1fr) 300px;
+    width: 100%;
+    min-height: 100dvh;
+    align-items: start;
+  }
+
+  body:has(.app-shell) .step-sidebar,
+  body:has(.app-shell) .summary-sidebar {
+    display: block !important;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    background: var(--card);
+  }
+
+  body:has(.app-shell) .step-sidebar {
+    grid-column: 1;
+    padding: 22px 16px;
+    border-right: 1px solid var(--border);
+  }
+
+  body:has(.app-shell) .main-column {
+    grid-column: 2;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    padding: 28px 30px 48px;
+  }
+
+  body:has(.app-shell) .summary-sidebar {
+    grid-column: 3;
+    padding: 22px 16px;
+    border-left: 1px solid var(--border);
+  }
+
+  body:has(.app-shell) .desktop-back-button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 42px;
+    margin-bottom: 14px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+  }
+
+  body:has(.app-shell) .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+    padding: 4px;
+  }
+
+  body:has(.app-shell) .sidebar-menu {
+    display: grid;
+    gap: 7px;
+  }
+
+  body:has(.app-shell) .sidebar-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  body:has(.app-shell) .sidebar-step.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+
+  body:has(.app-shell) .sidebar-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--card) 82%, var(--bg));
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  body:has(.app-shell) .sidebar-step.active .sidebar-number,
+  body:has(.app-shell) .sidebar-step.done .sidebar-number {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  body:has(.app-shell) .sidebar-footer {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  body:has(.app-shell) .step-actions {
+    position: static;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+    padding: 0;
+    background: none;
+  }
+
+  body:has(.app-shell) .step-actions .btn {
+    min-width: 150px;
+  }
+
+  body:has(.app-shell) .grid.four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  body:has(.app-shell) .identity-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body:has(.app-shell) .summary-card {
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: var(--card);
+  }
+
+  body:has(.app-shell) .toast {
+    right: 24px;
+    bottom: 24px;
+    left: auto;
+    width: 360px;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1180px) {
+  body:has(.app-shell) .workspace {
+    grid-template-columns: 220px minmax(0, 1fr) 260px;
+  }
+
+  body:has(.app-shell) .main-column {
+    padding-right: 22px;
+    padding-left: 22px;
+  }
+}
