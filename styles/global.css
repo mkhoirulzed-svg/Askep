@@ -2,6 +2,7 @@
 @import url("profil-dark.css");
 @import url("daftar-standar-dark.css");
 @import url("diagnosis-detail-dark.css");
+@import url("detail-standar-dark.css");
 
 :root {
   --primary: #2563eb;
