@@ -1,0 +1,79 @@
+/* Tema gelap khusus halaman detail diagnosis SDKI. */
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-soft: #172554;
+  --primary-light: #111f3d;
+  --bg: #0b1220;
+  --card: #111827;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #263244;
+  --detail-shadow: rgba(37, 99, 235, 0.28);
+  background: var(--bg);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail .app {
+  background-color: var(--bg);
+  background-image: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 340px);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail :where(
+  .nav-btn,
+  .detail-content .card
+) {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail :where(
+  .detail-heading h1,
+  .detail-content .section-title,
+  .text,
+  .list li,
+  .info-value,
+  .link-title
+) {
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail :where(
+  .detail-heading p,
+  .muted,
+  .empty,
+  .info-label,
+  .link-sub,
+  .loading,
+  .empty-state
+) {
+  color: var(--muted);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail :where(
+  .info-box,
+  .link-card
+) {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 82%, var(--primary-light));
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail .link-icon {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] .page-diagnosis-detail .bottom-nav {
+  border-color: var(--border);
+  background: rgba(17, 24, 39, 0.95);
+}
+
+@media (min-width: 900px) {
+  html[data-resolved-theme="dark"] .page-diagnosis-detail .app {
+    background-image: linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 440px);
+  }
+}
