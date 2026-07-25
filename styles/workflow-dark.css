@@ -139,3 +139,18 @@ html[data-resolved-theme="dark"] body.page-soap .soap-table td {
   background:var(--card);
   color:var(--text);
 }
+
+/*
+  SOAP menggunakan .search-wrap i untuk ikon utama input.
+  Ikon yang berada di dalam tombol tidak boleh ikut diposisikan absolut.
+*/
+body.page-soap .search-wrap :where(button, .btn, .mini-btn) i {
+  position:static!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  transform:none!important;
+  color:inherit!important;
+  font-size:inherit!important;
+}
