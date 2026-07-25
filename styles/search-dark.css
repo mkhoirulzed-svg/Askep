@@ -1,0 +1,95 @@
+/* =========================================================
+   DARK MODE KHUSUS HALAMAN PENCARIAN
+   Dimuat global, tetapi seluruh selector dibatasi ke .page-search.
+========================================================= */
+
+html[data-resolved-theme="dark"] body.page-search .search-workspace {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-resolved-theme="dark"] body.page-search .search-box,
+html[data-resolved-theme="dark"] body.page-search .example-chip,
+html[data-resolved-theme="dark"] body.page-search .tab-btn,
+html[data-resolved-theme="dark"] body.page-search .ai-toggle {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-search .search-box input {
+  background: transparent;
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-search .search-box input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+html[data-resolved-theme="dark"] body.page-search .filter-panel,
+html[data-resolved-theme="dark"] body.page-search .ai-search-control {
+  border-color: var(--border);
+}
+
+html[data-resolved-theme="dark"] body.page-search .tab-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-toggle:has(.ai-toggle-input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-switch {
+  background: color-mix(in srgb, var(--muted) 55%, var(--card));
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-switch::after {
+  background: var(--text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.34);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-toggle-input:checked + .ai-switch {
+  background: var(--primary);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-result-panel {
+  border-color: var(--border);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--primary-light) 42%, var(--card)),
+    var(--card)
+  );
+  box-shadow: var(--shadow-md);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-result-header,
+html[data-resolved-theme="dark"] body.page-search .ai-sources,
+html[data-resolved-theme="dark"] body.page-search .ai-disclaimer {
+  border-color: var(--border);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-source-chip {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 90%, var(--primary-light));
+  color: var(--primary);
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-disclaimer {
+  background: color-mix(in srgb, var(--primary-light) 45%, var(--card));
+}
+
+html[data-resolved-theme="dark"] body.page-search .ai-error {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(127, 29, 29, 0.24);
+  color: #fecaca;
+}
+
+html[data-resolved-theme="dark"] body.page-search .result-card {
+  border-color: var(--border);
+  background: var(--card);
+}
