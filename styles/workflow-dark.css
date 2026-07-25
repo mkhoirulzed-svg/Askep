@@ -1,0 +1,141 @@
+/* Tema gelap khusus halaman SOAP dan Penyusun Askep Lengkap. */
+
+html[data-resolved-theme="dark"] body.page-soap,
+html[data-resolved-theme="dark"] body:has(.app-shell) {
+  --bg:#0b1220;
+  --card:#111827;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#263244;
+  --primary-soft:#172554;
+  --primary-light:#111f3d;
+  background:var(--bg);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap .app,
+html[data-resolved-theme="dark"] body:has(.app-shell) .app-shell {
+  background:
+    radial-gradient(circle at 92% 3%,rgba(37,99,235,.12),transparent 25%),
+    linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 390px);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .section-card,.diagnosis-item,.suggestion-item,.outcome-card,.intervention-card,
+  .table-wrap,.mini-btn,.btn-secondary,.nav-btn
+),
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .section-card,.progress-pill,.accordion-item,.accordion-trigger,.dynamic-row,.icon-btn,
+  .btn-secondary,.search-result,.diagnosis-card,.care-card,.nav-btn,.summary-sidebar,
+  .step-sidebar,.loading-card
+) {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .search-input,.field-input,.field-select,.result-textarea
+),
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .field-input,.field-select,.field-textarea,.search-input
+) {
+  border-color:var(--border)!important;
+  background:var(--card)!important;
+  color:var(--text)!important;
+  -webkit-text-fill-color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .search-input,.field-input,.field-select,.result-textarea
+)::placeholder,
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .field-input,.field-select,.field-textarea,.search-input
+)::placeholder {
+  color:var(--muted)!important;
+  opacity:1;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .info-card,
+html[data-resolved-theme="dark"] body.page-soap .selected-diagnosis {
+  border-color:#29446f;
+  background:#111f3d;
+  color:#bfdbfe;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .assessment-preview {
+  border-color:#4c3c78;
+  background:#251d3d;
+  color:#ddd6fe;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .soap-tabs {
+  background:#172033;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .soap-tab.active {
+  background:var(--card);
+  color:var(--primary);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(.suggestion-badge,.soap-table th) {
+  background:#172033;
+  color:var(--muted);
+}
+
+html[data-resolved-theme="dark"] body.page-soap .bottom-nav,
+html[data-resolved-theme="dark"] body:has(.app-shell) .bottom-nav {
+  border-color:var(--border);
+  background:rgba(17,24,39,.96);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .mobile-progress {
+  border-color:var(--border);
+  background:rgba(11,18,32,.94);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill .number,
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(.optional-badge,.priority-badge) {
+  background:#172033;
+  color:var(--muted);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .info-card {
+  border-color:#29446f;
+  background:#111f3d;
+  color:#bfdbfe;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .field-label,
+html[data-resolved-theme="dark"] body.page-soap .field-label,
+html[data-resolved-theme="dark"] body.page-soap .group-label {
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .step-actions {
+  background:linear-gradient(180deg,rgba(11,18,32,0),rgba(11,18,32,.98) 25%);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .accordion-panel,.search-results,.selected-list,.dynamic-list
+) {
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .btn-warning {
+  background:#3a2a10;
+  color:#fbbf24;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .btn-danger-soft,
+html[data-resolved-theme="dark"] body:has(.app-shell) .btn-danger-soft,
+html[data-resolved-theme="dark"] body.page-soap .remove-item,
+html[data-resolved-theme="dark"] body:has(.app-shell) .icon-btn.danger {
+  background:#3a171b;
+  color:#f87171;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .soap-table td {
+  background:var(--card);
+  color:var(--text);
+}
