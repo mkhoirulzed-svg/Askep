@@ -1,0 +1,90 @@
+/* =========================================================
+   DARK MODE — PROFILE PAGE
+   Scope dibatasi ke .page-profile agar tidak memengaruhi halaman lain.
+========================================================= */
+
+html[data-resolved-theme="dark"] .page-profile .profile-card,
+html[data-resolved-theme="dark"] .page-profile .form-card,
+html[data-resolved-theme="dark"] .page-profile .info-card,
+html[data-resolved-theme="dark"] .page-profile .nav-btn {
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-profile .form-control {
+  border-color: var(--border);
+  background: #0f172a;
+  color: var(--text);
+  caret-color: var(--primary);
+  color-scheme: dark;
+}
+
+html[data-resolved-theme="dark"] .page-profile .form-control::placeholder {
+  color: var(--muted);
+  opacity: 0.78;
+}
+
+html[data-resolved-theme="dark"] .page-profile .form-control:focus {
+  border-color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+html[data-resolved-theme="dark"] .page-profile .form-control[readonly] {
+  border-color: var(--border);
+  background: #0b1220;
+  color: var(--muted);
+}
+
+html[data-resolved-theme="dark"] .page-profile select.form-control option {
+  background: var(--card);
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-profile .info-item {
+  border-color: var(--border);
+  background: #0f172a;
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-profile .info-label {
+  color: var(--muted);
+}
+
+html[data-resolved-theme="dark"] .page-profile .info-value,
+html[data-resolved-theme="dark"] .page-profile .section-title,
+html[data-resolved-theme="dark"] .page-profile .card-heading h2,
+html[data-resolved-theme="dark"] .page-profile .user-name,
+html[data-resolved-theme="dark"] .page-profile .form-label {
+  color: var(--text);
+}
+
+html[data-resolved-theme="dark"] .page-profile .avatar-wrap {
+  border-color: var(--border);
+  background: var(--primary-light);
+}
+
+html[data-resolved-theme="dark"] .page-profile .user-badge {
+  background: rgba(22, 163, 74, 0.16);
+  color: #4ade80;
+}
+
+html[data-resolved-theme="dark"] .page-profile .btn-danger-soft {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+}
+
+html[data-resolved-theme="dark"] .page-profile .status-dot {
+  border-color: rgba(74, 222, 128, 0.28);
+  box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.10);
+}
+
+@media (hover: hover) {
+  html[data-resolved-theme="dark"] .page-profile .profile-card:hover,
+  html[data-resolved-theme="dark"] .page-profile .form-card:hover,
+  html[data-resolved-theme="dark"] .page-profile .info-card:hover {
+    border-color: var(--border);
+    box-shadow: var(--shadow-md);
+  }
+}
