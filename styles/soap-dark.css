@@ -1,0 +1,98 @@
+/* Tema gelap khusus pages/soap.html. Tidak mengubah breakpoint atau layout desktop. */
+html[data-resolved-theme="dark"] body.page-soap {
+  --bg:#0b1220;
+  --card:#111827;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#263244;
+  --primary-soft:#172554;
+  --primary-light:#111f3d;
+  background:var(--bg);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap .app {
+  background:
+    radial-gradient(circle at 92% 3%,rgba(37,99,235,.12),transparent 25%),
+    linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 390px);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .section-card,.diagnosis-item,.suggestion-item,.outcome-card,.intervention-card,
+  .table-wrap,.mini-btn,.btn-secondary,.nav-btn
+) {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .search-input,.field-input,.field-select,.result-textarea
+) {
+  border-color:var(--border)!important;
+  background:var(--card)!important;
+  color:var(--text)!important;
+  -webkit-text-fill-color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(
+  .search-input,.field-input,.field-select,.result-textarea
+)::placeholder {
+  color:var(--muted)!important;
+  opacity:1;
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(.info-card,.selected-diagnosis) {
+  border-color:#29446f;
+  background:#111f3d;
+  color:#bfdbfe;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .assessment-preview {
+  border-color:#4c3c78;
+  background:#251d3d;
+  color:#ddd6fe;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .soap-tabs,
+html[data-resolved-theme="dark"] body.page-soap :where(.suggestion-badge,.soap-table th) {
+  background:#172033;
+}
+
+html[data-resolved-theme="dark"] body.page-soap .soap-tab.active,
+html[data-resolved-theme="dark"] body.page-soap .soap-table td {
+  background:var(--card);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap .bottom-nav {
+  border-color:var(--border);
+  background:rgba(17,24,39,.96);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(.field-label,.group-label) {
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body.page-soap :where(.btn-danger-soft,.remove-item) {
+  background:#3a171b;
+  color:#f87171;
+}
+
+/* Ikon utama tetap mengikuti tinggi input, bukan tinggi seluruh hasil pencarian. */
+body.page-soap .search-wrap > i {
+  top:24px!important;
+  left:14px!important;
+  transform:translateY(-50%)!important;
+  z-index:2;
+  pointer-events:none;
+}
+
+/* Ikon di dalam tombol tidak boleh terkena aturan absolut .search-wrap i. */
+body.page-soap .search-wrap :where(button,.btn,.mini-btn) i {
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  color:inherit!important;
+  font-size:inherit!important;
+}
