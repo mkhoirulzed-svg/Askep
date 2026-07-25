@@ -1,0 +1,195 @@
+/* Perbaikan khusus pages/kasus.html. */
+
+/* Mode gelap mobile: hilangkan latar putih navigasi dan aksi mengambang. */
+html[data-resolved-theme="dark"] body:has(.case-list) .bottom-nav {
+  border-top-color:var(--border);
+  background:rgba(17,24,39,.96);
+  box-shadow:0 -8px 28px rgba(0,0,0,.22);
+}
+
+html[data-resolved-theme="dark"] body:has(.case-list) .bottom-item {
+  color:var(--muted);
+}
+
+html[data-resolved-theme="dark"] body:has(.case-list) .bottom-item.active {
+  background:var(--primary-light);
+  color:var(--primary);
+}
+
+html[data-resolved-theme="dark"] body:has(.case-list) :where(
+  .diagnosis-card,
+  .floating-action,
+  .btn-outline
+) {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+
+/* Layout desktop Kasus. */
+@media (min-width:900px) {
+  body:has(.case-list) {
+    --desktop-sidebar-width:240px;
+    padding-left:var(--desktop-sidebar-width);
+  }
+
+  body:has(.case-list) .app {
+    width:100%;
+    max-width:none;
+    min-height:100vh;
+    margin:0;
+    padding-bottom:48px;
+  }
+
+  body:has(.case-list) .header,
+  body:has(.case-list) .content {
+    width:min(calc(100% - 64px),1180px);
+    margin-right:auto;
+    margin-left:auto;
+    padding-right:0;
+    padding-left:0;
+  }
+
+  body:has(.case-list) .header {
+    padding-top:30px;
+    padding-bottom:18px;
+  }
+
+  body:has(.case-list) .hero-card {
+    padding:24px 28px;
+    border-radius:28px;
+  }
+
+  body:has(.case-list) .hero-title {
+    font-size:22px;
+  }
+
+  body:has(.case-list) .hero-desc {
+    max-width:760px;
+    font-size:13px;
+  }
+
+  body:has(.case-list) .content {
+    display:grid;
+    grid-template-columns:minmax(300px,360px) minmax(0,1fr);
+    column-gap:20px;
+    align-items:start;
+  }
+
+  body:has(.case-list) :where(.search-box,.category-row,#caseSectionTitle) {
+    grid-column:1 / -1;
+  }
+
+  body:has(.case-list) .case-list {
+    grid-column:1;
+    position:sticky;
+    top:22px;
+    max-height:calc(100vh - 44px);
+    overflow:auto;
+  }
+
+  body:has(.case-list) .detail-panel {
+    grid-column:2;
+    margin-top:0;
+    min-width:0;
+  }
+
+  body:has(.case-list) .panel-body {
+    padding:18px;
+  }
+
+  body:has(.case-list) .diagnosis-list {
+    padding-bottom:0;
+  }
+
+  body:has(.case-list) .diagnosis-card {
+    padding:14px;
+  }
+
+  body:has(.case-list) .bottom-nav {
+    top:0;
+    right:auto;
+    bottom:0;
+    left:0;
+    display:flex;
+    width:var(--desktop-sidebar-width);
+    max-width:none;
+    height:100vh;
+    padding:24px 16px;
+    transform:none;
+    flex-direction:column;
+    gap:8px;
+    border-top:0;
+    border-right:1px solid var(--border);
+    background:rgba(255,255,255,.97);
+    box-shadow:8px 0 30px rgba(15,23,42,.05);
+  }
+
+  body:has(.case-list) .bottom-item {
+    width:100%;
+    min-height:52px;
+    padding:0 14px;
+    flex-direction:row;
+    justify-content:flex-start;
+    gap:12px;
+    font-size:12px;
+  }
+
+  body:has(.case-list) .bottom-item i {
+    width:22px;
+    font-size:17px;
+    text-align:center;
+  }
+
+  body:has(.case-list) .bottom-item.active {
+    box-shadow:inset 3px 0 0 var(--primary);
+  }
+
+  html[data-resolved-theme="dark"] body:has(.case-list) .bottom-nav {
+    border-right-color:var(--border);
+    background:rgba(17,24,39,.97);
+    box-shadow:8px 0 30px rgba(0,0,0,.22);
+  }
+
+  body:has(.case-list) .floating-action {
+    right:28px;
+    bottom:24px;
+    left:auto;
+    width:min(520px,calc(100% - var(--desktop-sidebar-width) - 56px));
+    max-width:520px;
+    transform:none;
+  }
+
+  body:has(.case-list) .toast {
+    right:28px;
+    bottom:24px;
+    left:auto;
+    width:360px;
+    max-width:360px;
+    transform:translateY(20px);
+  }
+
+  body:has(.case-list) .toast.show {
+    transform:translateY(0);
+  }
+
+  /* Saat fokus diagnosis, panel detail memakai lebar penuh. */
+  body:has(.case-list.is-hidden) .detail-panel {
+    grid-column:1 / -1;
+  }
+}
+
+@media (min-width:900px) and (max-width:1120px) {
+  body:has(.case-list) {
+    --desktop-sidebar-width:210px;
+  }
+
+  body:has(.case-list) .content {
+    grid-template-columns:minmax(270px,320px) minmax(0,1fr);
+  }
+
+  body:has(.case-list) .header,
+  body:has(.case-list) .content {
+    width:calc(100% - 40px);
+  }
+}
