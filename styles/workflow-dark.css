@@ -154,3 +154,16 @@ body.page-soap .search-wrap :where(button, .btn, .mini-btn) i {
   color:inherit!important;
   font-size:inherit!important;
 }
+
+/*
+  .search-wrap juga membungkus status dan hasil pencarian.
+  Karena itu top:50% menghitung tinggi seluruh blok dan mendorong ikon ke bawah.
+  Kunci ikon utama pada tinggi input (48px), bukan tinggi container.
+*/
+body.page-soap .search-wrap > i {
+  top:24px!important;
+  left:14px!important;
+  transform:translateY(-50%)!important;
+  z-index:2;
+  pointer-events:none;
+}
