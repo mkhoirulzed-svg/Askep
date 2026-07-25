@@ -105,3 +105,9 @@
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
+
+html[data-resolved-theme="dark"] .bottom-nav {
+  border-top-color: var(--border);
+  background: rgba(17, 24, 39, 0.92);
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.18);
+}
