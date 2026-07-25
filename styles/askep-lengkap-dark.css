@@ -1,0 +1,109 @@
+/* Tema gelap khusus pages/askep-lengkap.html. Tidak mengubah struktur desktop. */
+html[data-resolved-theme="dark"] body:has(.app-shell) {
+  --bg:#0b1220;
+  --card:#111827;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#263244;
+  --primary-soft:#172554;
+  --primary-light:#111f3d;
+  background:var(--bg);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .app-shell {
+  background:
+    radial-gradient(circle at 93% 2%,rgba(37,99,235,.12),transparent 26%),
+    linear-gradient(180deg,var(--primary-light) 0,var(--bg) 390px);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .section-card,.progress-pill,.accordion-item,.accordion-trigger,.dynamic-row,.icon-btn,
+  .btn-secondary,.search-result,.diagnosis-card,.care-card,.nav-btn,.summary-sidebar,
+  .step-sidebar,.loading-card
+) {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .field-input,.field-select,.field-textarea,.search-input
+) {
+  border-color:var(--border)!important;
+  background:var(--card)!important;
+  color:var(--text)!important;
+  -webkit-text-fill-color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(
+  .field-input,.field-select,.field-textarea,.search-input
+)::placeholder {
+  color:var(--muted)!important;
+  opacity:1;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .mobile-progress {
+  border-color:var(--border);
+  background:rgba(11,18,32,.95);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill {
+  border-color:var(--border);
+  background:var(--card);
+  color:var(--muted);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill .number,
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(.optional-badge,.priority-badge) {
+  background:#172033;
+  color:var(--muted);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill.active {
+  border-color:#315a9a;
+  background:var(--primary-light);
+  color:#93c5fd;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill.active .number,
+html[data-resolved-theme="dark"] body:has(.app-shell) .progress-pill.done .number {
+  background:var(--primary);
+  color:#fff;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .info-card {
+  border-color:#29446f;
+  background:#111f3d;
+  color:#bfdbfe;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(.field-label,.accordion-panel,.search-results,.selected-list,.dynamic-list) {
+  color:var(--text);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .step-actions {
+  background:linear-gradient(180deg,rgba(11,18,32,0),rgba(11,18,32,.98) 25%);
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) .btn-warning {
+  background:#3a2a10;
+  color:#fbbf24;
+}
+
+html[data-resolved-theme="dark"] body:has(.app-shell) :where(.btn-danger-soft,.icon-btn.danger) {
+  background:#3a171b;
+  color:#f87171;
+}
+
+@media (max-width:767px) {
+  html[data-resolved-theme="dark"] body:has(.app-shell) .bottom-nav {
+    border-color:var(--border);
+    background:rgba(17,24,39,.97);
+  }
+
+  html[data-resolved-theme="dark"] body:has(.app-shell) .bottom-item.active {
+    background:var(--primary-light);
+    color:#93c5fd;
+  }
+}
