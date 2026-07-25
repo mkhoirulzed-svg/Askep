@@ -140,10 +140,6 @@ html[data-resolved-theme="dark"] body.page-soap .soap-table td {
   color:var(--text);
 }
 
-/*
-  SOAP menggunakan .search-wrap i untuk ikon utama input.
-  Ikon yang berada di dalam tombol tidak boleh ikut diposisikan absolut.
-*/
 body.page-soap .search-wrap :where(button, .btn, .mini-btn) i {
   position:static!important;
   top:auto!important;
@@ -155,15 +151,89 @@ body.page-soap .search-wrap :where(button, .btn, .mini-btn) i {
   font-size:inherit!important;
 }
 
-/*
-  .search-wrap juga membungkus status dan hasil pencarian.
-  Karena itu top:50% menghitung tinggi seluruh blok dan mendorong ikon ke bawah.
-  Kunci ikon utama pada tinggi input (48px), bukan tinggi container.
-*/
 body.page-soap .search-wrap > i {
   top:24px!important;
   left:14px!important;
   transform:translateY(-50%)!important;
   z-index:2;
   pointer-events:none;
+}
+
+/*
+  Hindari layout sidebar desktop aktif terlalu dini pada layar sempit,
+  termasuk mode situs desktop di ponsel dan tablet kecil.
+*/
+@media (min-width:768px) and (max-width:1023px) {
+  body.page-soap {
+    padding-left:0!important;
+  }
+
+  body.page-soap .app {
+    width:100%!important;
+    max-width:760px!important;
+    min-height:100dvh!important;
+    margin:0 auto!important;
+    padding-bottom:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 28px)!important;
+  }
+
+  body.page-soap .page-header,
+  body.page-soap .page-content {
+    width:100%!important;
+    margin:0!important;
+    padding-right:28px!important;
+    padding-left:28px!important;
+  }
+
+  body.page-soap .soap-tabs {
+    display:grid!important;
+  }
+
+  body.page-soap .soap-panels {
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+
+  body.page-soap .soap-panel,
+  body.page-soap .soap-panel.active {
+    display:block!important;
+    width:100%!important;
+  }
+
+  body.page-soap .bottom-nav {
+    top:auto!important;
+    right:auto!important;
+    bottom:0!important;
+    left:50%!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,1fr)!important;
+    width:100%!important;
+    max-width:760px!important;
+    height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom))!important;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;
+    transform:translateX(-50%)!important;
+    border-top:1px solid var(--border)!important;
+    border-right:0!important;
+  }
+
+  body.page-soap .soap-page-brand {
+    display:none!important;
+  }
+
+  body.page-soap .bottom-item {
+    width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:0!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:4px!important;
+    border-radius:16px!important;
+    font-size:11px!important;
+  }
+
+  body.page-soap .bottom-item i {
+    width:auto!important;
+    font-size:18px!important;
+  }
 }
