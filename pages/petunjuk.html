@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#eff6ff">
+  <meta name="description" content="Petunjuk penggunaan aplikasi ASKEP berbasis SDKI, SLKI, dan SIKI.">
+  <title>Petunjuk Penggunaan - ASKEP</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/responsive.css">
+  <link rel="stylesheet" href="../styles/petunjuk.css">
+
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/favicon.png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="../styles/settings-fixes.css">
+  <script src="../scripts/settings.js"></script>
+  <script src="../scripts/detail-copy-actions.js" defer></script>
+</head>
+
+<body class="page-petunjuk">
+  <div class="app">
+    <header class="petunjuk-header">
+      <div class="petunjuk-topbar">
+        <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="petunjuk-heading">
+          <h1>Petunjuk Penggunaan</h1>
+          <p>Panduan menggunakan fitur utama aplikasi ASKEP</p>
+        </div>
+
+        <div class="guide-menu-wrapper">
+          <button
+            id="guideMenuButton"
+            class="icon-btn guide-menu-button native-click"
+            type="button"
+            aria-label="Buka menu aplikasi"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="guideDropdown"
+          >
+            <i class="fa-solid fa-gear" aria-hidden="true"></i>
+          </button>
+
+          <div id="guideDropdown" class="guide-dropdown" aria-hidden="true">
+            <div class="guide-dropdown-header">
+              <p class="guide-dropdown-title">Menu Aplikasi</p>
+              <p class="guide-dropdown-subtitle">Pengaturan, petunjuk, dan informasi aplikasi.</p>
+            </div>
+
+            <div class="guide-dropdown-divider"></div>
+
+            <div class="guide-menu-list">
+              <a href="pengaturan.html" class="guide-menu-item native-click">
+                <span class="guide-menu-icon"><i class="fa-solid fa-sliders"></i></span>
+                <span class="guide-menu-content">
+                  <span class="guide-menu-label">Pengaturan</span>
+                  <span class="guide-menu-description">Sesuaikan tema dan tampilan aplikasi.</span>
+                </span>
+                <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+              </a>
+
+              <a href="petunjuk.html" class="guide-menu-item current native-click" aria-current="page">
+                <span class="guide-menu-icon"><i class="fa-regular fa-circle-question"></i></span>
+                <span class="guide-menu-content">
+                  <span class="guide-menu-label">Petunjuk</span>
+                  <span class="guide-menu-description">Pelajari cara menggunakan aplikasi.</span>
+                </span>
+                <i class="fa-solid fa-check guide-menu-chevron"></i>
+              </a>
+
+              <a href="kontak.html" class="guide-menu-item native-click">
+                <span class="guide-menu-icon"><i class="fa-regular fa-envelope"></i></span>
+                <span class="guide-menu-content">
+                  <span class="guide-menu-label">Kontak</span>
+                  <span class="guide-menu-description">Hubungi pengembang aplikasi.</span>
+                </span>
+                <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+              </a>
+
+              <a href="privasi.html" class="guide-menu-item native-click">
+                <span class="guide-menu-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                <span class="guide-menu-content">
+                  <span class="guide-menu-label">Kebijakan Privasi</span>
+                  <span class="guide-menu-description">Informasi penggunaan dan perlindungan data.</span>
+                </span>
+                <i class="fa-solid fa-chevron-right guide-menu-chevron"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="petunjuk-hero">
+        <div class="petunjuk-hero-content">
+          <div class="petunjuk-badge">
+            <i class="fa-solid fa-book-open-reader"></i>
+            Panduan ASKEP
+          </div>
+          <h2>Gunakan aplikasi dari pencarian hingga penyusunan asuhan keperawatan</h2>
+          <p>
+            Ikuti panduan ini untuk mencari standar SDKI, SLKI, dan SIKI, melihat paket kasus,
+            menyusun Askep, membuat dokumentasi SOAP, serta menyalin atau menyimpan hasil.
+          </p>
+        </div>
+      </section>
+    </header>
+
+    <main class="petunjuk-content">
+      <div class="help-layout">
+        <aside class="help-nav" aria-label="Daftar isi petunjuk">
+          <h2 class="help-nav-title">Daftar Isi</h2>
+          <nav class="help-nav-list">
+            <a class="help-nav-link native-click" href="#mulai"><i class="fa-solid fa-play"></i> Mulai</a>
+            <a class="help-nav-link native-click" href="#pencarian"><i class="fa-solid fa-magnifying-glass"></i> Pencarian</a>
+            <a class="help-nav-link native-click" href="#standar"><i class="fa-solid fa-book-medical"></i> SDKI–SLKI–SIKI</a>
+            <a class="help-nav-link native-click" href="#kasus"><i class="fa-solid fa-layer-group"></i> Kasus Klinis</a>
+            <a class="help-nav-link native-click" href="#quick-askep"><i class="fa-solid fa-wand-magic-sparkles"></i> Quick Askep</a>
+            <a class="help-nav-link native-click" href="#askep-lengkap"><i class="fa-solid fa-file-medical"></i> Askep Lengkap</a>
+            <a class="help-nav-link native-click" href="#soap"><i class="fa-solid fa-clipboard-list"></i> SOAP</a>
+            <a class="help-nav-link native-click" href="#hasil"><i class="fa-solid fa-copy"></i> Hasil</a>
+            <a class="help-nav-link native-click" href="#faq"><i class="fa-regular fa-circle-question"></i> Tanya Jawab</a>
+          </nav>
+        </aside>
+
+        <article class="help-main">
+          <section class="help-intro-grid" aria-label="Ringkasan fitur">
+            <div class="help-summary-card">
+              <div class="help-summary-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+              <div class="help-summary-copy">
+                <div class="help-summary-title">Temukan standar dengan cepat</div>
+                <div class="help-summary-desc">Cari berdasarkan gejala, judul, atau kode SDKI, SLKI, dan SIKI.</div>
+              </div>
+            </div>
+
+            <div class="help-summary-card">
+              <div class="help-summary-icon"><i class="fa-solid fa-notes-medical"></i></div>
+              <div class="help-summary-copy">
+                <div class="help-summary-title">Susun dokumentasi bertahap</div>
+                <div class="help-summary-desc">Gunakan Quick Askep, Askep Lengkap, atau SOAP sesuai kebutuhan.</div>
+              </div>
+            </div>
+          </section>
+
+          <section id="mulai" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">1</div>
+              <div class="help-section-heading">
+                <h2>Mulai menggunakan aplikasi</h2>
+                <p>Kenali navigasi utama dan atur tampilan sebelum bekerja.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy"><strong>Home</strong> berisi akses cepat ke SDKI, SLKI, SIKI, Askep, generator, dan paket kasus.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy"><strong>Cari</strong> membuka pencarian gabungan standar keperawatan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy"><strong>Askep</strong> membuka pilihan alur penyusunan asuhan keperawatan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy"><strong>Profil</strong> digunakan untuk mengelola identitas pengguna dan informasi perawat.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">5</span>
+                <div class="help-step-copy">Tekan ikon <strong>roda gigi</strong> di kanan atas untuk membuka Pengaturan, Petunjuk, Kontak, dan Kebijakan Privasi.</div>
+              </li>
+            </ol>
+
+            <div class="help-note">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Di Pengaturan, Anda dapat memilih tema terang, gelap, atau mengikuti sistem, serta menyesuaikan ukuran tulisan dan kepadatan tampilan.</span>
+            </div>
+          </section>
+
+          <section id="pencarian" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">2</div>
+              <div class="help-section-heading">
+                <h2>Mencari diagnosis, luaran, dan intervensi</h2>
+                <p>Gunakan kata yang paling menggambarkan kondisi pasien.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy">Buka menu <strong>Cari</strong> atau kotak pencarian pada halaman Home.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy">Masukkan gejala, masalah pasien, judul standar, atau kode. Contoh: <strong>sesak</strong>, <strong>nyeri akut</strong>, atau <strong>D.0001</strong>.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy">Pilih tab Semua, SDKI, SLKI, atau SIKI untuk mempersempit hasil.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy">Tekan hasil yang sesuai untuk membuka halaman detail dan melihat hubungan antarstandar.</div>
+              </li>
+            </ol>
+
+            <div class="help-note">
+              <i class="fa-solid fa-lightbulb"></i>
+              <span>Gunakan istilah klinis yang singkat terlebih dahulu. Tambahkan kata lain bila hasil masih terlalu banyak.</span>
+            </div>
+          </section>
+
+          <section id="standar" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">3</div>
+              <div class="help-section-heading">
+                <h2>Membaca SDKI, SLKI, dan SIKI</h2>
+                <p>Ketiga standar saling melengkapi dalam satu rencana asuhan.</p>
+              </div>
+            </div>
+
+            <div class="help-feature-grid">
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-stethoscope"></i> SDKI</div>
+                <p>Buka diagnosis untuk melihat definisi, penyebab atau faktor risiko, tanda dan gejala, kondisi klinis terkait, serta tautan SLKI dan SIKI.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-chart-line"></i> SLKI</div>
+                <p>Buka luaran untuk melihat definisi, tujuan, ekspektasi, indikator, dan skala penilaian.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-hand-holding-medical"></i> SIKI</div>
+                <p>Buka intervensi untuk melihat definisi, tujuan, serta tindakan observasi, terapeutik, edukasi, dan kolaborasi.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-regular fa-copy"></i> Tombol Salin</div>
+                <p>Gunakan tombol Salin pada halaman detail untuk menyalin isi standar ke clipboard perangkat.</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="kasus" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">4</div>
+              <div class="help-section-heading">
+                <h2>Menggunakan Paket Kasus Klinis</h2>
+                <p>Lihat diagnosis yang sering digunakan pada kasus tertentu.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy">Pilih <strong>Kasus Klinis</strong> dari Home.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy">Cari nama kasus atau pilih kategori yang tersedia.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy">Pilih salah satu kasus untuk melihat daftar diagnosis keperawatan yang sering berkaitan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy">Buka diagnosis untuk memeriksa detail, atau lanjutkan ke penyusunan Askep.</div>
+              </li>
+            </ol>
+
+            <div class="help-note">
+              <i class="fa-solid fa-user-nurse"></i>
+              <span>Daftar pada paket kasus adalah bantuan awal. Diagnosis tetap harus disesuaikan dengan data subjektif, data objektif, dan hasil pengkajian pasien.</span>
+            </div>
+          </section>
+
+          <section id="quick-askep" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">5</div>
+              <div class="help-section-heading">
+                <h2>Menyusun Quick Askep</h2>
+                <p>Gunakan alur ringkas untuk memilih diagnosis, luaran, dan intervensi.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy">Buka menu <strong>Askep</strong>, lalu pilih Quick Askep.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy">Pilih satu atau beberapa diagnosis SDKI yang sesuai.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy">Pilih luaran SLKI yang ingin dicapai.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy">Pilih intervensi SIKI yang akan digunakan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">5</span>
+                <div class="help-step-copy">Periksa ringkasan, kemudian gunakan tombol Salin untuk memindahkan hasil ke catatan atau dokumen.</div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="askep-lengkap" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">6</div>
+              <div class="help-section-heading">
+                <h2>Menyusun Askep Lengkap</h2>
+                <p>Gunakan tujuh tahap untuk membuat dokumentasi yang lebih terstruktur.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy"><strong>Data Pasien:</strong> isi identitas seperlunya. Gunakan inisial bila identitas lengkap tidak diperlukan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy"><strong>Pengkajian:</strong> masukkan keluhan, riwayat, tanda vital, pemeriksaan fisik, dan kebutuhan dasar.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy"><strong>Analisis Data:</strong> kelompokkan data subjektif dan objektif yang mendukung masalah.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy"><strong>Diagnosis:</strong> pilih diagnosis SDKI dan tentukan urutan prioritas.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">5</span>
+                <div class="help-step-copy"><strong>Luaran:</strong> pilih SLKI dan tentukan target hasil untuk setiap diagnosis.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">6</span>
+                <div class="help-step-copy"><strong>Intervensi:</strong> pilih SIKI dan tindakan yang akan dilaksanakan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">7</span>
+                <div class="help-step-copy"><strong>Review:</strong> periksa seluruh isi, simpan draft, lalu unduh atau cetak hasil bila tersedia.</div>
+              </li>
+            </ol>
+
+            <div class="help-note">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Simpan draft secara berkala. Periksa kembali data sebelum membuat dokumen akhir.</span>
+            </div>
+          </section>
+
+          <section id="soap" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">7</div>
+              <div class="help-section-heading">
+                <h2>Membuat catatan SOAP</h2>
+                <p>Dokumentasikan perkembangan pasien secara sistematis.</p>
+              </div>
+            </div>
+
+            <div class="help-feature-grid">
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-comment-medical"></i> S — Subjective</div>
+                <p>Tuliskan keluhan, perasaan, atau informasi yang disampaikan pasien dan keluarga.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-eye"></i> O — Objective</div>
+                <p>Tuliskan hasil observasi, pemeriksaan fisik, tanda vital, dan data penunjang.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-stethoscope"></i> A — Assessment</div>
+                <p>Pilih atau tuliskan diagnosis dan evaluasi masalah berdasarkan data pasien.</p>
+              </div>
+              <div class="help-feature">
+                <div class="help-feature-title"><i class="fa-solid fa-list-check"></i> P — Planning</div>
+                <p>Tuliskan rencana tindak lanjut, intervensi, edukasi, dan kolaborasi.</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="hasil" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number">8</div>
+              <div class="help-section-heading">
+                <h2>Menyalin, menyimpan, dan memeriksa hasil</h2>
+                <p>Pastikan hasil akhir sesuai dengan kondisi pasien dan kebutuhan dokumentasi.</p>
+              </div>
+            </div>
+
+            <ol class="help-steps">
+              <li class="help-step">
+                <span class="help-step-marker">1</span>
+                <div class="help-step-copy">Gunakan tombol <strong>Salin</strong> untuk menyalin teks ke clipboard.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">2</span>
+                <div class="help-step-copy">Tempelkan hasil ke catatan, aplikasi dokumentasi, atau dokumen yang digunakan.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">3</span>
+                <div class="help-step-copy">Gunakan fitur simpan draft pada Askep Lengkap agar data dapat dilanjutkan kembali.</div>
+              </li>
+              <li class="help-step">
+                <span class="help-step-marker">4</span>
+                <div class="help-step-copy">Periksa kode, judul diagnosis, indikator luaran, tindakan, prioritas, dan identitas sebelum digunakan.</div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="faq" class="help-section">
+            <div class="help-section-head">
+              <div class="help-step-number"><i class="fa-solid fa-question"></i></div>
+              <div class="help-section-heading">
+                <h2>Pertanyaan yang sering ditanyakan</h2>
+                <p>Jawaban singkat untuk kendala penggunaan umum.</p>
+              </div>
+            </div>
+
+            <div class="help-faq">
+              <details>
+                <summary>Kenapa hasil pencarian belum sesuai?</summary>
+                <div class="help-faq-answer">Coba gunakan istilah yang lebih singkat, kata yang paling khas, atau kode standar. Periksa juga tab pencarian yang sedang aktif.</div>
+              </details>
+
+              <details>
+                <summary>Apakah semua kolom Askep Lengkap harus diisi?</summary>
+                <div class="help-faq-answer">Tidak. Isi bagian yang relevan dengan kondisi pasien dan kebutuhan dokumentasi. Kolom identitas dapat diisi seperlunya.</div>
+              </details>
+
+              <details>
+                <summary>Kenapa tombol Salin tidak bekerja?</summary>
+                <div class="help-faq-answer">Pastikan browser memberikan izin clipboard dan aplikasi dibuka melalui koneksi yang aman. Coba muat ulang halaman bila diperlukan.</div>
+              </details>
+
+              <details>
+                <summary>Apakah aplikasi menentukan diagnosis secara otomatis?</summary>
+                <div class="help-faq-answer">Aplikasi membantu pencarian dan penyusunan. Penetapan diagnosis tetap membutuhkan pengkajian, penalaran klinis, dan verifikasi oleh tenaga kesehatan.</div>
+              </details>
+            </div>
+          </section>
+
+          <section class="help-warning" aria-label="Catatan penting">
+            <div class="help-warning-title">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              Catatan penting
+            </div>
+            <p>
+              Aplikasi adalah alat bantu dokumentasi dan pembelajaran. Selalu cocokkan hasil dengan kondisi pasien,
+              kebijakan fasilitas kesehatan, standar profesi, dan penilaian klinis pengguna.
+            </p>
+          </section>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="../index.html" class="bottom-item native-click">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="search.html" class="bottom-item native-click">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Cari</span>
+    </a>
+    <a href="quick-askep.html" class="bottom-item native-click">
+      <i class="fa-solid fa-notes-medical"></i>
+      <span>Askep</span>
+    </a>
+    <a href="profil.html" class="bottom-item native-click">
+      <i class="fa-solid fa-user-nurse"></i>
+      <span>Profil</span>
+    </a>
+  </nav>
+
+  <script>
+    function initializeRipple() {
+      document.querySelectorAll(".native-click").forEach(element => {
+        if (element.dataset.rippleReady === "true") return;
+        element.dataset.rippleReady = "true";
+
+        element.addEventListener("click", function (event) {
+          const oldRipple = this.querySelector(":scope > .ripple");
+          if (oldRipple) oldRipple.remove();
+
+          const ripple = document.createElement("span");
+          ripple.className = "ripple";
+
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const clickX = event.clientX ? event.clientX - rect.left : rect.width / 2;
+          const clickY = event.clientY ? event.clientY - rect.top : rect.height / 2;
+
+          ripple.style.width = `${size}px`;
+          ripple.style.height = `${size}px`;
+          ripple.style.left = `${clickX - size / 2}px`;
+          ripple.style.top = `${clickY - size / 2}px`;
+
+          this.appendChild(ripple);
+          window.setTimeout(() => ripple.remove(), 600);
+        });
+      });
+    }
+
+    initializeRipple();
+
+    const guideMenuButton = document.getElementById("guideMenuButton");
+    const guideDropdown = document.getElementById("guideDropdown");
+
+    function setGuideMenu(open) {
+      guideDropdown.classList.toggle("show", open);
+      guideMenuButton.classList.toggle("active", open);
+      guideMenuButton.setAttribute("aria-expanded", String(open));
+      guideDropdown.setAttribute("aria-hidden", String(!open));
+    }
+
+    guideMenuButton.addEventListener("click", event => {
+      event.stopPropagation();
+      setGuideMenu(!guideDropdown.classList.contains("show"));
+    });
+
+    guideDropdown.addEventListener("click", event => event.stopPropagation());
+    document.addEventListener("click", () => setGuideMenu(false));
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        setGuideMenu(false);
+        guideMenuButton.focus();
+      }
+    });
+
+    document.addEventListener("selectstart", event => {
+      const allowed = event.target.closest("input, textarea, select, .help-step-copy, .help-faq-answer, .help-warning p");
+      if (!allowed) event.preventDefault();
+    });
+  </script>
+</body>
+</html>
