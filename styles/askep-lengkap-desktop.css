@@ -1,180 +1,364 @@
-/* Layout desktop khusus pages/askep-lengkap.html. */
+/* Layout desktop khusus pages/askep-lengkap.html.
+   Navigasi aplikasi berada di kiri, sedangkan tahap 1–7 berada di atas konten. */
 
-@media (min-width: 900px) {
+@media (min-width:900px) {
   body:has(.app-shell) {
-    overflow-x: hidden;
+    --askep-app-nav-width:240px;
+    overflow-x:hidden;
   }
 
   body:has(.app-shell) .app-shell {
-    min-height: 100dvh;
-    padding-bottom: 0;
+    width:calc(100% - var(--askep-app-nav-width));
+    min-height:100dvh;
+    margin-left:var(--askep-app-nav-width);
+    padding-bottom:0;
   }
 
-  body:has(.app-shell) .mobile-header,
-  body:has(.app-shell) .mobile-progress,
+  body:has(.app-shell) .mobile-header {
+    display:none!important;
+  }
+
+  /* Navigasi utama aplikasi — sama seperti halaman desktop lain. */
   body:has(.app-shell) .bottom-nav {
-    display: none !important;
+    position:fixed;
+    top:0;
+    right:auto;
+    bottom:0;
+    left:0;
+    z-index:80;
+    display:flex!important;
+    align-items:stretch;
+    flex-direction:column;
+    width:var(--askep-app-nav-width);
+    max-width:none;
+    height:100vh;
+    height:100dvh;
+    gap:8px;
+    padding:116px 18px 24px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    transform:none;
+    border-top:0;
+    border-right:1px solid var(--border);
+    background:rgba(255,255,255,.97);
+    box-shadow:8px 0 30px rgba(15,23,42,.04);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
   }
 
+  body:has(.app-shell) .bottom-nav::before {
+    position:absolute;
+    top:28px;
+    left:22px;
+    width:42px;
+    height:42px;
+    border-radius:15px;
+    background-image:url("../icons/icon-512.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:cover;
+    box-shadow:0 9px 20px rgba(37,99,235,.20);
+    content:"";
+  }
+
+  body:has(.app-shell) .bottom-nav::after {
+    position:absolute;
+    top:31px;
+    right:16px;
+    left:75px;
+    overflow:hidden;
+    color:var(--text);
+    content:"ASKEP\A Asuhan Keperawatan";
+    font-size:14px;
+    font-weight:800;
+    line-height:1.35;
+    white-space:pre-line;
+  }
+
+  body:has(.app-shell) .bottom-item {
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    flex:0 0 52px;
+    flex-direction:row;
+    width:100%;
+    height:52px;
+    min-height:52px;
+    gap:12px;
+    padding:0 14px;
+    overflow:hidden;
+    border-radius:15px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+    text-align:left;
+  }
+
+  body:has(.app-shell) .bottom-item i {
+    width:22px;
+    flex:0 0 22px;
+    font-size:17px;
+    text-align:center;
+  }
+
+  body:has(.app-shell) .bottom-item span {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  body:has(.app-shell) .bottom-item:hover,
+  body:has(.app-shell) .bottom-item.active {
+    background:var(--primary-light);
+    color:var(--primary);
+  }
+
+  body:has(.app-shell) .bottom-item.active {
+    box-shadow:inset 3px 0 0 var(--primary);
+  }
+
+  html[data-resolved-theme="dark"] body:has(.app-shell) .bottom-nav {
+    border-right-color:var(--border);
+    background:rgba(17,24,39,.97);
+    box-shadow:8px 0 30px rgba(0,0,0,.22);
+  }
+
+  /* Workspace: baris utilitas di atas, formulir dan ringkasan di bawah. */
   body:has(.app-shell) .workspace {
-    display: grid !important;
-    grid-template-columns: 244px minmax(0, 1fr) 300px;
-    width: 100%;
-    min-height: 100dvh;
-    align-items: start;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 300px;
+    grid-template-rows:auto minmax(0,1fr);
+    width:100%;
+    min-height:100dvh;
+    align-items:start;
   }
 
-  body:has(.app-shell) .step-sidebar,
-  body:has(.app-shell) .summary-sidebar {
-    display: block !important;
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    overflow-y: auto;
-    background: var(--card);
-  }
-
+  /* Sidebar tahap lama diubah menjadi toolbar halaman. */
   body:has(.app-shell) .step-sidebar {
-    grid-column: 1;
-    padding: 22px 16px;
-    border-right: 1px solid var(--border);
+    position:relative;
+    top:auto;
+    grid-column:1 / -1;
+    grid-row:1;
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:center;
+    width:100%;
+    height:auto;
+    min-height:82px;
+    gap:18px;
+    padding:18px 30px 12px;
+    overflow:visible;
+    border:0;
+    background:transparent;
   }
 
-  body:has(.app-shell) .main-column {
-    grid-column: 2;
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-    margin: 0;
-    padding: 28px 30px 48px;
+  body:has(.app-shell) .step-sidebar::before {
+    grid-column:2;
+    color:var(--text);
+    content:"Penyusun Askep Lengkap\A Pengkajian, diagnosis, luaran, dan intervensi";
+    font-size:18px;
+    font-weight:800;
+    line-height:1.4;
+    white-space:pre-line;
   }
 
-  body:has(.app-shell) .summary-sidebar {
-    grid-column: 3;
-    padding: 22px 16px;
-    border-left: 1px solid var(--border);
+  body:has(.app-shell) .step-sidebar .brand,
+  body:has(.app-shell) .sidebar-menu {
+    display:none!important;
   }
 
   body:has(.app-shell) .desktop-back-button {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    width: 100%;
-    min-height: 42px;
-    margin-bottom: 14px;
-    padding: 0 12px;
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    background: var(--card);
-    color: var(--text);
-    font-size: 10px;
-    font-weight: 800;
-    text-align: left;
+    grid-column:1;
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:auto;
+    min-width:108px;
+    min-height:42px;
+    margin:0;
+    padding:0 13px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--card);
+    color:var(--text);
+    font-size:10px;
+    font-weight:800;
   }
 
-  body:has(.app-shell) .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 22px;
-    padding: 4px;
-  }
-
-  body:has(.app-shell) .sidebar-menu {
-    display: grid;
-    gap: 7px;
-  }
-
-  body:has(.app-shell) .sidebar-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    min-height: 48px;
-    padding: 8px 10px;
-    border: 0;
-    border-radius: 14px;
-    background: transparent;
-    color: var(--muted);
-    text-align: left;
-  }
-
-  body:has(.app-shell) .sidebar-step.active {
-    background: var(--primary-light);
-    color: var(--primary);
-    box-shadow: inset 3px 0 0 var(--primary);
-  }
-
-  body:has(.app-shell) .sidebar-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    flex: 0 0 28px;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--card) 82%, var(--bg));
-    color: var(--muted);
-    font-size: 9px;
-    font-weight: 800;
-  }
-
-  body:has(.app-shell) .sidebar-step.active .sidebar-number,
-  body:has(.app-shell) .sidebar-step.done .sidebar-number {
-    background: var(--primary);
-    color: #fff;
+  body:has(.app-shell) .desktop-back-button:hover {
+    border-color:#bfdbfe;
+    background:var(--primary-light);
+    color:var(--primary);
   }
 
   body:has(.app-shell) .sidebar-footer {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+    grid-column:3;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0;
+    padding:0;
+    border:0;
   }
 
-  body:has(.app-shell) .step-actions {
-    position: static;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 18px;
-    padding: 0;
-    background: none;
-  }
-
-  body:has(.app-shell) .step-actions .btn {
-    min-width: 150px;
-  }
-
-  body:has(.app-shell) .grid.four {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  body:has(.app-shell) .identity-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  body:has(.app-shell) .summary-card {
-    margin-bottom: 10px;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    background: var(--card);
-  }
-
-  body:has(.app-shell) .toast {
-    right: 24px;
-    bottom: 24px;
-    left: auto;
-    width: 360px;
-  }
-}
-
-@media (min-width: 900px) and (max-width: 1180px) {
-  body:has(.app-shell) .workspace {
-    grid-template-columns: 220px minmax(0, 1fr) 260px;
+  body:has(.app-shell) .sidebar-footer .btn {
+    width:auto!important;
+    min-width:126px;
+    min-height:42px;
+    margin:0!important;
+    padding:0 12px;
   }
 
   body:has(.app-shell) .main-column {
-    padding-right: 22px;
-    padding-left: 22px;
+    grid-column:1;
+    grid-row:2;
+    width:100%;
+    max-width:none;
+    min-width:0;
+    margin:0;
+    padding:8px 30px 48px;
+  }
+
+  body:has(.app-shell) .summary-sidebar {
+    position:sticky;
+    top:0;
+    grid-column:2;
+    grid-row:2;
+    display:block!important;
+    height:100dvh;
+    padding:22px 16px;
+    overflow-y:auto;
+    border-left:1px solid var(--border);
+    background:var(--card);
+  }
+
+  /* Tahap 1–7 dipindahkan ke atas formulir. */
+  body:has(.app-shell) .mobile-progress {
+    position:sticky;
+    top:0;
+    z-index:35;
+    display:block!important;
+    margin:0 0 18px;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:rgba(255,255,255,.94);
+    box-shadow:var(--shadow-sm);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+
+  body:has(.app-shell) .mobile-progress::before {
+    display:block;
+    margin:1px 4px 9px;
+    color:var(--muted);
+    content:"Tahap penyusunan Askep";
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+
+  body:has(.app-shell) .mobile-progress-scroll {
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+  }
+
+  body:has(.app-shell) .progress-pill {
+    min-height:44px;
+    padding:8px 12px;
+    border-radius:14px;
+  }
+
+  html[data-resolved-theme="dark"] body:has(.app-shell) .mobile-progress {
+    border-color:var(--border);
+    background:rgba(17,24,39,.95);
+  }
+
+  body:has(.app-shell) .step-actions {
+    position:static;
+    display:flex;
+    justify-content:flex-end;
+    margin-top:18px;
+    padding:0;
+    background:none;
+  }
+
+  body:has(.app-shell) .step-actions .btn {
+    min-width:150px;
+  }
+
+  body:has(.app-shell) .grid.four {
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+
+  body:has(.app-shell) .identity-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  body:has(.app-shell) .summary-card {
+    margin-bottom:10px;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:var(--card);
+  }
+
+  body:has(.app-shell) .toast {
+    right:24px;
+    bottom:24px;
+    left:auto;
+    width:360px;
+  }
+}
+
+/* Layar desktop menengah: ringkasan disembunyikan agar formulir tetap lega. */
+@media (min-width:900px) and (max-width:1099px) {
+  body:has(.app-shell) {
+    --askep-app-nav-width:210px;
+  }
+
+  body:has(.app-shell) .workspace {
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  body:has(.app-shell) .summary-sidebar {
+    display:none!important;
+  }
+
+  body:has(.app-shell) .main-column {
+    grid-column:1;
+    padding-right:22px;
+    padding-left:22px;
+  }
+
+  body:has(.app-shell) .step-sidebar {
+    padding-right:22px;
+    padding-left:22px;
+  }
+
+  body:has(.app-shell) .step-sidebar::before {
+    font-size:16px;
+  }
+
+  body:has(.app-shell) .sidebar-footer .btn {
+    min-width:108px;
+  }
+}
+
+@media (min-width:1200px) {
+  body:has(.app-shell) .mobile-progress-scroll {
+    display:grid;
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    overflow:visible;
+  }
+
+  body:has(.app-shell) .progress-pill {
+    justify-content:center;
+    width:100%;
   }
 }
