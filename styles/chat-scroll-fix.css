@@ -1,0 +1,56 @@
+/* Perbaikan khusus area gulir Chat AI. */
+
+.page-chat,
+.page-chat body {
+  height: 100%;
+}
+
+.page-chat .app {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.page-chat .chat-main {
+  height: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+}
+
+.page-chat .chat-stream {
+  min-height: auto;
+  padding-bottom: max(var(--chat-safe-bottom, 190px), 190px);
+}
+
+.page-chat .chat-message:last-child {
+  scroll-margin-bottom: max(var(--chat-safe-bottom, 190px), 190px);
+}
+
+@media (max-width: 899px) {
+  .page-chat .chat-header {
+    flex: 0 0 auto;
+  }
+
+  .page-chat .chat-composer-shell {
+    bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 900px) {
+  .page-chat .app {
+    height: 100vh;
+  }
+
+  .page-chat .chat-main {
+    height: auto;
+  }
+
+  .page-chat .chat-stream {
+    padding-bottom: max(var(--chat-safe-bottom, 145px), 145px);
+  }
+}
