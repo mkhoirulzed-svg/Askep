@@ -141,6 +141,7 @@ function ensurePageTags(filePath) {
   const appleHref = `${prefix}icons/apple-touch-icon.png`;
   const cssHref = `${prefix}styles/settings-fixes.css`;
   const settingsSrc = `${prefix}scripts/settings.js`;
+  const detailActionsSrc = `${prefix}scripts/detail-copy-actions.js`;
 
   // Hapus duplikasi untuk aset yang dikelola workflow.
   html = removeDuplicateTag(
@@ -163,6 +164,10 @@ function ensurePageTags(filePath) {
     html,
     /[ \t]*<script\b[^>]*src=["'][^"']*settings\.js["'][^>]*>\s*<\/script>\s*/gi
   );
+  html = removeDuplicateTag(
+    html,
+    /[ \t]*<script\b[^>]*src=["'][^"']*detail-copy-actions\.js["'][^>]*>\s*<\/script>\s*/gi
+  );
 
   const tags = [
     `<link rel="manifest" href="${manifestHref}">`,
@@ -170,9 +175,10 @@ function ensurePageTags(filePath) {
     `<link rel="apple-touch-icon" href="${appleHref}">`,
     `<link rel="stylesheet" href="${cssHref}">`,
     `<script src="${settingsSrc}"></script>`,
+    `<script src="${detailActionsSrc}" defer></script>`,
   ];
 
-  // Masukkan sebelum </head>, dengan settings.js terakhir supaya tema aktif sedini mungkin.
+  // Masukkan sebelum </head>; settings.js aktif sedini mungkin dan aksi detail memakai defer.
   for (const tag of tags) {
     html = ensureBeforeHeadClose(html, tag);
   }
