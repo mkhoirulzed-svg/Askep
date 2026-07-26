@@ -7,6 +7,24 @@
     return !file || file === "Askep" || file === "index.html";
   }
 
+  function registerServiceWorker() {
+    if (!isHomePage() || !("serviceWorker" in navigator)) return;
+
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+          updateViaCache: "none"
+        });
+
+        await registration.update();
+        console.log("Service Worker ASKEP aktif:", registration.scope);
+      } catch (error) {
+        console.error("Service Worker gagal didaftarkan:", error);
+      }
+    }, { once: true });
+  }
+
   function addChatCard() {
     if (!isHomePage()) return;
 
@@ -28,6 +46,8 @@
     if (generatorCard) grid.insertBefore(card, generatorCard);
     else grid.appendChild(card);
   }
+
+  registerServiceWorker();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", addChatCard, { once: true });
