@@ -29,8 +29,9 @@
   function hideBanner(){
     if(!banner)return;
     banner.classList.remove('show');
-    window.setTimeout(()=>banner?.remove(),240);
+    const currentBanner=banner;
     banner=null;
+    window.setTimeout(()=>currentBanner.remove(),240);
   }
 
   async function openInstallPrompt(){
@@ -44,9 +45,15 @@
     const promptEvent=deferredPrompt;
     deferredPrompt=null;
     hideBanner();
-    await promptEvent.prompt();
-    const choice=await promptEvent.userChoice;
-    if(choice?.outcome!=="accepted")rememberDismissal();
+
+    try{
+      await promptEvent.prompt();
+      const choice=await promptEvent.userChoice;
+      if(choice?.outcome!=="accepted")rememberDismissal();
+    }catch(error){
+      console.warn('Dialog instalasi tidak dapat dibuka:',error);
+    }
+
     updateMenuItems();
   }
 
@@ -71,16 +78,23 @@
     return item;
   }
 
+  function ensureMenuItem(list,classPrefix){
+    if(list.querySelector(':scope > .pwa-menu-install-item'))return;
+    list.prepend(createInstallMenuItem(classPrefix));
+  }
+
   function updateMenuItems(){
-    document.querySelectorAll('.pwa-menu-install-item').forEach(item=>item.remove());
-    if(isInstalled())return;
+    if(isInstalled()){
+      document.querySelectorAll('.pwa-menu-install-item').forEach(item=>item.remove());
+      return;
+    }
 
     document.querySelectorAll('.global-guide-menu-list').forEach(list=>{
-      list.prepend(createInstallMenuItem('global-guide'));
+      ensureMenuItem(list,'global-guide');
     });
 
     document.querySelectorAll('.guide-menu-list').forEach(list=>{
-      list.prepend(createInstallMenuItem('guide'));
+      ensureMenuItem(list,'guide');
     });
   }
 
@@ -129,6 +143,13 @@
 
   function init(){
     updateMenuItems();
+
+    /*
+     * Menu gerigi dibuat secara dinamis. Observer hanya memastikan tombol
+     * instal ditambahkan satu kali. Tidak lagi menghapus dan memasang ulang
+     * elemen pada setiap mutasi karena pola tersebut dapat membuat loop tanpa
+     * akhir dan membekukan halaman.
+     */
     const observer=new MutationObserver(()=>updateMenuItems());
     observer.observe(document.body,{childList:true,subtree:true});
     window.setTimeout(()=>observer.disconnect(),10000);
