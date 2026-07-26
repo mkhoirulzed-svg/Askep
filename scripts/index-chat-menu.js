@@ -25,6 +25,24 @@
     }, { once: true });
   }
 
+  function loadInstallPrompt() {
+    if (!isHomePage()) return;
+
+    if (!document.querySelector('link[href="styles/pwa-install.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "styles/pwa-install.css";
+      document.head.appendChild(link);
+    }
+
+    if (!document.querySelector('script[src="scripts/pwa-install.js"]')) {
+      const script = document.createElement("script");
+      script.src = "scripts/pwa-install.js";
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }
+
   function addChatCard() {
     if (!isHomePage()) return;
 
@@ -48,6 +66,7 @@
   }
 
   registerServiceWorker();
+  loadInstallPrompt();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", addChatCard, { once: true });
