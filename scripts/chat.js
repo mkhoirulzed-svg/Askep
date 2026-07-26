@@ -5,6 +5,7 @@
   const STORAGE_KEY = "askep_ai_chat_history_v1";
   const MAX_STORED_MESSAGES = 20;
   const MAX_API_HISTORY = 12;
+  const REQUEST_TIMEOUT_MS = 60000;
 
   const chatMain = document.getElementById("chatMain");
   const chatStream = document.getElementById("chatStream");
@@ -13,8 +14,14 @@
   const sendButton = document.getElementById("chatSendBtn");
   const clearButton = document.getElementById("clearChatBtn");
 
+  if (!chatMain || !chatStream || !welcome || !input || !sendButton || !clearButton) {
+    console.error("Elemen Chat AI tidak lengkap.");
+    return;
+  }
+
   let messages = [];
   let requestController = null;
+  let requestTimeout = null;
   let pendingId = null;
 
   function escapeHtml(value) {
@@ -32,8 +39,8 @@
 
     return blocks.map(block => {
       const lines = block.split("\n");
-      const isBulletList = lines.every(line => /^[-•]\s+/.test(line.trim()));
-      const isNumberList = lines.every(line => /^\d+[.)]\s+/.test(line.trim()));
+      const isBulletList = lines.length > 1 && lines.every(line => /^[-•]\s+/.test(line.trim()));
+      const isNumberList = lines.length > 1 && lines.every(line => /^\d+[.)]\s+/.test(line.trim()));
 
       if (isBulletList) {
         return `<ul>${lines.map(line => `<li>${line.replace(/^[-•]\s+/, "")}</li>`).join("")}</ul>`;
@@ -66,7 +73,7 @@
   function saveMessages() {
     try {
       const safeMessages = messages
-        .filter(message => message.role === "user" || message.role === "assistant")
+        .filter(message => !message.pending && (message.role === "user" || message.role === "assistant"))
         .slice(-MAX_STORED_MESSAGES)
         .map(message => ({
           role: message.role,
@@ -200,24 +207,35 @@
       .map(message => ({ role: message.role, content: message.content }));
   }
 
+  function clearRequestTimer() {
+    if (requestTimeout) {
+      window.clearTimeout(requestTimeout);
+      requestTimeout = null;
+    }
+  }
+
   async function sendMessage(text) {
     const message = String(text || "").trim();
     if (!message || requestController) return;
 
+    const history = apiHistory();
+
     messages.push({ role: "user", content: message });
+    saveMessages();
     input.value = "";
     autoResize();
 
     pendingId = `pending-${Date.now()}`;
     messages.push({ role: "assistant", content: "", pending: true, id: pendingId });
     renderMessages();
-    updateSendState();
 
     requestController = new AbortController();
+    requestTimeout = window.setTimeout(() => {
+      if (requestController) requestController.abort("timeout");
+    }, REQUEST_TIMEOUT_MS);
     updateSendState();
 
     try {
-      const history = apiHistory().slice(0, -1);
       const response = await fetch(API_URL, {
         method: "POST",
         signal: requestController.signal,
@@ -229,9 +247,11 @@
           message,
           history,
           context: {
-            page: "chat",
-            mode: "conversation",
-            purpose: "askep-assistant"
+            page: "search",
+            activeFilter: "all",
+            searchMode: "standard",
+            sourcePage: "chat",
+            mode: "conversation"
           }
         })
       });
@@ -264,18 +284,23 @@
 
       saveMessages();
     } catch (error) {
-      if (error.name === "AbortError") return;
+      const isTimeout = error?.name === "AbortError" && requestController?.signal?.reason === "timeout";
+      if (error?.name === "AbortError" && !isTimeout) return;
 
       const pendingIndex = messages.findIndex(item => item.id === pendingId);
       const errorMessage = {
         role: "assistant",
-        content: error.message || "Terjadi kesalahan saat menghubungi AI ASKEP.",
+        content: isTimeout
+          ? "Permintaan terlalu lama. Periksa koneksi internet lalu coba kirim kembali."
+          : (error?.message || "Terjadi kesalahan saat menghubungi AI ASKEP."),
         error: true
       };
 
       if (pendingIndex >= 0) messages.splice(pendingIndex, 1, errorMessage);
       else messages.push(errorMessage);
+      saveMessages();
     } finally {
+      clearRequestTimer();
       requestController = null;
       pendingId = null;
       renderMessages();
@@ -286,6 +311,7 @@
 
   function clearConversation() {
     if (requestController) requestController.abort();
+    clearRequestTimer();
     requestController = null;
     messages = [];
     localStorage.removeItem(STORAGE_KEY);
@@ -311,10 +337,6 @@
   clearButton.addEventListener("click", () => {
     if (!messages.length) return;
     if (window.confirm("Hapus seluruh percakapan AI ASKEP?")) clearConversation();
-  });
-
-  document.querySelectorAll("[data-chat-prompt]").forEach(button => {
-    button.addEventListener("click", () => sendMessage(button.dataset.chatPrompt || ""));
   });
 
   loadMessages();
