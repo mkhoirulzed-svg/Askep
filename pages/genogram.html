@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#eff6ff">
+  <meta name="description" content="Generator Genogram 3 Generasi untuk aplikasi ASKEP.">
+  <title>Genogram 3 Generasi - ASKEP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/responsive.css">
+  <link rel="stylesheet" href="../styles/generator-tools.css">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/favicon.png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="../styles/settings-fixes.css">
+  <script src="../scripts/settings.js"></script>
+  <script src="../scripts/detail-copy-actions.js" defer></script>
+  <script src="../scripts/guide-menu-global.js" defer></script>
+  <script src="../scripts/genogram.js" defer></script>
+</head>
+<body class="page-genogram">
+  <div class="app">
+    <header class="tool-header">
+      <div class="tool-topbar">
+        <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="tool-heading"><h1>Genogram 3 Generasi</h1><p>Masukkan data keluarga lalu buat gambar otomatis</p></div>
+      </div>
+      <section class="tool-hero">
+        <div class="tool-badge"><i class="fa-solid fa-people-roof"></i> Generator Genogram</div>
+        <h2>Susun hubungan keluarga tiga generasi secara otomatis</h2>
+        <p>Lengkapi data yang diketahui. Kolom yang tidak diketahui boleh dikosongkan dan akan ditampilkan dengan tanda tanya.</p>
+      </section>
+    </header>
+
+    <main class="tool-content">
+      <div class="genogram-layout">
+        <section class="panel" id="genogramForm">
+          <h2 class="panel-title"><i class="fa-solid fa-pen-to-square"></i> Data Keluarga</h2>
+          <div class="form-grid">
+            <div class="section-label">Klien dan pasangan</div>
+            <div class="field"><label>Nama klien</label><input id="clientName" value="Klien" placeholder="Nama klien"></div>
+            <div class="field-row">
+              <div class="field"><label>Usia</label><input id="clientAge" type="number" min="0" value="35"></div>
+              <div class="field"><label>Gender</label><select id="clientGender"><option value="female" selected>Perempuan</option><option value="male">Laki-laki</option></select></div>
+            </div>
+            <div class="field"><label>Nama pasangan</label><input id="partnerName" value="Pasangan" placeholder="Nama pasangan"></div>
+            <div class="field-row">
+              <div class="field"><label>Usia pasangan</label><input id="partnerAge" type="number" min="0" value="39"></div>
+              <div class="field"><label>Gender pasangan</label><select id="partnerGender"><option value="male" selected>Laki-laki</option><option value="female">Perempuan</option></select></div>
+            </div>
+            <div class="field"><label><input id="partnerDead" type="checkbox"> Pasangan meninggal</label></div>
+
+            <div class="section-label">Orang tua klien</div>
+            <div class="field"><label>Ayah klien</label><input id="clientParent1Name" placeholder="Nama"><input id="clientParent1Age" type="number" min="0" placeholder="Usia"><label><input id="clientParent1Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Ibu klien</label><input id="clientParent2Name" placeholder="Nama"><input id="clientParent2Age" type="number" min="0" placeholder="Usia"><label><input id="clientParent2Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Saudara klien</label><input id="clientSibling" placeholder="Contoh: 2 laki-laki, 1 perempuan"></div>
+
+            <div class="section-label">Orang tua pasangan</div>
+            <div class="field"><label>Ayah pasangan</label><input id="partnerParent1Name" placeholder="Nama"><input id="partnerParent1Age" type="number" min="0" placeholder="Usia"><label><input id="partnerParent1Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Ibu pasangan</label><input id="partnerParent2Name" placeholder="Nama"><input id="partnerParent2Age" type="number" min="0" placeholder="Usia"><label><input id="partnerParent2Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Saudara pasangan</label><input id="partnerSibling" placeholder="Contoh: 1 laki-laki, 2 perempuan"></div>
+
+            <div class="section-label">Kakek dan nenek klien</div>
+            <div class="field"><label>Kakek dari ayah</label><input id="gp1Name" placeholder="Nama"><input id="gp1Age" type="number" min="0" placeholder="Usia"><label><input id="gp1Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Nenek dari ayah</label><input id="gp2Name" placeholder="Nama"><input id="gp2Age" type="number" min="0" placeholder="Usia"><label><input id="gp2Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Kakek dari ibu</label><input id="gp3Name" placeholder="Nama"><input id="gp3Age" type="number" min="0" placeholder="Usia"><label><input id="gp3Dead" type="checkbox"> Meninggal</label></div>
+            <div class="field"><label>Nenek dari ibu</label><input id="gp4Name" placeholder="Nama"><input id="gp4Age" type="number" min="0" placeholder="Usia"><label><input id="gp4Dead" type="checkbox"> Meninggal</label></div>
+
+            <div class="section-label">Anak</div>
+            <div id="childList" class="child-list" style="grid-column:1/-1"></div>
+          </div>
+
+          <div class="actions">
+            <button id="addChild" class="btn-tool secondary native-click" type="button"><i class="fa-solid fa-plus"></i> Tambah Anak</button>
+            <button id="generateBtn" class="btn-tool primary native-click" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+          </div>
+          <p class="help-text">Genogram menggunakan simbol persegi untuk laki-laki, lingkaran untuk perempuan, warna gelap untuk klien, dan tanda silang untuk anggota keluarga yang meninggal.</p>
+        </section>
+
+        <section class="panel sticky">
+          <h2 class="panel-title"><i class="fa-regular fa-image"></i> Hasil Genogram</h2>
+          <div class="preview-wrap">
+            <svg id="genogramSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hasil genogram tiga generasi"></svg>
+          </div>
+          <div class="legend">
+            <span><i class="legend-shape"></i> Laki-laki</span>
+            <span><i class="legend-shape circle"></i> Perempuan</span>
+            <span><i class="legend-shape client"></i> Klien</span>
+          </div>
+          <div class="actions">
+            <button id="copyBtn" class="btn-tool primary native-click" type="button"><i class="fa-regular fa-copy"></i> Salin Gambar</button>
+            <button id="downloadBtn" class="btn-tool native-click" type="button"><i class="fa-solid fa-download"></i> Unduh PNG</button>
+          </div>
+          <p class="help-text">Pada browser yang tidak mendukung penyalinan gambar langsung, gunakan Unduh PNG.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="../index.html" class="bottom-item native-click"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="search.html" class="bottom-item native-click"><i class="fa-solid fa-magnifying-glass"></i><span>Cari</span></a>
+    <a href="quick-askep.html" class="bottom-item active native-click"><i class="fa-solid fa-notes-medical"></i><span>Askep</span></a>
+    <a href="profil.html" class="bottom-item native-click"><i class="fa-solid fa-user-nurse"></i><span>Profil</span></a>
+  </nav>
+</body>
+</html>
