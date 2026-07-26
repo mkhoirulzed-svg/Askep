@@ -3,6 +3,11 @@
 
   const STYLE_ID = "detail-copy-actions-style";
   const COPY_CLASS = "detail-copy-actions";
+  const DETAIL_PAGE_SELECTOR = ".page-diagnosis-detail, .page-slki-detail, .page-siki-detail";
+
+  function isDetailPage() {
+    return Boolean(document.body?.matches(DETAIL_PAGE_SELECTOR));
+  }
 
   function ensureStyle() {
     if (document.getElementById(STYLE_ID)) return;
@@ -44,6 +49,25 @@
 
       .page-diagnosis-detail .action-row.detail-single-action {
         grid-template-columns: minmax(0, 220px);
+      }
+
+      /* Seluruh teks isi detail dapat ditekan lama, diseleksi, dan disalin. */
+      :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
+      :is(#heroArea, #contentArea, #detailArea, .hero-card, .card, .detail-card, .meta-card, .related-card) {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+      }
+
+      :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
+      :is(#heroArea, #contentArea, #detailArea) *:not(button):not(input):not(textarea):not(select) {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+      }
+
+      :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
+      :is(button, input, textarea, select, .bottom-nav, .bottom-nav *) {
+        -webkit-user-select: none !important;
+        user-select: none !important;
       }
 
       @media (max-width: 380px) {
@@ -198,9 +222,28 @@
     syncSikiDetail();
   }
 
+  function allowNativeTextSelection(event) {
+    if (!isDetailPage()) return;
+
+    const interactive = event.target.closest(
+      "button, input, textarea, select, .bottom-nav, .global-guide-menu-wrapper, .guide-menu-wrapper"
+    );
+
+    if (interactive) return;
+
+    /*
+     * Listener halaman lama memblokir selectstart pada fase bubble.
+     * Menghentikan propagasi di fase capture membuat seleksi bawaan browser
+     * tetap berjalan tanpa menjalankan pemblokir lama tersebut.
+     */
+    event.stopPropagation();
+  }
+
   function init() {
     ensureStyle();
     syncActions();
+
+    document.addEventListener("selectstart", allowNativeTextSelection, true);
 
     const observer = new MutationObserver(syncActions);
     observer.observe(document.body, {
