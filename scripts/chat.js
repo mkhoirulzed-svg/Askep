@@ -13,6 +13,8 @@
   const input = document.getElementById("chatInput");
   const sendButton = document.getElementById("chatSendBtn");
   const clearButton = document.getElementById("clearChatBtn");
+  const composerShell = document.querySelector(".chat-composer-shell");
+  const bottomNav = document.querySelector(".bottom-nav");
 
   if (!chatMain || !chatStream || !welcome || !input || !sendButton || !clearButton) {
     console.error("Elemen Chat AI tidak lengkap.");
@@ -98,9 +100,24 @@
     }
   }
 
+  function updateViewportSpacing() {
+    const composerHeight = composerShell ? composerShell.getBoundingClientRect().height : 0;
+    const navHeight = window.innerWidth < 900 && bottomNav
+      ? bottomNav.getBoundingClientRect().height
+      : 0;
+    const spacing = Math.max(170, Math.ceil(composerHeight + navHeight + 28));
+
+    chatStream.style.paddingBottom = `${spacing}px`;
+    chatMain.style.scrollPaddingBottom = `${spacing}px`;
+  }
+
   function scrollToBottom() {
+    updateViewportSpacing();
     window.requestAnimationFrame(() => {
       chatMain.scrollTop = chatMain.scrollHeight;
+      window.setTimeout(() => {
+        chatMain.scrollTop = chatMain.scrollHeight;
+      }, 80);
     });
   }
 
@@ -181,7 +198,9 @@
   }
 
   function renderMessages() {
-    welcome.hidden = messages.length > 0;
+    const hasMessages = messages.length > 0;
+    welcome.hidden = hasMessages;
+    welcome.style.display = hasMessages ? "none" : "grid";
     chatStream.querySelectorAll(".chat-message").forEach(element => element.remove());
 
     messages.forEach((message, index) => {
@@ -198,6 +217,7 @@
   function autoResize() {
     input.style.height = "auto";
     input.style.height = `${Math.min(input.scrollHeight, 150)}px`;
+    updateViewportSpacing();
   }
 
   function apiHistory() {
@@ -338,6 +358,9 @@
     if (!messages.length) return;
     if (window.confirm("Hapus seluruh percakapan AI ASKEP?")) clearConversation();
   });
+
+  window.addEventListener("resize", updateViewportSpacing);
+  window.visualViewport?.addEventListener("resize", updateViewportSpacing);
 
   loadMessages();
   renderMessages();
