@@ -162,8 +162,29 @@
     hero.appendChild(row);
   }
 
+  function reorderDesktopClinicalSections() {
+    const column = document.querySelector(
+      ".page-diagnosis-detail .wide-detail-columns .wide-detail-column:first-child"
+    );
+    if (!column) return;
+
+    const sections = Array.from(column.children);
+    const mayorSection = sections.find(section =>
+      section.querySelector(".section-title")?.textContent?.includes("Gejala dan Tanda Mayor")
+    );
+    const minorSection = sections.find(section =>
+      section.querySelector(".section-title")?.textContent?.includes("Gejala dan Tanda Minor")
+    );
+
+    if (mayorSection && minorSection && mayorSection.compareDocumentPosition(minorSection) & Node.DOCUMENT_POSITION_PRECEDING) {
+      column.insertBefore(mayorSection, minorSection);
+    }
+  }
+
   function syncDiagnosisDetail() {
     if (!document.body.classList.contains("page-diagnosis-detail")) return;
+
+    reorderDesktopClinicalSections();
 
     const actionRow = document.querySelector("#heroArea .action-row");
     if (!actionRow) return;
@@ -231,11 +252,6 @@
 
     if (interactive) return;
 
-    /*
-     * Listener halaman lama memblokir selectstart pada fase bubble.
-     * Menghentikan propagasi di fase capture membuat seleksi bawaan browser
-     * tetap berjalan tanpa menjalankan pemblokir lama tersebut.
-     */
     event.stopPropagation();
   }
 
