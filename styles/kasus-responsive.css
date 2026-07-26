@@ -26,7 +26,7 @@ html[data-resolved-theme="dark"] body:has(.case-list) :where(
   color:var(--text);
 }
 
-/* Layout desktop Kasus. */
+/* Layout desktop Kasus Klinis. */
 @media (min-width:900px) {
   body:has(.case-list) {
     --desktop-sidebar-width:240px;
@@ -106,39 +106,97 @@ html[data-resolved-theme="dark"] body:has(.case-list) :where(
     padding:14px;
   }
 
+  /* Navigasi utama desktop dengan identitas ASKEP yang sama seperti halaman lain. */
   body:has(.case-list) .bottom-nav {
     top:0;
     right:auto;
     bottom:0;
     left:0;
     display:flex;
+    align-items:stretch;
     width:var(--desktop-sidebar-width);
     max-width:none;
     height:100vh;
-    padding:24px 16px;
+    height:100dvh;
+    gap:8px;
+    padding:116px 18px 24px;
+    overflow-x:hidden;
+    overflow-y:auto;
     transform:none;
     flex-direction:column;
-    gap:8px;
     border-top:0;
     border-right:1px solid var(--border);
     background:rgba(255,255,255,.97);
-    box-shadow:8px 0 30px rgba(15,23,42,.05);
+    box-shadow:8px 0 30px rgba(15,23,42,.04);
+  }
+
+  body:has(.case-list) .bottom-nav::before {
+    position:absolute;
+    top:28px;
+    left:22px;
+    width:42px;
+    height:42px;
+    border-radius:15px;
+    background-image:url("../icons/icon-512.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:cover;
+    box-shadow:0 9px 20px rgba(37,99,235,.20);
+    content:"";
+  }
+
+  body:has(.case-list) .bottom-nav::after {
+    position:absolute;
+    top:31px;
+    right:16px;
+    left:75px;
+    overflow:hidden;
+    color:var(--text);
+    content:"ASKEP\A Asuhan Keperawatan";
+    font-size:14px;
+    font-weight:800;
+    line-height:1.35;
+    white-space:pre-line;
   }
 
   body:has(.case-list) .bottom-item {
-    width:100%;
-    min-height:52px;
-    padding:0 14px;
-    flex-direction:row;
+    position:relative;
+    display:flex;
+    align-items:center;
     justify-content:flex-start;
+    flex:0 0 52px;
+    flex-direction:row;
+    width:100%;
+    height:52px;
+    min-height:52px;
     gap:12px;
+    padding:0 14px;
+    overflow:hidden;
+    border-radius:15px;
+    color:var(--muted);
     font-size:12px;
+    font-weight:700;
+    text-align:left;
   }
 
   body:has(.case-list) .bottom-item i {
     width:22px;
+    flex:0 0 22px;
     font-size:17px;
     text-align:center;
+  }
+
+  body:has(.case-list) .bottom-item span {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  body:has(.case-list) .bottom-item:hover,
+  body:has(.case-list) .bottom-item.active {
+    background:var(--primary-light);
+    color:var(--primary);
   }
 
   body:has(.case-list) .bottom-item.active {
