@@ -144,6 +144,7 @@ function ensurePageTags(filePath) {
   const detailActionsSrc = `${prefix}scripts/detail-copy-actions.js`;
   const guideMenuSrc = `${prefix}scripts/guide-menu-global.js`;
   const indexChatMenuSrc = `${prefix}scripts/index-chat-menu.js`;
+  const pwaInstallSrc = `${prefix}scripts/pwa-install.js`;
 
   // Hapus duplikasi untuk aset yang dikelola workflow.
   html = removeDuplicateTag(
@@ -178,6 +179,10 @@ function ensurePageTags(filePath) {
     html,
     /[ \t]*<script\b[^>]*src=["'][^"']*index-chat-menu\.js["'][^>]*>\s*<\/script>\s*/gi
   );
+  html = removeDuplicateTag(
+    html,
+    /[ \t]*<script\b[^>]*src=["'][^"']*pwa-install\.js["'][^>]*>\s*<\/script>\s*/gi
+  );
 
   const tags = [
     `<link rel="manifest" href="${manifestHref}">`,
@@ -188,6 +193,7 @@ function ensurePageTags(filePath) {
     `<script src="${detailActionsSrc}" defer></script>`,
     `<script src="${guideMenuSrc}" defer></script>`,
     `<script src="${indexChatMenuSrc}" defer></script>`,
+    `<script src="${pwaInstallSrc}" defer></script>`,
   ];
 
   // Masukkan sebelum </head>; script global memakai defer agar struktur halaman sudah tersedia.
