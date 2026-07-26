@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#eff6ff">
+  <meta name="description" content="Chat AI khusus asuhan keperawatan berbasis database ASKEP.">
+  <title>Chat AI ASKEP</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/responsive.css">
+  <link rel="stylesheet" href="../styles/chat.css">
+
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../icons/favicon.png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="../styles/settings-fixes.css">
+  <script src="../scripts/settings.js"></script>
+  <script src="../scripts/detail-copy-actions.js" defer></script>
+  <script src="../scripts/guide-menu-global.js" defer></script>
+  <script src="../scripts/chat.js" defer></script>
+</head>
+
+<body class="page-chat">
+  <div class="app">
+    <header class="chat-header">
+      <div class="chat-topbar">
+        <button class="nav-btn native-click" type="button" onclick="history.back()" aria-label="Kembali">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="chat-heading">
+          <h1><i class="fa-solid fa-user-nurse" aria-hidden="true"></i> AI ASKEP</h1>
+          <p>Asisten percakapan khusus asuhan keperawatan</p>
+        </div>
+
+        <button id="clearChatBtn" class="chat-clear-btn native-click" type="button" aria-label="Hapus percakapan" title="Hapus percakapan">
+          <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <main id="chatMain" class="chat-main">
+      <div id="chatStream" class="chat-stream" aria-live="polite">
+        <section id="chatWelcome" class="chat-welcome">
+          <div class="chat-welcome-inner">
+            <div class="chat-welcome-icon">
+              <i class="fa-solid fa-user-nurse" aria-hidden="true"></i>
+            </div>
+
+            <h2>Apa yang ingin Anda bahas?</h2>
+            <p>
+              Tanyakan pengkajian, analisis data, kemungkinan diagnosis SDKI, luaran SLKI,
+              intervensi SIKI, SOAP, atau penyusunan asuhan keperawatan.
+            </p>
+
+            <div class="chat-suggestions">
+              <button class="chat-suggestion native-click" type="button" data-chat-prompt="Pasien mengeluh sesak, batuk berdahak, dan terdengar ronki. Data apa lagi yang perlu saya kaji dan apa kandidat diagnosis SDKI yang perlu dipertimbangkan?">
+                <i class="fa-solid fa-lungs"></i>
+                <span><strong>Analisis gejala pasien</strong><span>Bantu mengarahkan pengkajian dan kandidat diagnosis.</span></span>
+              </button>
+
+              <button class="chat-suggestion native-click" type="button" data-chat-prompt="Jelaskan cara menyusun analisis data keperawatan dari data subjektif dan objektif sampai menentukan etiologi dan masalah.">
+                <i class="fa-solid fa-list-check"></i>
+                <span><strong>Susun analisis data</strong><span>Pelajari alur dari data menuju masalah keperawatan.</span></span>
+              </button>
+
+              <button class="chat-suggestion native-click" type="button" data-chat-prompt="Bantu saya membuat contoh evaluasi SOAP untuk pasien dengan nyeri akut setelah tindakan keperawatan.">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span><strong>Buat evaluasi SOAP</strong><span>Susun contoh dokumentasi perkembangan pasien.</span></span>
+              </button>
+
+              <button class="chat-suggestion native-click" type="button" data-chat-prompt="Apa perbedaan fungsi SDKI, SLKI, dan SIKI dalam penyusunan asuhan keperawatan? Berikan contoh alurnya.">
+                <i class="fa-solid fa-book-medical"></i>
+                <span><strong>Pahami SDKI–SLKI–SIKI</strong><span>Lihat hubungan diagnosis, luaran, dan intervensi.</span></span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="chat-composer-shell">
+      <div class="chat-composer">
+        <textarea
+          id="chatInput"
+          class="chat-input"
+          rows="1"
+          maxlength="5000"
+          autocomplete="off"
+          placeholder="Tanyakan tentang asuhan keperawatan..."
+          aria-label="Pesan untuk AI ASKEP"
+        ></textarea>
+
+        <button id="chatSendBtn" class="chat-send-btn native-click" type="button" aria-label="Kirim pesan" disabled>
+          <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="chat-composer-note">
+        AI bersifat pendukung. Hindari memasukkan identitas lengkap pasien dan tetap verifikasi dengan pengkajian klinis.
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="../index.html" class="bottom-item native-click">
+      <i class="fa-solid fa-house" aria-hidden="true"></i>
+      <span>Home</span>
+    </a>
+    <a href="search.html" class="bottom-item native-click">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <span>Cari</span>
+    </a>
+    <a href="quick-askep.html" class="bottom-item native-click">
+      <i class="fa-solid fa-notes-medical" aria-hidden="true"></i>
+      <span>Askep</span>
+    </a>
+    <a href="profil.html" class="bottom-item native-click">
+      <i class="fa-solid fa-user-nurse" aria-hidden="true"></i>
+      <span>Profil</span>
+    </a>
+  </nav>
+</body>
+</html>
