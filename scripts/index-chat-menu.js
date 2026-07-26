@@ -1,0 +1,37 @@
+(function () {
+  "use strict";
+
+  function isHomePage() {
+    const path = window.location.pathname.replace(/\/+$/, "");
+    const file = path.split("/").pop() || "";
+    return !file || file === "Askep" || file === "index.html";
+  }
+
+  function addChatCard() {
+    if (!isHomePage()) return;
+
+    const grid = document.querySelector(".quick-grid");
+    if (!grid || grid.querySelector('[href="pages/chat.html"]')) return;
+
+    const card = document.createElement("a");
+    card.href = "pages/chat.html";
+    card.className = "quick-card native-click";
+    card.setAttribute("aria-label", "Buka Chat AI ASKEP");
+    card.innerHTML = `
+      <div class="quick-icon">
+        <i class="fa-solid fa-user-nurse" aria-hidden="true"></i>
+      </div>
+      <div class="quick-label">Chat AI</div>
+    `;
+
+    const generatorCard = grid.querySelector('[href="pages/generator.html"]');
+    if (generatorCard) grid.insertBefore(card, generatorCard);
+    else grid.appendChild(card);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addChatCard, { once: true });
+  } else {
+    addChatCard();
+  }
+})();
