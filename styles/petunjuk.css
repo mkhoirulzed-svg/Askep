@@ -1,0 +1,692 @@
+/* =========================================================
+   HALAMAN PETUNJUK APLIKASI ASKEP
+   Dipakai khusus oleh pages/petunjuk.html.
+========================================================= */
+
+.page-petunjuk {
+  overflow-x: hidden;
+  background: var(--bg);
+}
+
+.page-petunjuk .app {
+  background:
+    radial-gradient(circle at 94% 2%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 24%),
+    linear-gradient(180deg, var(--primary-light) 0%, var(--bg) 380px);
+}
+
+.petunjuk-header {
+  padding: 18px 18px 14px;
+}
+
+.petunjuk-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.petunjuk-heading {
+  min-width: 0;
+  flex: 1;
+}
+
+.petunjuk-heading h1 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.petunjuk-heading p {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.petunjuk-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 18px 38px color-mix(in srgb, var(--primary) 25%, transparent);
+  color: #fff;
+}
+
+.petunjuk-hero::after {
+  position: absolute;
+  top: -70px;
+  right: -55px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.11);
+  content: "";
+}
+
+.petunjuk-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.petunjuk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.petunjuk-hero h2 {
+  max-width: 760px;
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.petunjuk-hero p {
+  max-width: 720px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.65;
+  opacity: 0.94;
+}
+
+.petunjuk-content {
+  padding: 18px 18px 0;
+}
+
+.help-layout {
+  display: block;
+}
+
+.help-nav {
+  margin-bottom: 16px;
+}
+
+.help-nav-title {
+  margin: 0 0 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.help-nav-list {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0 7px;
+  scrollbar-width: none;
+}
+
+.help-nav-list::-webkit-scrollbar {
+  display: none;
+}
+
+.help-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.help-nav-link:hover,
+.help-nav-link:focus-visible {
+  border-color: var(--primary-soft);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.help-main {
+  min-width: 0;
+}
+
+.help-intro-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.help-summary-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+
+.help-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 14px;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.help-summary-copy {
+  min-width: 0;
+}
+
+.help-summary-title {
+  margin-bottom: 3px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.help-summary-desc {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.help-section {
+  scroll-margin-top: 20px;
+  margin-bottom: 15px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+
+.help-section-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 13px;
+}
+
+.help-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 13px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.help-section-heading {
+  min-width: 0;
+}
+
+.help-section-heading h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.help-section-heading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.help-steps {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.help-step {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+}
+
+.help-step-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--card) 72%, var(--primary-light));
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.help-step-copy {
+  min-width: 0;
+  padding-top: 3px;
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.help-step-copy strong {
+  font-weight: 800;
+}
+
+.help-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 13px;
+  padding: 11px 12px;
+  border: 1px solid var(--primary-soft);
+  border-radius: 14px;
+  background: var(--primary-light);
+  color: var(--text);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.help-note i {
+  margin-top: 2px;
+  color: var(--primary);
+}
+
+.help-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+}
+
+.help-feature {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--card) 90%, var(--bg));
+}
+
+.help-feature-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.help-feature-title i {
+  color: var(--primary);
+}
+
+.help-feature p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.help-faq {
+  display: grid;
+  gap: 9px;
+}
+
+.help-faq details {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--card) 94%, var(--bg));
+}
+
+.help-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.help-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.help-faq summary::after {
+  color: var(--primary);
+  content: "+";
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.help-faq details[open] summary::after {
+  content: "−";
+}
+
+.help-faq-answer {
+  padding: 0 12px 12px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.help-warning {
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, var(--border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--warning) 10%, var(--card));
+}
+
+.help-warning-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.help-warning-title i {
+  color: var(--warning);
+}
+
+.help-warning p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* Menu kanan atas, mengikuti pola index.html. */
+.guide-menu-wrapper {
+  position: relative;
+  z-index: 100;
+}
+
+.guide-menu-button {
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.guide-menu-button.active {
+  background: var(--card);
+  color: var(--primary);
+}
+
+.guide-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(280px, calc(100vw - 32px));
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(.98);
+  transform-origin: top right;
+  transition: opacity .2s ease, visibility .2s ease, transform .2s ease;
+}
+
+.guide-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.guide-dropdown-header {
+  padding: 10px 12px 8px;
+}
+
+.guide-dropdown-title {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.guide-dropdown-subtitle {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.guide-dropdown-divider {
+  height: 1px;
+  margin: 5px 6px;
+  background: var(--border);
+}
+
+.guide-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.guide-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.guide-menu-item:hover,
+.guide-menu-item.current {
+  background: var(--primary-light);
+}
+
+.guide-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 11px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 14px;
+}
+
+.guide-menu-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.guide-menu-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.guide-menu-description {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.guide-menu-chevron {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 380px) {
+  .guide-dropdown {
+    position: fixed;
+    top: 72px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+
+@media (min-width: 600px) {
+  .petunjuk-header,
+  .petunjuk-content {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .help-intro-grid,
+  .help-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .page-petunjuk .app {
+    padding-bottom: 48px;
+  }
+
+  .petunjuk-header,
+  .petunjuk-content {
+    width: min(calc(100% - 48px), var(--content-max-width));
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .petunjuk-header {
+    padding-top: 32px;
+    padding-bottom: 20px;
+  }
+
+  .petunjuk-hero {
+    min-height: 210px;
+    display: flex;
+    align-items: center;
+    padding: 36px 40px;
+  }
+
+  .petunjuk-hero h2 {
+    font-size: clamp(28px, 3vw, 40px);
+  }
+
+  .petunjuk-hero p {
+    font-size: 13px;
+  }
+
+  .petunjuk-content {
+    padding-top: 8px;
+  }
+
+  .help-layout {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+
+  .help-nav {
+    position: sticky;
+    top: 22px;
+    margin-bottom: 0;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .help-nav-title {
+    margin-bottom: 11px;
+  }
+
+  .help-nav-list {
+    display: grid;
+    gap: 5px;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .help-nav-link {
+    width: 100%;
+    min-height: 40px;
+    justify-content: flex-start;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .help-section {
+    padding: 20px;
+  }
+
+  .help-section-heading h2 {
+    font-size: 17px;
+  }
+
+  .help-step-copy,
+  .help-summary-title {
+    font-size: 12px;
+  }
+
+  .help-summary-desc,
+  .help-section-heading p,
+  .help-note,
+  .help-feature p,
+  .help-faq-answer,
+  .help-warning p {
+    font-size: 11px;
+  }
+}
+
+html[data-resolved-theme="dark"] .page-petunjuk :where(
+  .help-summary-card,
+  .help-section,
+  .help-nav,
+  .guide-dropdown,
+  .help-faq details
+) {
+  border-color: var(--border);
+  background: var(--card);
+}
+
+html[data-resolved-theme="dark"] .page-petunjuk :where(
+  .help-feature,
+  .help-step-marker
+) {
+  background: color-mix(in srgb, var(--card) 88%, var(--bg));
+}
