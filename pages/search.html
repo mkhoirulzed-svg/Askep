@@ -318,7 +318,7 @@ function uniqueArray(items){
 }
 
 function getItemKey(item){
-  return pick(item, ["kode", "code", "id", "nomor", "no"]);
+  return pick(item, ["id", "kode", "code", "nomor", "no"]);
 }
 
 function getItemCode(item){
@@ -1050,7 +1050,7 @@ function renderGroup(title, items, groupKey, query, description = ""){
 
 function renderCard(item, query){
   const type = item.type;
-  const id = item.kode || item.id || "";
+  const id = item.id || item.kode || "";
   const kode = item.kode || "";
   const title = item.title || "Tanpa Judul";
   const desc = item.desc || "Ketuk untuk melihat detail lengkap.";
