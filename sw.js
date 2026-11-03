@@ -8,7 +8,7 @@
  * Contoh:
  * askep-v1.0.0 → askep-v1.0.1
  */
-const APP_VERSION = "askep-v1.0.0";
+const APP_VERSION = "askep-v1.0.1";
 
 const APP_CACHE = `${APP_VERSION}-app`;
 const RUNTIME_CACHE = `${APP_VERSION}-runtime`;
@@ -32,20 +32,23 @@ const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-
-  /* Ikon aplikasi */
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
   "./icons/favicon.png",
-
-  /* Halaman */
   "./pages/askep-lengkap.html",
   "./pages/cari-gejala.html",
+  "./pages/chat.html",
   "./pages/diagnosis-detail.html",
   "./pages/favorit.html",
+  "./pages/generator.html",
+  "./pages/genogram.html",
   "./pages/kasus.html",
+  "./pages/kontak.html",
+  "./pages/pengaturan.html",
+  "./pages/petunjuk.html",
+  "./pages/privasi.html",
   "./pages/profil.html",
   "./pages/quick-askep.html",
   "./pages/sdki.html",
@@ -55,27 +58,49 @@ const APP_SHELL = [
   "./pages/slki-detail.html",
   "./pages/slki.html",
   "./pages/soap.html",
-
-  /* JavaScript */
   "./scripts/cari-gejala.js",
+  "./scripts/chat.js",
+  "./scripts/detail-copy-actions.js",
   "./scripts/diagnosis-detail.js",
+  "./scripts/genogram.js",
+  "./scripts/guide-menu-global.js",
+  "./scripts/index-chat-menu.js",
+  "./scripts/pwa-install.js",
+  "./scripts/pwa.js",
   "./scripts/sdki.js",
+  "./scripts/settings.js",
   "./scripts/siki-detail.js",
   "./scripts/siki.js",
   "./scripts/slki.js",
-
-  /* CSS */
+  "./styles/askep-lengkap-dark.css",
+  "./styles/askep-lengkap-desktop.css",
   "./styles/cari-gejala.css",
+  "./styles/chat-scroll-fix.css",
+  "./styles/chat.css",
   "./styles/components.css",
+  "./styles/daftar-standar-dark.css",
   "./styles/daftar-standar.css",
+  "./styles/detail-standar-dark.css",
   "./styles/detail-standar.css",
+  "./styles/diagnosis-detail-dark.css",
   "./styles/diagnosis-detail.css",
+  "./styles/generator-tools.css",
   "./styles/global.css",
+  "./styles/info-pages.css",
+  "./styles/kasus-responsive.css",
   "./styles/layout.css",
+  "./styles/pengaturan.css",
+  "./styles/petunjuk.css",
+  "./styles/profil-dark.css",
   "./styles/profil.css",
+  "./styles/pwa-install.css",
   "./styles/responsive.css",
+  "./styles/search-dark.css",
   "./styles/search.css",
-  "./styles/siki-detail.css"
+  "./styles/settings-fixes.css",
+  "./styles/siki-detail.css",
+  "./styles/soap-dark.css",
+  "./styles/workflow-dark.css"
 ];
 
 /* =========================================================
