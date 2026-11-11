@@ -256,12 +256,19 @@
     updateSendState();
 
     try {
+      const auth = window.askepAuth;
+      if (!auth) throw new Error("Layanan login belum siap. Muat ulang halaman.");
+      const user = auth.currentUser;
+      if (!user) throw new Error("Silakan login dengan Google melalui halaman Profil sebelum menggunakan Chat AI.");
+      const idToken = await user.getIdToken();
+
       const response = await fetch(API_URL, {
         method: "POST",
         signal: requestController.signal,
         headers: {
           "Accept": "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + idToken
         },
         body: JSON.stringify({
           message,
