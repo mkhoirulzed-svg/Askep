@@ -24,6 +24,23 @@
   <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
   <link rel="stylesheet" href="../styles/settings-fixes.css">
   <script src="../scripts/settings.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+  <script>
+    const askepFirebaseConfig = {
+      apiKey: "AIzaSyChTj0cPYydn-VRaCnYXX4lBKiGmcIIb8Q",
+      authDomain: "sdki-a3960.firebaseapp.com",
+      projectId: "sdki-a3960",
+      storageBucket: "sdki-a3960.firebasestorage.app",
+      messagingSenderId: "577189478908",
+      appId: "1:577189478908:web:efe83142bb88bbc5b07279",
+      measurementId: "G-845T8J7J98"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(askepFirebaseConfig);
+    window.askepAuth = firebase.auth();
+  </script>
+
   <script src="../scripts/detail-copy-actions.js" defer></script>
   <script src="../scripts/guide-menu-global.js" defer></script>
   <script src="../scripts/chat.js" defer></script>
