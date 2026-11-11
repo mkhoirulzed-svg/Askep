@@ -43,6 +43,12 @@ Cloudflare Worker variables/secrets to configure:
 
 The Midtrans Client Key is public and belongs in the frontend configuration only after the Production integration is ready. Never share Server Key in chat or commit it.
 
+## Worker source and chat authentication
+
+- The integrated Worker source for review/deployment is `cloudflare/worker.js`. It is based on the existing uploaded Worker source and retains the R2 data routes and KiosAPI chat implementation.
+- `pages/chat.html` initializes the existing Firebase project and `scripts/chat.js` sends the Firebase ID token as a Bearer token. The chat endpoint now requires a signed-in Google account.
+- Review and deploy this Worker only after the D1 migration and `ASKEP_DB` binding are ready. Do not overwrite the currently deployed Worker before testing the new version.
+
 ## Planned API contract
 
 - `POST /api/payment/create` — authenticated Firebase ID token; creates a pending D1 order and requests a Snap Production token.
