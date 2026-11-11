@@ -258,6 +258,7 @@
     try {
       const auth = window.askepAuth;
       if (!auth) throw new Error("Layanan login belum siap. Muat ulang halaman.");
+      if (window.askepAuthReady) await window.askepAuthReady;
       const user = auth.currentUser;
       if (!user) throw new Error("Silakan login dengan Google melalui halaman Profil sebelum menggunakan Chat AI.");
       const idToken = await user.getIdToken();
