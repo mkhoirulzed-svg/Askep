@@ -1,48 +1,65 @@
-# ASKEP Premium — Cloudflare D1 preparation
+# ASKEP Premium — Cloudflare D1 and Midtrans
 
-This branch prepares the database schema for the Rp9,000 one-time lifetime Premium plan.
+This branch prepares the Rp9,000 one-time lifetime Premium plan.
 
-## Architecture boundary
-- R2 remains the source of truth for SDKI, SLKI, SIKI, relations, and case data.
-- D1 stores account entitlement, Midtrans transaction state, and AI daily usage only.
+## Existing production resources
+
+- Existing D1 database: **askep-premium-db**.
+- Existing tables (confirmed from the D1 Studio SQL shown by the user):
+  - `payment_transactions`
+  - `premium_users`
+- Existing table structures are retained. Do not create a second D1 database.
+- R2 binding `ASKEP_DATA` remains the source of truth for SDKI, SLKI, SIKI, relations, and case data.
 - Firebase Google Authentication remains the identity provider.
-- Midtrans Snap Production is created server-side by the Worker.
-- Premium is activated only after a valid Midtrans notification is verified server-side.
 
-## D1 schema
-Apply `schema.sql` to a NEW D1 database named `askep-premium`.
-Do not run it against or replace the R2 dataset.
+## Database migration
 
-## Worker binding and secrets (not yet configured)
-Binding:
-- D1 binding variable: `ASKEP_DB`
-- Database: `askep-premium`
+For the existing `askep-premium-db`, apply only:
 
-Secrets / variables to configure in Cloudflare Worker:
+`d1/migrations/0002_existing_premium_db.sql`
+
+This creates `ai_daily_usage` and indexes for the existing transaction table. It does not drop, rename, or recreate either existing table.
+
+Do **not** apply `d1/schema.sql` to this existing database. That file is a reference schema for a clean, separate database and uses a different entitlement layout.
+
+## Worker binding and configuration
+
+Add a D1 binding to the existing ASKEP Worker:
+
+- Variable name: `ASKEP_DB`
+- Database: `askep-premium-db`
+
+Keep the existing R2 binding `ASKEP_DATA` unchanged.
+
+Cloudflare Worker variables/secrets to configure:
+
 - Secret `MIDTRANS_SERVER_KEY` — Production Server Key; never put in frontend or Git.
 - Variable `MIDTRANS_IS_PRODUCTION` = `true`
 - Variable `FIREBASE_PROJECT_ID` = `sdki-a3960`
 - Variable `PREMIUM_PRICE_IDR` = `9000`
 - Variable `FREE_AI_DAILY_LIMIT` = `5`
-- Variable `PREMIUM_AI_DAILY_LIMIT` — choose a finite initial limit before enabling paid AI access.
-- Variable `ALLOWED_ORIGINS` — exact production website origin(s), comma-separated.
+- Variable `PREMIUM_AI_DAILY_LIMIT` = `50` (initial proposed limit; can be adjusted)
+- Variable `ALLOWED_ORIGINS` = exact production website origin(s), comma-separated.
 
-Do not paste any secret into chat or commit it to the repository. Use Cloudflare Worker Settings → Variables and Secrets.
+The Midtrans Client Key is public and belongs in the frontend configuration only after the Production integration is ready. Never share Server Key in chat or commit it.
 
 ## Planned API contract
-- `POST /api/payment/create` — authenticated Firebase ID token; creates a pending D1 order and requests a Snap Production token.
-- `POST /api/payment/notification` — public Midtrans webhook; validates signature and amount/order mapping; idempotently updates transaction and Premium entitlement.
-- `GET /api/account/status` — authenticated; returns server-derived Premium state and remaining AI quota.
-- `POST /api/ai/chat` — require Firebase ID token, atomically consume daily quota, then call existing KiosAPI flow.
 
-## Important activation rules
+- `POST /api/payment/create` — authenticated Firebase ID token; creates a pending D1 order and requests a Snap Production token.
+- `POST /api/payment/notification` — public Midtrans webhook; validates signature, amount, and order mapping; idempotently updates transaction and Premium entitlement.
+- `GET /api/account/status` — authenticated; returns server-derived Premium state and remaining AI quota.
+- `POST /api/ai/chat` — requires Firebase ID token, consumes the daily quota, then calls the existing KiosAPI flow.
+
+## Activation and security rules
+
 - Never activate Premium from a browser redirect or client-side callback.
 - Verify Firebase ID tokens (signature, issuer, audience, expiry) in the Worker.
 - Verify Midtrans signature using SHA-512 of `order_id + status_code + gross_amount + ServerKey`.
-- Confirm order exists in D1, belongs to the same UID, and amount is exactly IDR 9000.
+- Confirm the order exists in D1, belongs to the authenticated UID, and amount is exactly IDR 9000.
 - Only `settlement`, or `capture` with `fraud_status=accept`, grants lifetime Premium.
-- Make notifications idempotent. A repeated webhook must not duplicate or downgrade an already valid entitlement.
-- Do not store Server Key, Client Key, access tokens, or payment credentials in D1 or frontend source.
+- Make notifications idempotent; repeated webhooks must not duplicate or downgrade entitlement.
+- Never store Server Key, access tokens, or payment credentials in D1 or frontend source.
 
 ## Deployment status
-This is a preparation branch only. No Worker deployment, D1 creation, Midtrans key setup, or production payment has been performed by this change.
+
+The database itself already exists. This repository change does not apply the migration, configure Worker bindings/secrets, deploy the Worker, or initiate a real payment. Those Cloudflare dashboard actions still require the account owner.
