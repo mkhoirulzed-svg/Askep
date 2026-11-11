@@ -378,7 +378,7 @@ async function authenticateFirebaseRequest(request, env) {
 }
 
 function requireD1(env) {
-  return Boolean(env.ASKEP_DB && typeof env.ASKEP_DB.prepare === "function");
+  return Boolean(env.DB && typeof env.DB.prepare === "function");
 }
 
 function utcDateString() {
@@ -386,18 +386,18 @@ function utcDateString() {
 }
 
 async function getPremiumState(env, uid) {
-  const row = await env.ASKEP_DB.prepare(
+  const row = await env.DB.prepare(
     "SELECT uid, status, activated_at, payment_order_id FROM premium_users WHERE uid = ? LIMIT 1"
   ).bind(uid).first();
   return Boolean(row && row.status === "active");
 }
 
 async function handleAccountStatus(env, corsHeaders, user) {
-  if (!requireD1(env)) return sendJson({ success: false, code: "D1_NOT_CONFIGURED", message: "Binding D1 ASKEP_DB belum tersedia." }, 500, corsHeaders);
+  if (!requireD1(env)) return sendJson({ success: false, code: "D1_NOT_CONFIGURED", message: "Binding D1 DB belum tersedia." }, 500, corsHeaders);
   try {
     const premium = await getPremiumState(env, user.uid);
     const date = utcDateString();
-    const usage = await env.ASKEP_DB.prepare(
+    const usage = await env.DB.prepare(
       "SELECT question_count FROM ai_daily_usage WHERE uid = ? AND usage_date = ?"
     ).bind(user.uid, date).first();
     const limit = premium
@@ -427,7 +427,7 @@ async function consumeAiQuota(env, uid) {
     const limit = premium
       ? Math.max(1, Number(env.PREMIUM_AI_DAILY_LIMIT || 50))
       : Math.max(1, Number(env.FREE_AI_DAILY_LIMIT || 5));
-    const result = await env.ASKEP_DB.prepare(
+    const result = await env.DB.prepare(
       "INSERT INTO ai_daily_usage (uid, usage_date, question_count, updated_at) VALUES (?, ?, 1, datetime('now')) " +
       "ON CONFLICT(uid, usage_date) DO UPDATE SET question_count = question_count + 1, updated_at = datetime('now') " +
       "WHERE question_count < ? RETURNING question_count"
@@ -448,7 +448,7 @@ async function consumeAiQuota(env, uid) {
 }
 
 async function handleCreatePayment(request, env, corsHeaders, user) {
-  if (!requireD1(env)) return sendJson({ success: false, code: "D1_NOT_CONFIGURED", message: "Binding D1 ASKEP_DB belum tersedia." }, 500, corsHeaders);
+  if (!requireD1(env)) return sendJson({ success: false, code: "D1_NOT_CONFIGURED", message: "Binding D1 DB belum tersedia." }, 500, corsHeaders);
   if (!env.MIDTRANS_SERVER_KEY) return sendJson({ success: false, code: "PAYMENT_NOT_CONFIGURED", message: "Midtrans Server Key belum dikonfigurasi di Worker." }, 503, corsHeaders);
 
   try {
@@ -460,7 +460,7 @@ async function handleCreatePayment(request, env, corsHeaders, user) {
     const amount = Math.max(1, Number(env.PREMIUM_PRICE_IDR || 9000));
     if (amount !== 9000) throw new Error("Configured Premium price must remain IDR 9000");
 
-    await env.ASKEP_DB.prepare(
+    await env.DB.prepare(
       "INSERT INTO payment_transactions (order_id, uid, amount, status) VALUES (?, ?, ?, 'pending')"
     ).bind(orderId, user.uid, amount).run();
 
@@ -480,7 +480,7 @@ async function handleCreatePayment(request, env, corsHeaders, user) {
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || !payload.token) {
-      await env.ASKEP_DB.prepare("UPDATE payment_transactions SET status = 'failure', updated_at = datetime('now') WHERE order_id = ?").bind(orderId).run();
+      await env.DB.prepare("UPDATE payment_transactions SET status = 'failure', updated_at = datetime('now') WHERE order_id = ?").bind(orderId).run();
       console.error("Midtrans Snap create failed:", response.status, payload);
       return sendJson({ success: false, code: "MIDTRANS_CREATE_FAILED", message: "Midtrans belum dapat membuat transaksi. Silakan coba kembali." }, 502, corsHeaders);
     }
@@ -524,7 +524,7 @@ async function handleMidtransNotification(request, env, corsHeaders) {
       return sendJson({ success: false, code: "INVALID_SIGNATURE" }, 401, corsHeaders);
     }
 
-    const transaction = await env.ASKEP_DB.prepare(
+    const transaction = await env.DB.prepare(
       "SELECT order_id, uid, amount, status FROM payment_transactions WHERE order_id = ? LIMIT 1"
     ).bind(orderId).first();
     if (!transaction) return sendJson({ success: false, code: "ORDER_NOT_FOUND" }, 404, corsHeaders);
@@ -546,18 +546,18 @@ async function handleMidtransNotification(request, env, corsHeaders) {
       orderId,
     ];
 
-    await env.ASKEP_DB.prepare(
+    await env.DB.prepare(
       "UPDATE payment_transactions SET status = ?, transaction_id = ?, payment_type = ?, fraud_status = ?, raw_notification = ?, updated_at = datetime('now') WHERE order_id = ?"
     ).bind(...values).run();
 
     if (grantPremium) {
-      await env.ASKEP_DB.prepare(
+      await env.DB.prepare(
         "INSERT INTO premium_users (uid, status, activated_at, payment_order_id, created_at, updated_at) " +
         "VALUES (?, 'active', datetime('now'), ?, datetime('now'), datetime('now')) " +
         "ON CONFLICT(uid) DO UPDATE SET status = 'active', activated_at = COALESCE(premium_users.activated_at, excluded.activated_at), payment_order_id = excluded.payment_order_id, updated_at = datetime('now')"
       ).bind(transaction.uid, orderId).run();
     } else if (txStatus === "refund" || txStatus === "chargeback") {
-      await env.ASKEP_DB.prepare(
+      await env.DB.prepare(
         "DELETE FROM premium_users WHERE uid = ? AND payment_order_id = ?"
       ).bind(transaction.uid, orderId).run();
     }
