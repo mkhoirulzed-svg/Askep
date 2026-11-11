@@ -39,6 +39,7 @@
     };
     if (!firebase.apps.length) firebase.initializeApp(askepFirebaseConfig);
     window.askepAuth = firebase.auth();
+    window.askepAuthReady = new Promise(resolve => window.askepAuth.onAuthStateChanged(resolve));
   </script>
 
   <script src="../scripts/detail-copy-actions.js" defer></script>
