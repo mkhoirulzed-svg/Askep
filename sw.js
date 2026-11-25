@@ -8,7 +8,7 @@
  * Contoh:
  * askep-v1.0.0 → askep-v1.0.1
  */
-const APP_VERSION = "askep-v1.0.2";
+const APP_VERSION = "askep-v1.0.3";
 
 const APP_CACHE = `${APP_VERSION}-app`;
 const RUNTIME_CACHE = `${APP_VERSION}-runtime`;
@@ -48,6 +48,7 @@ const APP_SHELL = [
   "./pages/kontak.html",
   "./pages/pengaturan.html",
   "./pages/petunjuk.html",
+  "./pages/premium.html",
   "./pages/privasi.html",
   "./pages/profil.html",
   "./pages/quick-askep.html",
