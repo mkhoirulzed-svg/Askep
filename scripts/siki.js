@@ -562,11 +562,6 @@ document.addEventListener("click", function(event){
   }, 600);
 });
 
-if(!allowedElement){
-    event.preventDefault();
-  }
-});
-
 /* =========================
    INIT
 ========================= */
