@@ -516,6 +516,12 @@
     event.stopPropagation();
   }
 
+  // API internal agar fungsi copyDiagnosis langsung pun tetap gated.
+  window.AskepCopyProtection = {
+    checkPremiumStatus,
+    showUpgradeModal
+  };
+
   function init() {
     ensureStyle();
     setFreeCopyProtection(false); // Default terkunci sampai Premium terverifikasi.
