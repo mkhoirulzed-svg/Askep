@@ -15,9 +15,10 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      body.askep-free-copy-locked, body.askep-free-copy-locked *:not(input):not(textarea):not([contenteditable="true"]) {
+      body.askep-free-copy-locked, body.askep-free-copy-locked * {
         -webkit-user-select: none !important;
         user-select: none !important;
+        -webkit-touch-callout: none !important;
       }
       body.askep-free-copy-locked input, body.askep-free-copy-locked textarea,
       body.askep-free-copy-locked [contenteditable="true"] {
@@ -295,6 +296,14 @@
     document.body.classList.toggle("askep-free-copy-locked", !isPremium);
   }
 
+  function blockSelection(event) {
+    if (!document.body.classList.contains("askep-free-copy-locked")) return;
+    if (event.target?.closest?.("input, textarea, [contenteditable='true']")) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+  }
+
   function blockManualCopy(event) {
     if (!document.body.classList.contains("askep-free-copy-locked")) return;
     event.preventDefault();
@@ -498,10 +507,15 @@
   function init() {
     ensureStyle();
     setFreeCopyProtection(false); // Default terkunci sampai Premium terverifikasi.
+    window.addEventListener("copy", blockManualCopy, true);
     document.addEventListener("copy", blockManualCopy, true);
+    window.addEventListener("cut", blockManualCopy, true);
     document.addEventListener("cut", blockManualCopy, true);
     document.addEventListener("keydown", blockCopyShortcut, true);
+    window.addEventListener("contextmenu", blockContextMenu, true);
     document.addEventListener("contextmenu", blockContextMenu, true);
+    window.addEventListener("selectstart", blockSelection, true);
+    document.addEventListener("selectstart", blockSelection, true);
     document.addEventListener("click", captureCopyAction, true);
     syncActions();
 
