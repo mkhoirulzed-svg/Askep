@@ -519,17 +519,21 @@
   function init() {
     ensureStyle();
     setFreeCopyProtection(false); // Default terkunci sampai Premium terverifikasi.
-    window.addEventListener("copy", blockManualCopy, true);
     document.addEventListener("copy", blockManualCopy, true);
-    window.addEventListener("cut", blockManualCopy, true);
     document.addEventListener("cut", blockManualCopy, true);
     document.addEventListener("keydown", blockCopyShortcut, true);
-    window.addEventListener("contextmenu", blockContextMenu, true);
     document.addEventListener("contextmenu", blockContextMenu, true);
-    window.addEventListener("selectstart", blockSelection, true);
     document.addEventListener("selectstart", blockSelection, true);
     document.addEventListener("click", captureCopyAction, true);
     syncActions();
+
+    // Jalankan verifikasi akun pada semua halaman konten yang diproteksi.
+    // Free, guest, atau status yang gagal diverifikasi tetap dalam keadaan terkunci.
+    if (isProtectedContentPage()) {
+      checkPremiumStatus().then(status => {
+        setFreeCopyProtection(status === true);
+      }).catch(() => setFreeCopyProtection(false));
+    }
 
     const premiumPage = location.pathname.endsWith("/askep-lengkap.html") || location.pathname.endsWith("/soap.html");
     if (premiumPage) {
