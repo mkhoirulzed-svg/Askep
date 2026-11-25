@@ -552,7 +552,10 @@
       });
     }
 
-    document.addEventListener("selectstart", allowNativeTextSelection, true);\n    document.addEventListener("selectionchange", clearFreeSelection, true);\n    document.addEventListener("mouseup", clearFreeSelection, true);\n    document.addEventListener("touchend", clearFreeSelection, { capture: true, passive: true });
+    document.addEventListener("selectstart", allowNativeTextSelection, true);
+    document.addEventListener("selectionchange", clearFreeSelection, true);
+    document.addEventListener("mouseup", clearFreeSelection, true);
+    document.addEventListener("touchend", clearFreeSelection, { capture: true, passive: true });
 
     const observer = new MutationObserver(syncActions);
     observer.observe(document.body, {
