@@ -15,6 +15,26 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
+      .askep-premium-page-locked .app,.askep-premium-page-locked .app-shell{pointer-events:none;opacity:.58;filter:blur(1px)}
+      .askep-upgrade-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.58);backdrop-filter:blur(5px)}
+      .askep-upgrade-overlay[hidden]{display:none!important}
+      .askep-upgrade-modal{position:relative;width:min(100%,420px);max-height:min(90vh,760px);overflow:auto;padding:26px 22px 22px;border-radius:24px;background:#fff;color:#0f172a;box-shadow:0 25px 80px rgba(15,23,42,.28);font-family:inherit}
+      .askep-upgrade-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:12px;background:#f1f5f9;color:#64748b;font-size:16px;cursor:pointer}
+      .askep-upgrade-icon{display:flex;align-items:center;justify-content:center;width:54px;height:54px;margin:0 auto 12px;border-radius:17px;background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;font-size:22px}
+      .askep-upgrade-eyebrow{text-align:center;margin:0;color:#b45309;font-size:10px;font-weight:900;letter-spacing:.12em}
+      .askep-upgrade-modal h2{text-align:center;margin:6px 0 8px;font-size:21px;font-weight:900}
+      .askep-upgrade-desc{text-align:center;margin:0;color:#64748b;font-size:12px;line-height:1.6}
+      .askep-upgrade-price{display:flex;flex-direction:column;align-items:center;gap:3px;margin:18px 0;padding:14px;border:1px solid #fde68a;border-radius:16px;background:#fffbeb}
+      .askep-upgrade-price strong{color:#b45309;font-size:28px;font-weight:900}
+      .askep-upgrade-price span{color:#92400e;font-size:11px;font-weight:700}
+      .askep-upgrade-benefits{display:grid;gap:9px;margin:0 0 18px;padding:0;list-style:none;font-size:12px;color:#334155}
+      .askep-upgrade-benefits li{display:flex;gap:9px;align-items:flex-start}
+      .askep-upgrade-benefits i{color:#16a34a;margin-top:2px}
+      .askep-upgrade-actions{display:grid;gap:8px}
+      .askep-upgrade-primary,.askep-upgrade-secondary{width:100%;min-height:46px;border:0;border-radius:14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+      .askep-upgrade-primary{background:#2563eb;color:#fff}
+      .askep-upgrade-secondary{background:#f1f5f9;color:#475569}
+      .askep-upgrade-footnote{text-align:center;margin:12px 0 0;color:#94a3b8;font-size:10px}
       .detail-copy-actions {
         position: relative;
         z-index: 2;
@@ -80,6 +100,197 @@
     `;
 
     document.head.appendChild(style);
+  }
+
+
+  const PREMIUM_API_BASE = "https://askep.mkhoirulzed.workers.dev";
+  let premiumStatusPromise = null;
+  let premiumStatus = null;
+  let premiumCopyBypass = false;
+  let premiumPageLocked = false;
+  let upgradeModal = null;
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector('script[src="' + src + '"]')) {
+        const existing = document.querySelector('script[src="' + src + '"]');
+        if (existing.dataset.loaded === "true") return resolve();
+        existing.addEventListener("load", resolve, { once: true });
+        existing.addEventListener("error", reject, { once: true });
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = () => { script.dataset.loaded = "true"; resolve(); };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function checkPremiumStatus() {
+    if (premiumStatus !== null) return premiumStatus;
+    if (premiumStatusPromise) return premiumStatusPromise;
+
+    premiumStatusPromise = (async () => {
+      try {
+        if (!window.firebase) {
+          await loadScript("https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js");
+        }
+        if (!window.firebase?.auth) {
+          await loadScript("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js");
+        }
+        const firebaseConfig = {
+          apiKey: "AIzaSyChTj0cPYydn-VRaCnYXX4lBKiGmcIIb8Q",
+          authDomain: "sdki-a3960.firebaseapp.com",
+          projectId: "sdki-a3960",
+          storageBucket: "sdki-a3960.firebasestorage.app",
+          messagingSenderId: "577189478908",
+          appId: "1:577189478908:web:efe83142bb88bbc5b07279",
+          measurementId: "G-845T8J7J98"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const user = await new Promise((resolve, reject) => {
+          let unsubscribe = null;
+          const timer = setTimeout(() => {
+            if (unsubscribe) unsubscribe();
+            reject(new Error("Timeout memeriksa sesi login"));
+          }, 8000);
+          unsubscribe = auth.onAuthStateChanged(value => {
+            clearTimeout(timer);
+            if (unsubscribe) unsubscribe();
+            resolve(value || null);
+          }, error => {
+            clearTimeout(timer);
+            if (unsubscribe) unsubscribe();
+            reject(error);
+          });
+        });
+        if (!user) {
+          premiumStatus = false;
+          return false;
+        }
+        const token = await user.getIdToken();
+        const response = await fetch(PREMIUM_API_BASE + "/api/account/status", {
+          method: "GET",
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (!response.ok) throw new Error("Status akun tidak dapat diverifikasi");
+        const data = await response.json();
+        premiumStatus = data?.success === true ? Boolean(data.premium) : null;
+        return premiumStatus;
+      } catch (error) {
+        console.warn("[ASKEP Premium] Status belum dapat diverifikasi:", error);
+        premiumStatus = null;
+        return null;
+      } finally {
+        premiumStatusPromise = null;
+      }
+    })();
+
+    return premiumStatusPromise;
+  }
+
+  function ensureUpgradeModal() {
+    if (upgradeModal) return upgradeModal;
+    upgradeModal = document.createElement("div");
+    upgradeModal.className = "askep-upgrade-overlay";
+    upgradeModal.hidden = true;
+    upgradeModal.innerHTML = `
+      <div class="askep-upgrade-modal" role="dialog" aria-modal="true" aria-labelledby="askepUpgradeTitle">
+        <button class="askep-upgrade-close" type="button" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+        <div class="askep-upgrade-icon"><i class="fa-solid fa-crown"></i></div>
+        <p class="askep-upgrade-eyebrow">ASKEP PREMIUM</p>
+        <h2 id="askepUpgradeTitle">Buka fitur lengkap</h2>
+        <p class="askep-upgrade-desc">Fitur salin hasil dan fitur premium lainnya tersedia untuk pengguna Premium.</p>
+        <div class="askep-upgrade-price"><strong>Rp59.000</strong><span>Lifetime · sekali bayar</span></div>
+        <ul class="askep-upgrade-benefits">
+          <li><i class="fa-solid fa-check"></i> Copy seluruh hasil dari aplikasi</li>
+          <li><i class="fa-solid fa-check"></i> Database SDKI, SLKI, SIKI lebih lengkap</li>
+          <li><i class="fa-solid fa-check"></i> AI hingga 50 pertanyaan per hari</li>
+          <li><i class="fa-solid fa-check"></i> Generator ASKEP dan SOAP</li>
+        </ul>
+        <div class="askep-upgrade-actions">
+          <button class="askep-upgrade-primary" type="button">Upgrade Premium</button>
+          <button class="askep-upgrade-secondary" type="button">Nanti saja</button>
+        </div>
+        <p class="askep-upgrade-footnote">Metode pembayaran sedang disiapkan.</p>
+      </div>`;
+    document.body.appendChild(upgradeModal);
+    const close = () => {
+      if (premiumPageLocked) {
+        location.href = new URL("quick-askep.html", location.href).href;
+        return;
+      }
+      upgradeModal.hidden = true;
+    };
+    upgradeModal.querySelector(".askep-upgrade-close").addEventListener("click", close);
+    upgradeModal.querySelector(".askep-upgrade-secondary").addEventListener("click", close);
+    upgradeModal.addEventListener("click", event => {
+      if (event.target === upgradeModal) close();
+    });
+    upgradeModal.querySelector(".askep-upgrade-primary").addEventListener("click", () => {
+      const path = location.pathname.includes("/pages/") ? "premium.html" : "pages/premium.html";
+      location.href = new URL(path, location.href).href;
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && upgradeModal && !upgradeModal.hidden) close();
+    });
+    return upgradeModal;
+  }
+
+  function showUpgradeModal(message) {
+    const modal = ensureUpgradeModal();
+    if (message) modal.querySelector(".askep-upgrade-desc").textContent = message;
+    modal.hidden = false;
+    modal.querySelector(".askep-upgrade-secondary").focus();
+  }
+
+  function isPremiumAction(element) {
+    if (!element) return false;
+    if (element.matches?.(".detail-copy-button, .chat-copy-btn, #copySoapButton, #copyTableButton, #copyBtn, button[onclick*='copyDiagnosis']")) return true;
+    if (element.matches?.("#generateButton, #regenerateButton, [data-download-docx], [data-download-pdf], [data-print]")) return true;
+    if (element.matches?.("a[href]")) {
+      const href = element.getAttribute("href") || "";
+      return href.includes("askep-lengkap.html") || href.includes("soap.html");
+    }
+    if (element.tagName !== "BUTTON") return false;
+    const label = [
+      element.textContent,
+      element.getAttribute("aria-label"),
+      element.getAttribute("title")
+    ].filter(Boolean).join(" ");
+    return /\b(salin|copy)\b/i.test(label);
+  }
+
+  function captureCopyAction(event) {
+    if (premiumCopyBypass) return;
+    const target = event.target?.closest?.("button, a");
+    if (!isPremiumAction(target)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    checkPremiumStatus().then(status => {
+      if (status === true) {
+        if (target.tagName === "A" && target.href) {
+          location.href = target.href;
+          return;
+        }
+        premiumCopyBypass = true;
+        try {
+          target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+        } finally {
+          premiumCopyBypass = false;
+        }
+        return;
+      }
+      showUpgradeModal(status === null
+        ? "Status Premium belum dapat diverifikasi. Coba lagi atau masuk ke halaman Premium."
+        : "Fitur ini tersedia untuk pengguna Premium. Upgrade untuk membuka fitur lengkap ASKEP.");
+    }).catch(() => showUpgradeModal("Status Premium belum dapat diverifikasi. Silakan coba lagi."));
   }
 
   function normalizeCopiedText(value) {
@@ -257,7 +468,19 @@
 
   function init() {
     ensureStyle();
+    document.addEventListener("click", captureCopyAction, true);
     syncActions();
+
+    const premiumPage = location.pathname.endsWith("/askep-lengkap.html") || location.pathname.endsWith("/soap.html");
+    if (premiumPage) {
+      checkPremiumStatus().then(status => {
+        if (status !== true) {
+          premiumPageLocked = true;
+          document.body.classList.add("askep-premium-page-locked");
+          showUpgradeModal("Generator ASKEP lengkap dan SOAP merupakan fitur Premium. Upgrade untuk membuka akses.");
+        }
+      });
+    }
 
     document.addEventListener("selectstart", allowNativeTextSelection, true);
 
