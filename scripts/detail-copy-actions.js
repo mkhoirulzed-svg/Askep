@@ -15,6 +15,15 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
+      body.askep-free-copy-locked, body.askep-free-copy-locked *:not(input):not(textarea):not([contenteditable="true"]) {
+        -webkit-user-select: none !important;
+        user-select: none !important;
+      }
+      body.askep-free-copy-locked input, body.askep-free-copy-locked textarea,
+      body.askep-free-copy-locked [contenteditable="true"] {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+      }
       .askep-premium-page-locked .app,.askep-premium-page-locked .app-shell{pointer-events:none;opacity:.58;filter:blur(1px)}
       .askep-upgrade-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.58);backdrop-filter:blur(5px)}
       .askep-upgrade-overlay[hidden]{display:none!important}
@@ -69,19 +78,6 @@
 
       .page-diagnosis-detail .action-row.detail-single-action {
         grid-template-columns: minmax(0, 220px);
-      }
-
-      /* Seluruh teks isi detail dapat ditekan lama, diseleksi, dan disalin. */
-      :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
-      :is(#heroArea, #contentArea, #detailArea, .hero-card, .card, .detail-card, .meta-card, .related-card) {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-      }
-
-      :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
-      :is(#heroArea, #contentArea, #detailArea) *:not(button):not(input):not(textarea):not(select) {
-        -webkit-user-select: text !important;
-        user-select: text !important;
       }
 
       :is(.page-diagnosis-detail, .page-slki-detail, .page-siki-detail)
@@ -179,10 +175,12 @@
         if (!response.ok) throw new Error("Status akun tidak dapat diverifikasi");
         const data = await response.json();
         premiumStatus = data?.success === true ? Boolean(data.premium) : null;
+        setFreeCopyProtection(premiumStatus === true);
         return premiumStatus;
       } catch (error) {
         console.warn("[ASKEP Premium] Status belum dapat diverifikasi:", error);
         premiumStatus = null;
+        setFreeCopyProtection(false);
         return null;
       } finally {
         premiumStatusPromise = null;
@@ -291,6 +289,37 @@
         ? "Status Premium belum dapat diverifikasi. Coba lagi atau masuk ke halaman Premium."
         : "Fitur ini tersedia untuk pengguna Premium. Upgrade untuk membuka fitur lengkap ASKEP.");
     }).catch(() => showUpgradeModal("Status Premium belum dapat diverifikasi. Silakan coba lagi."));
+  }
+
+  function setFreeCopyProtection(isPremium) {
+    document.body.classList.toggle("askep-free-copy-locked", !isPremium);
+  }
+
+  function blockManualCopy(event) {
+    if (!document.body.classList.contains("askep-free-copy-locked")) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    showUpgradeModal("Menyalin teks tersedia untuk pengguna Premium. Upgrade untuk membuka fitur salin.");
+  }
+
+  function blockCopyShortcut(event) {
+    if (!document.body.classList.contains("askep-free-copy-locked")) return;
+    const key = String(event.key || "").toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && (key === "c" || key === "x")) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      showUpgradeModal("Menyalin teks tersedia untuk pengguna Premium. Upgrade untuk membuka fitur salin.");
+    }
+  }
+
+  function blockContextMenu(event) {
+    if (!document.body.classList.contains("askep-free-copy-locked")) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    showUpgradeModal("Fitur salin teks tersedia untuk pengguna Premium.");
   }
 
   function normalizeCopiedText(value) {
@@ -468,6 +497,11 @@
 
   function init() {
     ensureStyle();
+    setFreeCopyProtection(false); // Default terkunci sampai Premium terverifikasi.
+    document.addEventListener("copy", blockManualCopy, true);
+    document.addEventListener("cut", blockManualCopy, true);
+    document.addEventListener("keydown", blockCopyShortcut, true);
+    document.addEventListener("contextmenu", blockContextMenu, true);
     document.addEventListener("click", captureCopyAction, true);
     syncActions();
 
