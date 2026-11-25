@@ -267,9 +267,16 @@
 
     checkPremiumStatus().then(status => {
       if (status === true) {
+        if (target.tagName === "A" && target.href) {
+          location.href = target.href;
+          return;
+        }
         premiumCopyBypass = true;
-        target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-        premiumCopyBypass = false;
+        try {
+          target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+        } finally {
+          premiumCopyBypass = false;
+        }
         return;
       }
       showUpgradeModal(status === null
@@ -455,6 +462,15 @@
     ensureStyle();
     document.addEventListener("click", captureCopyAction, true);
     syncActions();
+
+    const premiumPage = /\\/(?:askep-lengkap|soap)\\.html(?:[?#]|$)/i.test(location.pathname);
+    if (premiumPage) {
+      checkPremiumStatus().then(status => {
+        if (status !== true) {
+          showUpgradeModal("Generator ASKEP lengkap dan SOAP merupakan fitur Premium. Upgrade untuk membuka akses.");
+        }
+      });
+    }
 
     document.addEventListener("selectstart", allowNativeTextSelection, true);
 
