@@ -296,6 +296,13 @@
     document.body.classList.toggle("askep-free-copy-locked", !isPremium);
   }
 
+
+  function clearFreeSelection() {
+    if (!document.body.classList.contains("askep-free-copy-locked")) return;
+    const selection = window.getSelection?.();
+    if (selection && !selection.isCollapsed) selection.removeAllRanges();
+  }
+
   function blockSelection(event) {
     if (!document.body.classList.contains("askep-free-copy-locked")) return;
     if (event.target?.closest?.("input, textarea, [contenteditable='true']")) return;
@@ -530,7 +537,7 @@
       });
     }
 
-    document.addEventListener("selectstart", allowNativeTextSelection, true);
+    document.addEventListener("selectstart", allowNativeTextSelection, true);\n    document.addEventListener("selectionchange", clearFreeSelection, true);\n    document.addEventListener("mouseup", clearFreeSelection, true);\n    document.addEventListener("touchend", clearFreeSelection, { capture: true, passive: true });
 
     const observer = new MutationObserver(syncActions);
     observer.observe(document.body, {
