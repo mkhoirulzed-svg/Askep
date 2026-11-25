@@ -15,6 +15,7 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
+      .askep-premium-page-locked .app,.askep-premium-page-locked .app-shell{pointer-events:none;opacity:.58;filter:blur(1px)}
       .askep-upgrade-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.58);backdrop-filter:blur(5px)}
       .askep-upgrade-overlay[hidden]{display:none!important}
       .askep-upgrade-modal{position:relative;width:min(100%,420px);max-height:min(90vh,760px);overflow:auto;padding:26px 22px 22px;border-radius:24px;background:#fff;color:#0f172a;box-shadow:0 25px 80px rgba(15,23,42,.28);font-family:inherit}
@@ -106,6 +107,7 @@
   let premiumStatusPromise = null;
   let premiumStatus = null;
   let premiumCopyBypass = false;
+  let premiumPageLocked = false;
   let upgradeModal = null;
 
   function loadScript(src) {
@@ -216,7 +218,13 @@
         <p class="askep-upgrade-footnote">Metode pembayaran sedang disiapkan.</p>
       </div>`;
     document.body.appendChild(upgradeModal);
-    const close = () => { upgradeModal.hidden = true; };
+    const close = () => {
+      if (premiumPageLocked) {
+        location.href = new URL("quick-askep.html", location.href).href;
+        return;
+      }
+      upgradeModal.hidden = true;
+    };
     upgradeModal.querySelector(".askep-upgrade-close").addEventListener("click", close);
     upgradeModal.querySelector(".askep-upgrade-secondary").addEventListener("click", close);
     upgradeModal.addEventListener("click", event => {
@@ -467,6 +475,8 @@
     if (premiumPage) {
       checkPremiumStatus().then(status => {
         if (status !== true) {
+          premiumPageLocked = true;
+          document.body.classList.add("askep-premium-page-locked");
           showUpgradeModal("Generator ASKEP lengkap dan SOAP merupakan fitur Premium. Upgrade untuk membuka akses.");
         }
       });
