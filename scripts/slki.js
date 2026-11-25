@@ -720,17 +720,7 @@ document.addEventListener("click", event => {
   }, 600);
 });
 
-/* =========================
-   BLOKIR SELECT
-========================= */
-document.addEventListener(
-  "selectstart",
-  event => {
-    const allowed = event.target.closest(
-      "input, textarea, select"
-    );
-
-    if (!allowed) {
+if (!allowed) {
       event.preventDefault();
     }
   }
