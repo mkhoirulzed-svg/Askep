@@ -720,12 +720,6 @@ document.addEventListener("click", event => {
   }, 600);
 });
 
-if (!allowed) {
-      event.preventDefault();
-    }
-  }
-);
-
 /* =========================
    INIT
 ========================= */
