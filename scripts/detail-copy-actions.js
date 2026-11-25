@@ -245,7 +245,7 @@
     if (element.matches?.("#generateButton, #regenerateButton, [data-download-docx], [data-download-pdf], [data-print]")) return true;
     if (element.matches?.("a[href]")) {
       const href = element.getAttribute("href") || "";
-      return /(?:^|\/)askep-lengkap\.html(?:[?#]|$)|(?:^|\/)soap\.html(?:[?#]|$)/i.test(href);
+      return href.includes("askep-lengkap.html") || href.includes("soap.html");
     }
     if (element.tagName !== "BUTTON") return false;
     const label = [
@@ -463,7 +463,7 @@
     document.addEventListener("click", captureCopyAction, true);
     syncActions();
 
-    const premiumPage = /\\/(?:askep-lengkap|soap)\\.html(?:[?#]|$)/i.test(location.pathname);
+    const premiumPage = location.pathname.endsWith("/askep-lengkap.html") || location.pathname.endsWith("/soap.html");
     if (premiumPage) {
       checkPremiumStatus().then(status => {
         if (status !== true) {
