@@ -408,12 +408,7 @@ document.addEventListener("click", function(e){
   setTimeout(() => ripple.remove(), 600);
 });
 
-/* =========================
-   BLOKIR SELECT
-========================= */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select");
-  if(!allow) e.preventDefault();
+if(!allow) e.preventDefault();
 });
 
 /* =========================
