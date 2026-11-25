@@ -239,22 +239,27 @@
     modal.querySelector(".askep-upgrade-secondary").focus();
   }
 
-  function isCopyAction(button) {
-    if (!button || button.tagName !== "BUTTON") return false;
-    if (button.matches(".detail-copy-button, .chat-copy-btn, #copySoapButton, #copyTableButton, #copyBtn")) return true;
-    if (button.matches('button[onclick*="copyDiagnosis"]')) return true;
+  function isPremiumAction(element) {
+    if (!element) return false;
+    if (element.matches?.(".detail-copy-button, .chat-copy-btn, #copySoapButton, #copyTableButton, #copyBtn, button[onclick*='copyDiagnosis']")) return true;
+    if (element.matches?.("#generateButton, #regenerateButton, [data-download-docx], [data-download-pdf], [data-print]")) return true;
+    if (element.matches?.("a[href]")) {
+      const href = element.getAttribute("href") || "";
+      return /(?:^|\/)askep-lengkap\.html(?:[?#]|$)|(?:^|\/)soap\.html(?:[?#]|$)/i.test(href);
+    }
+    if (element.tagName !== "BUTTON") return false;
     const label = [
-      button.textContent,
-      button.getAttribute("aria-label"),
-      button.getAttribute("title")
+      element.textContent,
+      element.getAttribute("aria-label"),
+      element.getAttribute("title")
     ].filter(Boolean).join(" ");
     return /\b(salin|copy)\b/i.test(label);
   }
 
   function captureCopyAction(event) {
     if (premiumCopyBypass) return;
-    const button = event.target?.closest?.("button");
-    if (!isCopyAction(button)) return;
+    const target = event.target?.closest?.("button, a");
+    if (!isPremiumAction(target)) return;
 
     event.preventDefault();
     event.stopPropagation();
@@ -263,13 +268,13 @@
     checkPremiumStatus().then(status => {
       if (status === true) {
         premiumCopyBypass = true;
-        button.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+        target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
         premiumCopyBypass = false;
         return;
       }
       showUpgradeModal(status === null
         ? "Status Premium belum dapat diverifikasi. Coba lagi atau masuk ke halaman Premium."
-        : "Fitur salin hasil tersedia untuk pengguna Premium. Upgrade untuk membuka fitur lengkap ASKEP.");
+        : "Fitur ini tersedia untuk pengguna Premium. Upgrade untuk membuka fitur lengkap ASKEP.");
     }).catch(() => showUpgradeModal("Status Premium belum dapat diverifikasi. Silakan coba lagi."));
   }
 
