@@ -562,15 +562,7 @@ document.addEventListener("click", function(event){
   }, 600);
 });
 
-/* =========================
-   BLOKIR SELECT
-========================= */
-document.addEventListener("selectstart", function(event){
-  const allowedElement = event.target.closest(
-    "input, textarea, select"
-  );
-
-  if(!allowedElement){
+if(!allowedElement){
     event.preventDefault();
   }
 });
