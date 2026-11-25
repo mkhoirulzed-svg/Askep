@@ -708,11 +708,17 @@ favBtn.addEventListener("click", () => {
 /* =========================
    ACTION
 ========================= */
-function copyDiagnosis(){
+async function copyDiagnosis(){
   if(!diagnosis) return;
 
-  const sikiLinks = getRelatedSiki();
+  // Copy hanya setelah status Premium berhasil diverifikasi.
+  const protection = window.AskepCopyProtection;
+  if(!protection || await protection.checkPremiumStatus() !== true){
+    protection?.showUpgradeModal("Menyalin diagnosis tersedia untuk pengguna Premium.");
+    return;
+  }
 
+  const sikiLinks = getRelatedSiki();
   const text = [
     `Diagnosis Keperawatan: ${getTitle(diagnosis)}`,
     `Kode: ${getSdkiCode(diagnosis) || "-"}`,
@@ -722,13 +728,17 @@ function copyDiagnosis(){
     ``,
     `Intervensi SIKI Terkait:`,
     sikiLinks.length
-      ? sikiLinks.map(item => `- ${getTitle(item)}${getId(item) ? " (" + getId(item) + ")" : ""}`).join("\n")
+      ? sikiLinks.map(item => `- ${getTitle(item)}${getId(item) ? " (" + getId(item) + ")" : ""}`).join("\\n")
       : "-"
-  ].join("\n");
+  ].join("\\n");
 
-  navigator.clipboard.writeText(text).then(() => {
+  try{
+    await navigator.clipboard.writeText(text);
     alert("Diagnosis berhasil disalin.");
-  });
+  }catch(error){
+    console.error("Gagal menyalin diagnosis:", error);
+    alert("Teks belum dapat disalin. Silakan coba kembali.");
+  }
 }
 
 function goQuickAskep(){
@@ -763,12 +773,6 @@ document.addEventListener("click", function(e){
 
   el.appendChild(ripple);
   setTimeout(() => ripple.remove(), 600);
-});
-
-/* Blokir text select kecuali area copy */
-document.addEventListener("selectstart", function(e){
-  const allow = e.target.closest("input, textarea, select, .copy-text");
-  if(!allow) e.preventDefault();
 });
 
 /* =========================
