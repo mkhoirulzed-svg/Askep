@@ -2,6 +2,35 @@
   "use strict";
 
   const API_URL = "https://askep.mkhoirulzed.workers.dev/api/ai/chat";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyChTj0cPYydn-VRaCnYXX4lBKiGmcIIb8Q",
+    authDomain: "sdki-a3960.firebaseapp.com",
+    projectId: "sdki-a3960",
+    storageBucket: "sdki-a3960.firebasestorage.app",
+    messagingSenderId: "577189478908",
+    appId: "1:577189478908:web:efe83142bb88bbc5b07279",
+    measurementId: "G-845T8J7J98"
+  };
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  let currentUser = null;
+  let authResolved = false;
+  let resolveAuthReady;
+  const authReady = new Promise(resolve => { resolveAuthReady = resolve; });
+  auth.onAuthStateChanged(user => {
+    currentUser = user || null;
+    authResolved = true;
+    resolveAuthReady(currentUser);
+    updateSendState();
+  }, error => {
+    console.error("Firebase Auth Chat error:", error);
+    currentUser = null;
+    authResolved = true;
+    resolveAuthReady(null);
+    updateSendState();
+  });
+
   const STORAGE_KEY = "askep_ai_chat_history_v1";
   const MAX_STORED_MESSAGES = 20;
   const MAX_API_HISTORY = 12;
@@ -211,7 +240,7 @@
   }
 
   function updateSendState() {
-    sendButton.disabled = !input.value.trim() || Boolean(requestController);
+    sendButton.disabled = !input.value.trim() || Boolean(requestController) || !authResolved;
   }
 
   function autoResize() {
@@ -256,25 +285,44 @@
     updateSendState();
 
     try {
-      const response = await fetch(API_URL, {
+      await authReady;
+      const user = currentUser;
+      if (!user) throw new Error("Sesi login tidak ditemukan. Silakan login kembali melalui halaman Profil.");
+      let idToken = await user.getIdToken();
+      const requestBody = JSON.stringify({
+        message,
+        history,
+        context: {
+          page: "search",
+          activeFilter: "all",
+          searchMode: "standard",
+          sourcePage: "chat",
+          mode: "conversation"
+        }
+      });
+      let response = await fetch(API_URL, {
         method: "POST",
         signal: requestController.signal,
         headers: {
           "Accept": "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + idToken
         },
-        body: JSON.stringify({
-          message,
-          history,
-          context: {
-            page: "search",
-            activeFilter: "all",
-            searchMode: "standard",
-            sourcePage: "chat",
-            mode: "conversation"
-          }
-        })
+        body: requestBody
       });
+      if (response.status === 401) {
+        idToken = await user.getIdToken(true);
+        response = await fetch(API_URL, {
+          method: "POST",
+          signal: requestController.signal,
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + idToken
+          },
+          body: requestBody
+        });
+      }
 
       let payload;
       try {
