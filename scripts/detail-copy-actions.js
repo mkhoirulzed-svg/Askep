@@ -4,9 +4,14 @@
   const STYLE_ID = "detail-copy-actions-style";
   const COPY_CLASS = "detail-copy-actions";
   const DETAIL_PAGE_SELECTOR = ".page-diagnosis-detail, .page-slki-detail, .page-siki-detail";
+  const STANDARD_LIST_SELECTOR = ".page-daftar-standar.theme-sdki, .page-daftar-standar.theme-slki, .page-daftar-standar.theme-siki";
 
   function isDetailPage() {
     return Boolean(document.body?.matches(DETAIL_PAGE_SELECTOR));
+  }
+
+  function isProtectedContentPage() {
+    return isDetailPage() || Boolean(document.body?.matches(STANDARD_LIST_SELECTOR));
   }
 
   function ensureStyle() {
@@ -500,7 +505,7 @@
   }
 
   function allowNativeTextSelection(event) {
-    if (!isDetailPage()) return;
+    if (!isProtectedContentPage()) return;
 
     const interactive = event.target.closest(
       "button, input, textarea, select, .bottom-nav, .global-guide-menu-wrapper, .guide-menu-wrapper"
