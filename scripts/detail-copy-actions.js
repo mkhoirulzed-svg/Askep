@@ -20,10 +20,16 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      body.askep-free-copy-locked, body.askep-free-copy-locked * {
+      html.askep-copy-locked, body.askep-free-copy-locked,
+      body.askep-free-copy-locked *, html.askep-copy-locked * {
         -webkit-user-select: none !important;
         user-select: none !important;
         -webkit-touch-callout: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body.askep-free-copy-locked {
+        -webkit-user-select: none !important;
+        user-select: none !important;
       }
       body.askep-free-copy-locked input, body.askep-free-copy-locked textarea,
       body.askep-free-copy-locked [contenteditable="true"] {
@@ -298,7 +304,10 @@
   }
 
   function setFreeCopyProtection(isPremium) {
-    document.body.classList.toggle("askep-free-copy-locked", !isPremium);
+    const locked = isPremium !== true;
+    document.documentElement.classList.toggle("askep-copy-locked", locked);
+    document.body.classList.toggle("askep-free-copy-locked", locked);
+    document.body.dataset.copyProtection = locked ? "locked" : "premium";
   }
 
 
@@ -504,17 +513,6 @@
     syncSikiDetail();
   }
 
-  function allowNativeTextSelection(event) {
-    if (!isProtectedContentPage()) return;
-
-    const interactive = event.target.closest(
-      "button, input, textarea, select, .bottom-nav, .global-guide-menu-wrapper, .guide-menu-wrapper"
-    );
-
-    if (interactive) return;
-
-    event.stopPropagation();
-  }
 
   // API internal agar fungsi copyDiagnosis langsung pun tetap gated.
   window.AskepCopyProtection = {
@@ -552,10 +550,10 @@
       });
     }
 
-    document.addEventListener("selectstart", allowNativeTextSelection, true);
+    // One authoritative protection path. No competing selectstart listeners.
     document.addEventListener("selectionchange", clearFreeSelection, true);
     document.addEventListener("mouseup", clearFreeSelection, true);
-    document.addEventListener("touchend", clearFreeSelection, { capture: true, passive: true });
+    document.addEventListener("touchend", clearFreeSelection, true);
 
     const observer = new MutationObserver(syncActions);
     observer.observe(document.body, {
