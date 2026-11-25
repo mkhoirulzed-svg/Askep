@@ -408,9 +408,6 @@ document.addEventListener("click", function(e){
   setTimeout(() => ripple.remove(), 600);
 });
 
-if(!allow) e.preventDefault();
-});
-
 /* =========================
    INIT
 ========================= */
