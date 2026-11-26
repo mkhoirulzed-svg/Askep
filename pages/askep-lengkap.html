@@ -462,7 +462,8 @@
         assessment:{
           chiefComplaint:"", currentHistory:"", pastHistory:"", allergies:"", medications:"", additional:"",
           vitals:{ generalCondition:"", consciousness:"", gcsE:"", gcsV:"", gcsM:"", bloodPressure:"", pulse:"", respiration:"", temperature:"", spo2:"", weight:"", height:"", painScale:"" },
-          physical:{ respiration:"", cardiovascular:"", digestive:"", urinary:"", neurological:"", integument:"", musculoskeletal:"" },
+          physical:{ general:"", headNeck:"", respiration:"", cardiovascular:"", digestive:"", urinary:"", neurological:"", integument:"", musculoskeletal:"" },
+          narrative:"", otherExams:"",
           needs:{ nutrition:"", elimination:"", activity:"", sleep:"", psychosocial:"", spiritual:"" },
           supportingExams:[], therapies:[], subjectiveCustom:[], objectiveCustom:[]
         },
@@ -691,6 +692,7 @@
         <div class="accordion">
           ${accordion("Keluhan dan riwayat kesehatan","Keluhan utama, riwayat sekarang, alergi, dan terapi","fa-comment-medical",`
             <div class="grid two">
+              ${fieldTextarea("Narasi pengkajian (paste bebas)","assessment.narrative",a.narrative,"Paste/catat hasil pengkajian secara bebas. AI akan memilah data dari narasi ini.",true)}
               ${fieldTextarea("Keluhan utama","assessment.chiefComplaint",a.chiefComplaint,"Keluhan yang dirasakan pasien",true)}
               ${fieldTextarea("Riwayat keluhan sekarang","assessment.currentHistory",a.currentHistory,"Kronologi, durasi, faktor pencetus",true)}
               ${fieldTextarea("Riwayat penyakit dahulu","assessment.pastHistory",a.pastHistory,"Penyakit atau perawatan sebelumnya")}
@@ -716,6 +718,8 @@
             </div>`)}
           ${accordion("Pemeriksaan fisik","Catat temuan normal maupun tidak normal pada sistem yang diperiksa","fa-user-doctor",`
             <div class="grid two">
+              ${fieldTextarea("Keadaan umum","assessment.physical.general",p.general,"Temuan kondisi umum")}
+              ${fieldTextarea("Kepala dan leher","assessment.physical.headNeck",p.headNeck,"Kepala, mata, mulut, leher")}
               ${fieldTextarea("Pernapasan","assessment.physical.respiration",p.respiration,"Inspeksi, palpasi, perkusi, auskultasi")}
               ${fieldTextarea("Kardiovaskular","assessment.physical.cardiovascular",p.cardiovascular,"Nadi, perfusi, edema, bunyi jantung")}
               ${fieldTextarea("Pencernaan","assessment.physical.digestive",p.digestive,"Abdomen, mual, muntah, bising usus")}
@@ -733,7 +737,7 @@
               ${fieldTextarea("Psikososial dan koping","assessment.needs.psychosocial",n.psychosocial,"Respons emosional dan dukungan")}
               ${fieldTextarea("Spiritual","assessment.needs.spiritual",n.spiritual,"Kebutuhan spiritual atau nilai")}
             </div>`)}
-          ${accordion("Pemeriksaan penunjang","Tambahkan hasil laboratorium atau pemeriksaan diagnostik","fa-vials",renderSupportingExams())}
+          ${accordion("Pemeriksaan penunjang","Laboratorium, radiologi, EKG, dan pemeriksaan khusus","fa-vials",`${renderSupportingExams()}<div style="margin-top:12px">${fieldTextarea("Pemeriksaan lainnya","assessment.otherExams",a.otherExams,"Tuliskan hasil pemeriksaan khusus lainnya, termasuk EKG, USG, CT scan, kultur, dll.",true)}</div>` )}
           ${accordion("Terapi medis","Tambahkan obat, cairan, oksigen, atau terapi lainnya","fa-pills",renderTherapies())}
           ${accordion("Data subjektif dan objektif tambahan","Tambahkan data manual yang ingin digunakan dalam analisis","fa-list-check",renderCustomAssessmentData())}
         </div>
@@ -794,7 +798,7 @@
       if(v.temperature) vitals.push(`Suhu: ${v.temperature}`);
       if(v.spo2) vitals.push(`SpO₂: ${v.spo2}`);
       if(v.painScale) vitals.push(`Skala nyeri: ${v.painScale}`);
-      return uniqueStrings([...vitals,p.respiration,p.cardiovascular,p.digestive,p.urinary,p.neurological,p.integument,p.musculoskeletal,...a.objectiveCustom]);
+      return uniqueStrings([...vitals,p.general,p.headNeck,p.respiration,p.cardiovascular,p.digestive,p.urinary,p.neurological,p.integument,p.musculoskeletal,a.otherExams,...a.objectiveCustom]);
     }
     function autoCreateAnalysis(){
       const ds=collectSubjectiveData(),doData=collectObjectiveData();
