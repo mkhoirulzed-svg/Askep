@@ -877,7 +877,7 @@
       const diagnosis=activeDiagnosis();
       if(!state.diagnoses.length) return `<section class="section-card">${stepHeader(5,"Luaran SLKI","Tambahkan diagnosis terlebih dahulu.")}<div class="empty-state">Belum ada diagnosis. Kembali ke tahap Diagnosis untuk menambahkan masalah keperawatan.</div>${stepActions(4,6)}</section>`;
       return `<section class="section-card">${stepHeader(5,"Luaran SLKI","Pilih satu atau beberapa luaran untuk setiap diagnosis, lalu tentukan target dan indikator.")}${diagnosisTabs()}
-        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SLKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Anda tetap dapat mencari luaran lain.</span></div>
+        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SLKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Anda tetap dapat mencari luaran lain.</span></div><div class="btn-row single"><button class="btn btn-soft" data-run-ai-care="slki" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Saran AI SLKI untuk diagnosis ini</button></div>${renderAICareSuggestions("slki",diagnosis)}
         <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="slkiSearch" class="search-input" type="search" placeholder="Cari luaran SLKI..."></div>
         <div id="slkiResults" class="search-results"></div>
         <div class="selected-list">${renderOutcomeCards(diagnosis)}</div>
@@ -897,6 +897,44 @@
     }
     function fieldCareInput(label,id,key,value,type){ return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><input class="field-input" data-${type}-field="${escapeAttribute(id)}:${escapeAttribute(key)}" value="${escapeAttribute(value)}"></div>`; }
     function fieldCareSelect(label,id,key,value,options,type){ return `<div class="field"><label class="field-label">${escapeHtml(label)}</label><select class="field-select" data-${type}-field="${escapeAttribute(id)}:${escapeAttribute(key)}">${options.map(option=>`<option value="${escapeAttribute(option)}" ${option===value?"selected":""}>${escapeHtml(option)}</option>`).join("")}</select></div>`; }
+    function renderAICareSuggestions(type,diagnosis){
+      const suggestions=state.aiCareSuggestions?.[diagnosis.id]?.[type]||[];
+      if(!suggestions.length)return "";
+      const collection=type==="slki"?DB.slki:DB.siki;
+      return `<div class="review-section"><div class="review-title">Saran AI ${type.toUpperCase()}</div><div class="review-sub">Dipilih dari referensi lokal dan dicocokkan berdasarkan kode exact. Tinjau sebelum ditambahkan.</div>${suggestions.map((s,index)=>{const raw=collection.find(x=>normalizeCode(getCode(x,type))===normalizeCode(s.code));const already=type==="slki"?diagnosis.outcomes.some(x=>normalizeCode(x.code)===normalizeCode(s.code)):diagnosis.interventions.some(x=>normalizeCode(x.code)===normalizeCode(s.code));return `<article class="care-card"><div class="care-head"><div class="care-copy"><span class="care-code">${escapeHtml(s.code||"")}</span><div class="care-title">${escapeHtml(raw?getTitle(raw,type):s.title)}</div><div class="review-sub">${escapeHtml(s.reason||"")}</div></div></div>${raw?already?'<div class="review-sub">Sudah ditambahkan</div>':`<button class="mini-btn primary" data-add-ai-care="${type}:${index}" type="button" style="margin-top:9px"><i class="fa-solid fa-plus"></i> Tambahkan</button>`:'<div class="review-note">Kode tidak cocok dengan database lokal.</div>'}</article>`}).join("")}</div>`;
+    }
+    async function runAICareSuggestions(type){
+      const diagnosis=activeDiagnosis();if(!diagnosis)return;
+      const collection=type==="slki"?DB.slki:DB.siki;
+      const related=getSuggestedItems(diagnosis,type);
+      const shortlist=(related.length?related:collection.slice(0,60)).map(raw=>({code:getCode(raw,type),title:getTitle(raw,type),details:type==="slki"?getOutcomeIndicators(raw):getInterventionActions(raw).map(x=>x.group+": "+x.text)})).filter(x=>x.code&&x.title).slice(0,35);
+      if(!shortlist.length){showToast("Referensi "+type.toUpperCase()+" belum tersedia.");return;}
+      showLoading("AI memilih "+type.toUpperCase(),"Mencocokkan rekomendasi dengan diagnosis terverifikasi.");
+      try{
+        const user=await askepAuthReady;if(!user)throw new Error("Login diperlukan untuk menggunakan saran AI.");
+        const token=await user.getIdToken();
+        const prompt=`Anda adalah asisten keperawatan. Rekomendasi hanya draft. HANYA pilih item dari daftar referensi, kode exact. Jangan mengarang kode, indikator, tindakan, target atau data pasien. ${type==="slki"?"Pilih luaran relevan; indikator hanya metadata yang tersedia, jangan menambah indikator baru.":"Pilih intervensi relevan; tindakan hanya metadata yang tersedia."} Maksimal 4 rekomendasi. JSON valid: {"recommendations":[{"code":"kode exact","title":"judul exact","reason":"alasan singkat"}]}. Diagnosis: ${JSON.stringify({code:diagnosis.code,title:diagnosis.title,etiology:diagnosis.etiology,DS:diagnosis.subjectiveDataText,DO:diagnosis.objectiveDataText})}. Referensi: ${JSON.stringify(shortlist)}`;
+        const body=JSON.stringify({message:prompt,history:[],context:{page:"askep-generator",sourcePage:"askep-lengkap",mode:"care-plan-recommendation",type,diagnosisCode:diagnosis.code}});
+        let response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+token},body});
+        if(response.status===401){const fresh=await user.getIdToken(true);response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+fresh},body});}
+        const payload=await response.json();if(!response.ok||payload?.success===false)throw new Error(payload?.message||payload?.error?.message||`AI gagal (${response.status})`);
+        const answer=payload?.answer||payload?.data?.answer||payload?.result?.answer||payload?.message||"";
+        const parsed=extractJsonAnswer(answer);const list=Array.isArray(parsed.recommendations)?parsed.recommendations:[];
+        const exact=list.map(s=>{const raw=collection.find(x=>normalizeCode(getCode(x,type))===normalizeCode(s.code));return raw?{code:getCode(raw,type),title:getTitle(raw,type),reason:cleanString(s.reason)}:null;}).filter(Boolean).slice(0,4);
+        state.aiCareSuggestions=state.aiCareSuggestions||{};state.aiCareSuggestions[diagnosis.id]=state.aiCareSuggestions[diagnosis.id]||{};state.aiCareSuggestions[diagnosis.id][type]=exact;
+        scheduleSave();renderAll();showToast("Saran AI selesai. Verifikasi sebelum menambahkan.");
+      }catch(error){console.error("AI care suggestion error",error);showToast(error.message||"Saran AI gagal.");}
+      finally{hideLoading();}
+    }
+    function addAICareSuggestion(type,index){
+      const diagnosis=activeDiagnosis();if(!diagnosis)return;
+      const suggestion=state.aiCareSuggestions?.[diagnosis.id]?.[type]?.[index];if(!suggestion)return;
+      const collection=type==="slki"?DB.slki:DB.siki;
+      const raw=collection.find(x=>normalizeCode(getCode(x,type))===normalizeCode(suggestion.code));
+      if(!raw){showToast("Kode tidak ditemukan di database lokal.");return;}
+      const item={raw,code:getCode(raw,type),title:getTitle(raw,type),desc:getDesc(raw)};
+      if(type==="slki")addOutcome(item);else addIntervention(item);
+    }
     function addOutcome(item){
       const diagnosis=activeDiagnosis(); if(!diagnosis)return;
       const key=normalizeCode(item.code)||normalizeText(item.title);
@@ -910,7 +948,7 @@
       const diagnosis=activeDiagnosis();
       if(!state.diagnoses.length) return `<section class="section-card">${stepHeader(6,"Intervensi SIKI","Tambahkan diagnosis terlebih dahulu.")}<div class="empty-state">Belum ada diagnosis.</div>${stepActions(5,7)}</section>`;
       return `<section class="section-card">${stepHeader(6,"Intervensi SIKI","Pilih intervensi utama atau pendukung untuk setiap diagnosis, kemudian tentukan tindakan yang digunakan.")}${diagnosisTabs()}
-        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SIKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Intervensi lain tetap dapat dicari.</span></div>
+        <div class="relation-note"><i class="fa-solid fa-link"></i><span>Menampilkan saran SIKI berdasarkan relasi diagnosis <b>${escapeHtml(diagnosis.title)}</b>. Intervensi lain tetap dapat dicari.</span></div><div class="btn-row single"><button class="btn btn-soft" data-run-ai-care="siki" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Saran AI SIKI untuk diagnosis ini</button></div>${renderAICareSuggestions("siki",diagnosis)}
         <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input id="sikiSearch" class="search-input" type="search" placeholder="Cari intervensi SIKI..."></div>
         <div id="sikiResults" class="search-results"></div>
         <div class="selected-list">${renderInterventionCards(diagnosis)}</div>
@@ -1033,6 +1071,8 @@
       el.stepContainer.querySelector("[data-run-ai-clinical]")?.addEventListener("click",runAIClinicalAnalysis);
       el.stepContainer.querySelector("[data-apply-ai-analysis]")?.addEventListener("click",applyAIAnalysisRows);
       el.stepContainer.querySelectorAll("[data-add-ai-diagnosis]").forEach(button=>button.addEventListener("click",()=>addAICandidateDiagnosis(Number(button.dataset.addAiDiagnosis))));
+      el.stepContainer.querySelectorAll("[data-run-ai-care]").forEach(button=>button.addEventListener("click",()=>runAICareSuggestions(button.dataset.runAiCare)));
+      el.stepContainer.querySelectorAll("[data-add-ai-care]").forEach(button=>button.addEventListener("click",()=>{const [type,index]=button.dataset.addAiCare.split(":");addAICareSuggestion(type,Number(index));}));
       el.stepContainer.querySelectorAll("[data-bind]").forEach(input=>input.addEventListener("input",()=>{setPath(state,input.dataset.bind,input.value);scheduleSave();renderSummary();}));
       el.stepContainer.querySelectorAll("[data-dynamic-bind]").forEach(input=>input.addEventListener("input",()=>{const [collection,index,key]=input.dataset.dynamicBind.split(".");state.assessment[collection][Number(index)][key]=input.value;scheduleSave();}));
       el.stepContainer.querySelectorAll(".accordion-trigger").forEach(button=>button.addEventListener("click",()=>button.closest(".accordion-item").classList.toggle("open")));
