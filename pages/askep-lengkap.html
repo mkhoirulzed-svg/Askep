@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
 
   <style>
     :root{
@@ -465,6 +467,7 @@
         },
         analysisRows:[],
         diagnoses:[],
+        aiClinicalAnalysis:null,
         meta:{ createdAt:now.toISOString(), updatedAt:now.toISOString(), currentStep:1 }
       };
     }
@@ -626,6 +629,7 @@
         state.assessment.needs={...createInitialState().assessment.needs,...(parsed.assessment?.needs||{})};
         state.analysisRows=Array.isArray(parsed.analysisRows)?parsed.analysisRows:[];
         state.diagnoses=Array.isArray(parsed.diagnoses)?parsed.diagnoses:[];
+        state.aiClinicalAnalysis=parsed.aiClinicalAnalysis||null;
         currentStep=Math.min(7,Math.max(1,Number(parsed.meta?.currentStep)||1));
         activeDiagnosisId=state.diagnoses[0]?.id||null;
         return true;
@@ -1000,6 +1004,12 @@
       return `<div class="review-section"><div class="review-head"><div><div class="review-title">Ringkasan data terkumpul</div><div class="review-sub">${ds.length} data subjektif · ${od.length} data objektif</div></div></div><div class="grid two"><div><div class="group-label">DS · Data subjektif</div>${ds.length?`<ul>${ds.slice(0,8).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>${ds.length>8?`<div class="review-sub">+ ${ds.length-8} data lainnya</div>`:""}`:'<div class="empty-state">Belum ada DS terstruktur.</div>'}</div><div><div class="group-label">DO · Data objektif</div>${od.length?`<ul>${od.slice(0,8).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>${od.length>8?`<div class="review-sub">+ ${od.length-8} data lainnya</div>`:""}`:'<div class="empty-state">Belum ada DO terstruktur.</div>'}</div></div></div><div class="review-section"><div class="review-head"><div><div class="review-title">Checklist kelengkapan</div><div class="review-sub">Ini hanya pengingat, bukan syarat wajib.</div></div></div>${missing.length?`<div class="review-note">Data yang belum diisi: ${escapeHtml(missing.join(", "))}. Lengkapi bila tersedia.</div>`:'<div class="info-card"><i class="fa-solid fa-check-circle"></i><p>Field dasar pada checklist sudah terisi. Tetap verifikasi data klinis sebelum menyusun diagnosis.</p></div>'}</div>${cleanString(state.assessment.narrative)?`<div class="review-section"><div class="review-title">Narasi pengkajian</div><div class="review-sub" style="margin:6px 0">Narasi tidak otomatis diklasifikasikan sebagai DS atau DO. Silakan verifikasi dan pindahkan secara manual.</div><div style="white-space:pre-wrap;font-size:10px;line-height:1.6">${escapeHtml(state.assessment.narrative)}</div></div>`:""}`;
     }
     function renderAIStage(){
+      const ai=state.aiClinicalAnalysis;
+      const candidateHtml=ai?.diagnosisCandidates?.length?`<div class="review-section"><div class="review-title">Kandidat diagnosis SDKI</div><div class="review-sub">Kandidat di bawah dicocokkan kembali dengan database lokal. Pilih hanya setelah verifikasi klinis.</div>${ai.diagnosisCandidates.map((candidate,index)=>{const matched=DB.sdki.find(raw=>normalizeCode(getCode(raw,"sdki"))===normalizeCode(candidate.code));return `<article class="diagnosis-card"><div class="card-top"><div class="priority-badge">K${index+1}</div><div class="card-copy"><div class="card-title">${escapeHtml(matched?getTitle(matched,"sdki"):candidate.title)}</div><div class="card-meta">${escapeHtml(matched?getCode(matched,"sdki"):candidate.code||"Kode tidak cocok")}</div></div></div><p class="review-sub" style="margin:8px 0">${escapeHtml(candidate.reason||"")}</p><div class="review-sub"><b>Data pendukung:</b> ${escapeHtml((candidate.evidence||[]).join("; ")||"-")}</div>${matched?`<button class="btn btn-secondary" data-add-ai-diagnosis="${index}" type="button" style="margin-top:10px"><i class="fa-solid fa-plus"></i> Tambahkan diagnosis</button>`:'<div class="review-note">Tidak ditemukan dengan kode exact di database SDKI lokal, kandidat tidak dapat ditambahkan.</div>'}</article>`}).join("")}</div>`:"";
+      const analysisHtml=ai?.analysisRows?.length?`<div class="review-section"><div class="review-title">Draft analisis data AI</div><div class="review-sub">Periksa dan edit sebelum digunakan.</div><div class="analysis-table-wrap"><table class="analysis-table"><thead><tr><th>DS</th><th>DO</th><th>Etiologi (saran)</th><th>Masalah (saran)</th></tr></thead><tbody>${ai.analysisRows.map(row=>`<tr><td>${escapeHtml(row.subjective||"-")}</td><td>${escapeHtml(row.objective||"-")}</td><td>${escapeHtml(row.etiology||"-")}</td><td>${escapeHtml(row.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table></div><button class="btn btn-secondary" data-apply-ai-analysis type="button" style="margin-top:10px"><i class="fa-solid fa-check"></i> Gunakan draft pada tabel analisis</button></div>`:"";
+      const extracted=ai?`<div class="review-section"><div class="review-title">Ekstraksi narasi</div><div class="grid two"><div><b>DS</b><ul>${(ai.subjective||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")||"<li>-</li>"}</ul></div><div><b>DO</b><ul>${(ai.objective||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join("")||"<li>-</li>"}</ul></div></div><div class="review-note">${escapeHtml(ai.warnings?.join(" · ")||"Data hasil ekstraksi AI harus diverifikasi. Data yang tidak disebutkan tidak dianggap normal.")}</div></div>`:"";
+      return `<section class="section-card"><div class="section-head"><div class="section-heading"><div class="eyebrow">Tahap 2 dari 3</div><h2 class="section-title">AI Clinical Analysis</h2><p class="section-desc">AI membantu ekstraksi DS/DO, analisis data, dan kandidat diagnosis SDKI dari data yang Anda masukkan.</p></div></div><div class="info-card"><i class="fa-solid fa-shield-heart"></i><p>AI hanya menyusun saran. Data klinis tidak boleh dianggap terkonfirmasi bila tidak dicatat. Kandidat diagnosis dicocokkan dengan database SDKI dan tetap wajib diverifikasi perawat.</p></div>${renderSmartAssessmentPreview()}${ai?`<div class="review-note">Analisis terakhir: ${escapeHtml(new Date(ai.generatedAt).toLocaleString("id-ID"))}. ${ai.modelNote?escapeHtml(ai.modelNote):""}</div>`:""}<div class="btn-row"><button class="btn btn-primary" data-run-ai-clinical type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> ${ai?"Analisis Ulang":"Analisis dengan AI"}</button><button class="btn btn-secondary" data-smart-assessment type="button"><i class="fa-solid fa-table-list"></i> Draft DS/DO manual</button></div>${extracted}${analysisHtml}${candidateHtml}<div class="btn-row"><button class="btn btn-secondary" data-go-legacy="4" type="button">Diagnosis SDKI manual</button><button class="btn btn-secondary" data-go-legacy="5" type="button">Luaran SLKI</button><button class="btn btn-secondary" data-go-legacy="6" type="button">Intervensi SIKI</button><button class="btn btn-soft" data-go-stage="3" type="button">Review & Export</button></div></section>`;
+    }
       return `<section class="section-card"><div class="section-head"><div class="section-heading"><div class="eyebrow">Tahap 2 dari 3</div><h2 class="section-title">Smart Assessment</h2><p class="section-desc">Tinjau data pengkajian, cek kelengkapan, lalu susun draft analisis DS/DO.</p></div></div><div class="info-card"><i class="fa-solid fa-shield-heart"></i><p>Belum ada AI klinis yang aktif. Data tidak akan ditebak, narasi campuran tidak diklasifikasikan otomatis, dan diagnosis tetap harus dipilih serta diverifikasi perawat.</p></div>${renderSmartAssessmentPreview()}<div class="btn-row"><button class="btn btn-primary" data-smart-assessment type="button"><i class="fa-solid fa-table-list"></i> Susun Draft Analisis DS/DO</button><button class="btn btn-secondary" data-go-legacy="4" type="button">Pilih Diagnosis SDKI</button><button class="btn btn-secondary" data-go-legacy="5" type="button">Luaran SLKI</button><button class="btn btn-secondary" data-go-legacy="6" type="button">Intervensi SIKI</button><button class="btn btn-soft" data-go-stage="3" type="button">Review & Export</button></div></section>`;
     }
     function renderStep(){
@@ -1022,6 +1032,9 @@
       el.stepContainer.querySelectorAll("[data-go-stage]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goStage)===2?3:7)));
       el.stepContainer.querySelectorAll("[data-go-legacy]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goLegacy))));
       el.stepContainer.querySelector("[data-smart-assessment]")?.addEventListener("click",autoCreateAnalysis);
+      el.stepContainer.querySelector("[data-run-ai-clinical]")?.addEventListener("click",runAIClinicalAnalysis);
+      el.stepContainer.querySelector("[data-apply-ai-analysis]")?.addEventListener("click",applyAIAnalysisRows);
+      el.stepContainer.querySelectorAll("[data-add-ai-diagnosis]").forEach(button=>button.addEventListener("click",()=>addAICandidateDiagnosis(Number(button.dataset.addAiDiagnosis))));
       el.stepContainer.querySelectorAll("[data-bind]").forEach(input=>input.addEventListener("input",()=>{setPath(state,input.dataset.bind,input.value);scheduleSave();renderSummary();}));
       el.stepContainer.querySelectorAll("[data-dynamic-bind]").forEach(input=>input.addEventListener("input",()=>{const [collection,index,key]=input.dataset.dynamicBind.split(".");state.assessment[collection][Number(index)][key]=input.value;scheduleSave();}));
       el.stepContainer.querySelectorAll(".accordion-trigger").forEach(button=>button.addEventListener("click",()=>button.closest(".accordion-item").classList.toggle("open")));
@@ -1067,6 +1080,69 @@
       el.stepContainer.querySelector("[data-new-askep]")?.addEventListener("click",newAskep);
     }
 
+    const AI_API_URL="https://askep.mkhoirulzed.workers.dev/api/ai/chat";
+    const AI_FIREBASE_CONFIG={apiKey:"AIzaSyChTj0cPYydn-VRaCnYXX4lBKiGmcIIb8Q",authDomain:"sdki-a3960.firebaseapp.com",projectId:"sdki-a3960",storageBucket:"sdki-a3960.firebasestorage.app",messagingSenderId:"577189478908",appId:"1:577189478908:web:efe83142bb88bbc5b07279",measurementId:"G-845T8J7J98"};
+    if(!firebase.apps.length)firebase.initializeApp(AI_FIREBASE_CONFIG);
+    const askepAuth=firebase.auth();
+    function buildAIClinicalContext(){
+      const p=state.patient,a=state.assessment;
+      return {patient:{age:p.age,gender:p.gender,medicalDiagnosis:p.medicalDiagnosis},assessment:{chiefComplaint:a.chiefComplaint,currentHistory:a.currentHistory,pastHistory:a.pastHistory,allergies:a.allergies,medications:a.medications,additional:a.additional,narrative:a.narrative,vitals:a.vitals,physical:a.physical,needs:a.needs,otherExams:a.otherExams,supportingExams:a.supportingExams,therapies:a.therapies,subjectiveCustom:a.subjectiveCustom,objectiveCustom:a.objectiveCustom},existingAnalysis:state.analysisRows};
+    }
+    function extractJsonAnswer(answer){
+      const text=String(answer||"").trim();
+      const fenced=text.match(/\`\`\`(?:json)?\s*([\s\S]*?)\`\`\`/i);
+      const source=fenced?fenced[1]:text;
+      const first=source.indexOf("{"),last=source.lastIndexOf("}");
+      if(first<0||last<=first)throw new Error("AI tidak mengirim format JSON yang valid.");
+      return JSON.parse(source.slice(first,last+1));
+    }
+    async function runAIClinicalAnalysis(){
+      const context=buildAIClinicalContext();
+      if(!collectSubjectiveData().length&&!collectObjectiveData().length&&!cleanString(state.assessment.narrative)){
+        showToast("Masukkan data pengkajian terlebih dahulu.");return;
+      }
+      if(!DB.sdki.length){showToast("Database SDKI belum termuat.");return;}
+      showLoading("AI sedang menganalisis","Mengekstrak DS/DO dan menyusun kandidat diagnosis. Mohon tunggu.");
+      try{
+        const user=await askepAuth.currentUser;
+        if(!user)throw new Error("Anda harus login untuk menggunakan AI. Silakan login melalui Profil lalu kembali ke halaman ini.");
+        const token=await user.getIdToken();
+        const narrative=[context.assessment.narrative,context.assessment.chiefComplaint,context.assessment.currentHistory].filter(Boolean).join(" ");
+        const shortlist=searchItems(DB.sdki,"sdki",narrative,25).map(x=>({code:x.code,title:x.title,definition:x.desc}));
+        const prompt=`Anda adalah asisten analisis keperawatan. Hasil hanya draft untuk diverifikasi perawat. Jangan mengarang data pasien, jangan menganggap field kosong normal, dan jangan menyatakan tindakan telah dilakukan. Ekstrak DS dan DO hanya dari fakta eksplisit pada input; jika data tidak jelas, beri peringatan dan jangan mengubahnya menjadi fakta. Narasi pasien boleh mengandung DS; observasi/pemeriksaan terukur hanya DO jika eksplisit. Analisis masalah dan etiologi sebagai SARAN, bukan kepastian. Kandidat SDKI harus dipilih hanya dari daftar referensi berikut, gunakan code yang persis. Jika tidak ada kandidat sesuai, diagnosisCandidates boleh kosong. Berikan maksimal 5 kandidat, sertakan alasan dan evidence yang mengacu pada fakta input. Keluarkan JSON valid tanpa markdown dengan struktur: {"subjective":["..."],"objective":["..."],"analysisRows":[{"subjective":"...","objective":"...","etiology":"...","suspectedProblem":"..."}],"diagnosisCandidates":[{"code":"...","title":"...","reason":"...","evidence":["..."]}],"warnings":["..."]}. Jangan mengisi etiologi/masalah jika bukti tidak cukup. Input pasien: ${JSON.stringify(context)}. Referensi SDKI (hanya ini yang boleh dipilih): ${JSON.stringify(shortlist)}`;
+        const body=JSON.stringify({message:prompt,history:[],context:{page:"askep-generator",sourcePage:"askep-lengkap",mode:"clinical-analysis"}});
+        let response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+token},body});
+        if(response.status===401){const fresh=await user.getIdToken(true);response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+fresh},body});}
+        const payload=await response.json();
+        if(!response.ok||payload?.success===false)throw new Error(payload?.message||payload?.error?.message||`AI gagal (${response.status})`);
+        const answer=payload?.answer||payload?.data?.answer||payload?.result?.answer||payload?.message||"";
+        const parsed=extractJsonAnswer(answer);
+        const candidateList=Array.isArray(parsed.diagnosisCandidates)?parsed.diagnosisCandidates:[];
+        parsed.diagnosisCandidates=candidateList.map(candidate=>{const match=DB.sdki.find(raw=>normalizeCode(getCode(raw,"sdki"))===normalizeCode(candidate.code));return match?{code:getCode(match,"sdki"),title:getTitle(match,"sdki"),reason:cleanString(candidate.reason),evidence:Array.isArray(candidate.evidence)?candidate.evidence.map(cleanString).filter(Boolean):[]}:null;}).filter(Boolean).slice(0,5);
+        parsed.subjective=Array.isArray(parsed.subjective)?parsed.subjective.map(cleanString).filter(Boolean):[];
+        parsed.objective=Array.isArray(parsed.objective)?parsed.objective.map(cleanString).filter(Boolean):[];
+        parsed.analysisRows=Array.isArray(parsed.analysisRows)?parsed.analysisRows.map(row=>({id:uid("analysis-ai"),subjective:cleanString(row.subjective),objective:cleanString(row.objective),etiology:cleanString(row.etiology),suspectedProblem:cleanString(row.suspectedProblem)})).filter(row=>row.subjective||row.objective||row.etiology||row.suspectedProblem):[];
+        parsed.warnings=Array.isArray(parsed.warnings)?parsed.warnings.map(cleanString).filter(Boolean):[];
+        parsed.generatedAt=new Date().toISOString();
+        parsed.modelNote="AI-generated draft; clinical verification required.";
+        state.aiClinicalAnalysis=parsed;scheduleSave();renderAll();showToast("Analisis AI selesai. Verifikasi hasilnya.");
+      }catch(error){console.error("AI clinical analysis error",error);showToast(error.message||"Analisis AI gagal.");}
+      finally{hideLoading();}
+    }
+    function applyAIAnalysisRows(){
+      const rows=state.aiClinicalAnalysis?.analysisRows||[];
+      if(!rows.length){showToast("AI tidak menghasilkan draft analisis.");return;}
+      if(state.analysisRows.length&&!confirm("Tabel analisis yang ada akan diganti dengan draft AI. Lanjutkan?"))return;
+      state.analysisRows=rows.map(row=>({...row,id:row.id||uid("analysis")}));
+      scheduleSave();goToStep(3);showToast("Draft AI dimasukkan. Silakan verifikasi/edit.");
+    }
+    function addAICandidateDiagnosis(index){
+      const candidate=state.aiClinicalAnalysis?.diagnosisCandidates?.[index];if(!candidate)return;
+      const raw=DB.sdki.find(item=>normalizeCode(getCode(item,"sdki"))===normalizeCode(candidate.code));
+      if(!raw){showToast("Diagnosis tidak ditemukan di database SDKI.");return;}
+      const item={code:getCode(raw,"sdki"),title:getTitle(raw,"sdki"),raw};
+      addDiagnosis(item);goToStep(4);
+    }
     function renderSdkISearch(query){
       const container=el.stepContainer.querySelector("#sdkiResults"); if(!container)return;
       const items=searchItems(DB.sdki,"sdki",query,query?30:12);
