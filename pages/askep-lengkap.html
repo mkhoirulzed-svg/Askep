@@ -469,6 +469,7 @@
         diagnoses:[],
         aiClinicalAnalysis:null,
         aiQualityReview:null,
+        exportTemplate:"standard",
         meta:{ createdAt:now.toISOString(), updatedAt:now.toISOString(), currentStep:1 }
       };
     }
@@ -988,6 +989,7 @@
         ${!hasContent?'<div class="review-note"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada diagnosis. Dokumen tetap dapat dilihat, tetapi tabel rencana keperawatan akan kosong.</div>':""}
         ${renderReviewContent()}
         <div class="review-section"><div class="review-head"><div><div class="review-title">AI Quality Check</div><div class="review-sub">Periksa konsistensi pengkajian, analisis, SDKI, SLKI dan SIKI sebelum ekspor.</div></div></div><div class="btn-row single"><button class="btn btn-soft" data-run-ai-quality-review type="button"><i class="fa-solid fa-shield-check"></i> ${state.aiQualityReview?"Periksa Ulang dengan AI":"Periksa Konsistensi dengan AI"}</button></div>${renderAIQualityReview()}</div>
+        <div class="review-section"><div class="review-title">Format Ekspor</div><div class="review-sub">Pilih struktur dokumen untuk DOCX, PDF, dan Cetak.</div><select class="field-select" data-export-template style="margin-top:8px"><option value="standard" ${state.exportTemplate==="standard"?"selected":""}>Standar Askep</option><option value="bab" ${state.exportTemplate==="bab"?"selected":""}>Format BAB I–V</option><option value="table" ${state.exportTemplate==="table"?"selected":""}>Format Tabel Ringkas</option></select><div class="review-sub" style="margin-top:8px">${state.exportTemplate==="bab"?"BAB I Pengkajian · BAB II Analisis · BAB III Diagnosis · BAB IV Rencana · BAB V Evaluasi":"Format akan diterapkan pada judul/struktur ekspor; isi klinis tidak diubah."}</div></div>
         <div class="download-grid">
           <button class="btn btn-secondary native-click" data-edit-menu type="button"><i class="fa-solid fa-pen-to-square"></i> Edit Askep</button>
           <button class="btn btn-primary native-click" data-download-docx type="button"><i class="fa-solid fa-file-word"></i> DOCX</button>
@@ -1140,6 +1142,7 @@
       el.stepContainer.querySelectorAll("[data-intervention-field]").forEach(input=>input.addEventListener("input",()=>{const [id,key]=input.dataset.interventionField.split(":");const d=activeDiagnosis(),s=d?.interventions.find(x=>x.id===id);if(s){s[key]=input.value;scheduleSave();}}));
       el.stepContainer.querySelectorAll("[data-intervention-action]").forEach(input=>input.addEventListener("change",()=>{const [id,index]=input.dataset.interventionAction.split(":");const s=activeDiagnosis()?.interventions.find(x=>x.id===id);if(s){s.actions[Number(index)].checked=input.checked;scheduleSave();}}));
 
+      el.stepContainer.querySelector("[data-export-template]")?.addEventListener("change",event=>{state.exportTemplate=event.target.value;scheduleSave();buildPrintDocument();renderAll();showToast("Format ekspor diperbarui.");});
       el.stepContainer.querySelector("[data-edit-menu]")?.addEventListener("click",showEditMenu);
       el.stepContainer.querySelector("[data-download-docx]")?.addEventListener("click",downloadDocx);
       el.stepContainer.querySelector("[data-download-pdf]")?.addEventListener("click",downloadPdf);
@@ -1264,12 +1267,15 @@
     function buildPrintDocument(){
       const identityRows=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,v])=>cleanString(v));
       const ds=collectSubjectiveData(),od=collectObjectiveData();
+      const headingMap={standard:["Identitas Pasien","Pengkajian Keperawatan","Analisis Data","Diagnosis dan Prioritas","Rencana Asuhan Keperawatan"],bab:["BAB I — Identitas","BAB II — Pengkajian","BAB III — Analisis Data","BAB IV — Diagnosis","BAB V — Rencana Asuhan"],table:["Identitas","Pengkajian (DS/DO)","Analisis","Diagnosis","Rencana Asuhan"]};
+      const headings=(headingMap[state.exportTemplate]||headingMap.standard);
+
       el.printDocument.innerHTML=`<h1>ASUHAN KEPERAWATAN</h1><p style="text-align:center;margin:0">Dokumen rencana asuhan keperawatan</p>
-      ${identityRows.length?`<h2>Identitas Pasien</h2><table><tbody>${identityRows.map(([k,v])=>`<tr><th style="width:30%">${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`).join("")}</tbody></table>`:""}
-      <h2>Pengkajian Keperawatan</h2><table><thead><tr><th>Data subjektif</th><th>Data objektif</th></tr></thead><tbody><tr><td>${ds.length?`<ul>${ds.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td><td>${od.length?`<ul>${od.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td></tr></tbody></table>
-      <h2>Analisis Data</h2>${state.analysisRows.length?`<table><thead><tr><th>No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi</th><th>Masalah</th></tr></thead><tbody>${state.analysisRows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.subjective||"-")}</td><td>${escapeHtml(r.objective||"-")}</td><td>${escapeHtml(r.etiology||"-")}</td><td>${escapeHtml(r.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada analisis data.</p>"}
-      <h2>Diagnosis dan Prioritas</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Etiologi</th><th>Data pendukung</th><th>Alasan prioritas</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${escapeHtml(d.etiology||"-")}</td><td><b>DS:</b><br>${escapeHtml(d.subjectiveDataText||"-")}<br><br><b>DO:</b><br>${escapeHtml(d.objectiveDataText||"-")}</td><td>${escapeHtml(d.priorityReason||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada diagnosis.</p>"}
-      <h2>Rencana Asuhan Keperawatan</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?`<ul>${selectedIndicators(o).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}${s.note?`<br>${escapeHtml(s.note)}`:""}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?`<ul>${selectedActions(s).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada rencana asuhan keperawatan.</p>"}
+      ${identityRows.length?`<h2>${escapeHtml(headings[0])}</h2><table><tbody>${identityRows.map(([k,v])=>`<tr><th style="width:30%">${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`).join("")}</tbody></table>`:""}
+      <h2>${escapeHtml(headings[1])}</h2><table><thead><tr><th>Data subjektif</th><th>Data objektif</th></tr></thead><tbody><tr><td>${ds.length?`<ul>${ds.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td><td>${od.length?`<ul>${od.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-"}</td></tr></tbody></table>
+      <h2>${escapeHtml(headings[2])}</h2>${state.analysisRows.length?`<table><thead><tr><th>No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi</th><th>Masalah</th></tr></thead><tbody>${state.analysisRows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.subjective||"-")}</td><td>${escapeHtml(r.objective||"-")}</td><td>${escapeHtml(r.etiology||"-")}</td><td>${escapeHtml(r.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada analisis data.</p>"}
+      <h2>${escapeHtml(headings[3])}</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Etiologi</th><th>Data pendukung</th><th>Alasan prioritas</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${escapeHtml(d.etiology||"-")}</td><td><b>DS:</b><br>${escapeHtml(d.subjectiveDataText||"-")}<br><br><b>DO:</b><br>${escapeHtml(d.objectiveDataText||"-")}</td><td>${escapeHtml(d.priorityReason||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada diagnosis.</p>"}
+      <h2>${escapeHtml(headings[4])}</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?`<ul>${selectedIndicators(o).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}${s.note?`<br>${escapeHtml(s.note)}`:""}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?`<ul>${selectedActions(s).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada rencana asuhan keperawatan.</p>"}
       <div style="margin-top:28px;text-align:right"><p>${escapeHtml(state.patient.room||"")}${state.patient.assessmentDate?`, ${escapeHtml(formatDateID(state.patient.assessmentDate))}`:""}</p><p style="margin-top:52px">${escapeHtml(state.patient.nurseName||"(........................................)")}</p></div>`;
     }
 
@@ -1292,19 +1298,21 @@
         if(!d) throw new Error("Library DOCX tidak tersedia");
         const {Document,Packer,Paragraph,TextRun,HeadingLevel,Table,TableRow,TableCell,WidthType,AlignmentType}=d;
         const children=[];
+        const headingMap={standard:["Identitas Pasien","Pengkajian Keperawatan","Analisis Data","Diagnosis dan Prioritas","Rencana Asuhan Keperawatan"],bab:["BAB I — Pengkajian","BAB II — Analisis Data","BAB III — Diagnosis Keperawatan","BAB IV — Rencana Asuhan Keperawatan","BAB V — Evaluasi"],table:["Identitas","Pengkajian (DS/DO)","Analisis","Diagnosis","Rencana Asuhan"]};
+        const headings=headingMap[state.exportTemplate]||headingMap.standard;
         children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"ASUHAN KEPERAWATAN",bold:true,size:30})]}));
         children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Dokumen rencana asuhan keperawatan",size:20})]}));
         const identity=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,v])=>cleanString(v));
-        if(identity.length){children.push(new Paragraph({text:"Identitas Pasien",heading:HeadingLevel.HEADING_2}));children.push(makeDocxTable(identity.map(([k,v])=>[k,v]),[35,65]));}
-        children.push(new Paragraph({text:"Pengkajian Keperawatan",heading:HeadingLevel.HEADING_2}));
+        if(identity.length){children.push(new Paragraph({text:headings[0],heading:HeadingLevel.HEADING_2}));children.push(makeDocxTable(identity.map(([k,v])=>[k,v]),[35,65]));}
+        children.push(new Paragraph({text:headings[1],heading:HeadingLevel.HEADING_2}));
         children.push(makeDocxTable([["Data subjektif","Data objektif"],[collectSubjectiveData().map(x=>`• ${x}`).join("\n")||"-",collectObjectiveData().map(x=>`• ${x}`).join("\n")||"-"]],[50,50],true));
-        children.push(new Paragraph({text:"Analisis Data",heading:HeadingLevel.HEADING_2}));
+        children.push(new Paragraph({text:headings[2],heading:HeadingLevel.HEADING_2}));
         const analysisRows=[["No.","Data subjektif","Data objektif","Etiologi","Masalah"],...state.analysisRows.map((r,i)=>[String(i+1),r.subjective||"-",r.objective||"-",r.etiology||"-",r.suspectedProblem||"-"])];
         children.push(makeDocxTable(analysisRows,[7,24,24,22,23],true));
-        children.push(new Paragraph({text:"Diagnosis dan Prioritas",heading:HeadingLevel.HEADING_2}));
+        children.push(new Paragraph({text:headings[3],heading:HeadingLevel.HEADING_2}));
         const diagRows=[["Prioritas","Diagnosis","Etiologi","Data pendukung","Alasan prioritas"],...state.diagnoses.map((x,i)=>[String(i+1),x.statement||x.title,x.etiology||"-",`DS:\n${x.subjectiveDataText||"-"}\n\nDO:\n${x.objectiveDataText||"-"}`,x.priorityReason||"-"])];
         children.push(makeDocxTable(diagRows,[9,24,18,31,18],true));
-        children.push(new Paragraph({text:"Rencana Asuhan Keperawatan",heading:HeadingLevel.HEADING_2}));
+        children.push(new Paragraph({text:headings[4],heading:HeadingLevel.HEADING_2}));
         const careRows=[["Prioritas","Diagnosis","Luaran & target","Indikator","Intervensi","Rencana tindakan"],...state.diagnoses.map((x,i)=>[
           String(i+1),x.statement||x.title,
           x.outcomes.map(o=>`${o.code?o.code+" — ":""}${o.title}\n${o.expectation} setelah ${o.duration}${o.manualTarget?"\n"+o.manualTarget:""}`).join("\n\n")||"-",
