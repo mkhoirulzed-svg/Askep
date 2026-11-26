@@ -468,6 +468,7 @@
         analysisRows:[],
         diagnoses:[],
         aiClinicalAnalysis:null,
+        aiQualityReview:null,
         meta:{ createdAt:now.toISOString(), updatedAt:now.toISOString(), currentStep:1 }
       };
     }
@@ -986,6 +987,7 @@
       return `<section class="section-card">${stepHeader(7,"Review dan unduh","Periksa kembali seluruh isi. Gunakan tombol Edit untuk kembali ke bagian tertentu tanpa kehilangan data.")}
         ${!hasContent?'<div class="review-note"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada diagnosis. Dokumen tetap dapat dilihat, tetapi tabel rencana keperawatan akan kosong.</div>':""}
         ${renderReviewContent()}
+        <div class="review-section"><div class="review-head"><div><div class="review-title">AI Quality Check</div><div class="review-sub">Periksa konsistensi pengkajian, analisis, SDKI, SLKI dan SIKI sebelum ekspor.</div></div></div><div class="btn-row single"><button class="btn btn-soft" data-run-ai-quality-review type="button"><i class="fa-solid fa-shield-check"></i> ${state.aiQualityReview?"Periksa Ulang dengan AI":"Periksa Konsistensi dengan AI"}</button></div>${renderAIQualityReview()}</div>
         <div class="download-grid">
           <button class="btn btn-secondary native-click" data-edit-menu type="button"><i class="fa-solid fa-pen-to-square"></i> Edit Askep</button>
           <button class="btn btn-primary native-click" data-download-docx type="button"><i class="fa-solid fa-file-word"></i> DOCX</button>
@@ -997,6 +999,33 @@
       </section>`;
     }
 
+    function renderAIQualityReview(){
+      const result=state.aiQualityReview;if(!result)return '<div class="empty-state">Belum ada pemeriksaan. AI akan memberikan temuan dan saran; tidak mengubah isi Askep.</div>';
+      const items=Array.isArray(result.checks)?result.checks:[];
+      const count={critical:items.filter(x=>x.severity==="critical").length,warning:items.filter(x=>x.severity==="warning").length,info:items.filter(x=>x.severity==="info").length};
+      return `<div class="review-note">Hasil AI adalah bantuan review, bukan validasi klinis final. ${escapeHtml(result.summary||"")}</div><div class="grid three"><div class="identity-item"><div class="identity-label">Perlu perhatian serius</div><div class="identity-value">${count.critical}</div></div><div class="identity-item"><div class="identity-label">Peringatan</div><div class="identity-value">${count.warning}</div></div><div class="identity-item"><div class="identity-label">Catatan</div><div class="identity-value">${count.info}</div></div></div>${items.length?items.map(x=>`<article class="care-card"><div class="care-head"><div class="care-copy"><span class="care-code">${escapeHtml(String(x.severity||"warning").toUpperCase())}</span><div class="care-title">${escapeHtml(x.issue||"Temuan")}</div><div class="review-sub"><b>Bukti:</b> ${escapeHtml(x.evidence||"Tidak disebutkan")}<br><b>Saran:</b> ${escapeHtml(x.recommendation||"Tinjau manual")}</div></div></div></article>`).join(""):'<div class="empty-state">Tidak ada temuan yang dikembalikan AI. Tetap lakukan pemeriksaan manual.</div>'}`;
+    }
+    function buildQualityReviewContext(){
+      return {patient:{age:state.patient.age,gender:state.patient.gender,medicalDiagnosis:state.patient.medicalDiagnosis},assessment:{subjective:collectSubjectiveData(),objective:collectObjectiveData(),narrative:state.assessment.narrative,otherExams:state.assessment.otherExams},analysisRows:state.analysisRows,diagnoses:state.diagnoses.map(d=>({code:d.code,title:d.title,statement:d.statement,etiology:d.etiology,subjectiveDataText:d.subjectiveDataText,objectiveDataText:d.objectiveDataText,priorityReason:d.priorityReason,outcomes:d.outcomes.map(o=>({code:o.code,title:o.title,expectation:o.expectation,duration:o.duration,selectedIndicators:selectedIndicators(o),manualTarget:o.manualTarget})),interventions:d.interventions.map(i=>({code:i.code,title:i.title,selectedActions:selectedActions(i),frequency:i.frequency,note:i.note}))}))};
+    }
+    async function runAIQualityReview(){
+      if(!collectSubjectiveData().length&&!collectObjectiveData().length&&!state.diagnoses.length){showToast("Isi pengkajian dan/atau diagnosis terlebih dahulu.");return;}
+      showLoading("AI Quality Check","Menilai konsistensi dan kelengkapan rencana keperawatan.");
+      try{
+        const user=await askepAuthReady;if(!user)throw new Error("Login diperlukan untuk AI Quality Check.");
+        const token=await user.getIdToken();
+        const context=buildQualityReviewContext();
+        const prompt=`Anda adalah reviewer mutu dokumentasi keperawatan. Lakukan pemeriksaan konsistensi draft Askep. Jangan menambah fakta pasien, jangan membuat diagnosis atau kode baru, dan jangan menyatakan validitas klinis absolut. Periksa: keselarasan DS/DO dengan analisis dan diagnosis; diagnosis memiliki data pendukung yang eksplisit; etiologi tidak melebihi bukti; setiap diagnosis memiliki SLKI dan target/indikator yang dipilih; SIKI dan tindakan yang dipilih relevan dengan diagnosis dan luaran; adanya bagian kosong/ketidaksesuaian; serta potensi klaim tindakan sudah dilakukan padahal hanya rencana. Jangan menilai field kosong sebagai normal. Berikan hanya temuan spesifik yang dapat dibuktikan dari data. Severity hanya critical, warning, info. Jika tidak ada temuan, checks boleh kosong. JSON valid: {"summary":"ringkasan singkat","checks":[{"severity":"critical|warning|info","issue":"...","evidence":"kutip/ringkas field yang ada","recommendation":"saran review"}]}. Data draft: ${JSON.stringify(context)}`;
+        const body=JSON.stringify({message:prompt,history:[],context:{page:"askep-generator",sourcePage:"askep-lengkap",mode:"quality-review"}});
+        let response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+token},body});
+        if(response.status===401){const fresh=await user.getIdToken(true);response=await fetch(AI_API_URL,{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json","Authorization":"Bearer "+fresh},body});}
+        const payload=await response.json();if(!response.ok||payload?.success===false)throw new Error(payload?.message||payload?.error?.message||`AI gagal (${response.status})`);
+        const answer=payload?.answer||payload?.data?.answer||payload?.result?.answer||payload?.message||"";
+        const parsed=extractJsonAnswer(answer);state.aiQualityReview={summary:cleanString(parsed.summary),checks:Array.isArray(parsed.checks)?parsed.checks.filter(x=>x&&["critical","warning","info"].includes(x.severity)).slice(0,20):[],createdAt:new Date().toISOString()};
+        scheduleSave();renderAll();showToast("Quality Check selesai. Tinjau temuan AI.");
+      }catch(error){console.error("AI quality review",error);showToast(error.message||"Quality Check gagal.");}
+      finally{hideLoading();}
+    }
     function renderReviewContent(){
       const identity=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,value])=>cleanString(value));
       const ds=collectSubjectiveData(),od=collectObjectiveData();
@@ -1072,6 +1101,7 @@
       el.stepContainer.querySelector("[data-apply-ai-analysis]")?.addEventListener("click",applyAIAnalysisRows);
       el.stepContainer.querySelectorAll("[data-add-ai-diagnosis]").forEach(button=>button.addEventListener("click",()=>addAICandidateDiagnosis(Number(button.dataset.addAiDiagnosis))));
       el.stepContainer.querySelectorAll("[data-run-ai-care]").forEach(button=>button.addEventListener("click",()=>runAICareSuggestions(button.dataset.runAiCare)));
+      el.stepContainer.querySelector("[data-run-ai-quality-review]")?.addEventListener("click",runAIQualityReview);
       el.stepContainer.querySelectorAll("[data-add-ai-care]").forEach(button=>button.addEventListener("click",()=>{const [type,index]=button.dataset.addAiCare.split(":");addAICareSuggestion(type,Number(index));}));
       el.stepContainer.querySelectorAll("[data-bind]").forEach(input=>input.addEventListener("input",()=>{setPath(state,input.dataset.bind,input.value);scheduleSave();renderSummary();}));
       el.stepContainer.querySelectorAll("[data-dynamic-bind]").forEach(input=>input.addEventListener("input",()=>{const [collection,index,key]=input.dataset.dynamicBind.split(".");state.assessment[collection][Number(index)][key]=input.value;scheduleSave();}));
