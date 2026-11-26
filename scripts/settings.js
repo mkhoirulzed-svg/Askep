@@ -351,7 +351,9 @@
   function applySettings(settings, options) {
     const normalized = normalizeSettings(settings);
     const resolvedTheme = resolveTheme(normalized.theme);
-    const paletteSet = PALETTES[normalized.accent] || PALETTES.blue;
+    // Tema Sistem menggunakan aksen biru ASKEP secara konsisten.
+    const effectiveAccent = normalized.theme === "system" ? "blue" : normalized.accent;
+    const paletteSet = PALETTES[effectiveAccent] || PALETTES.blue;
     const palette = paletteSet[resolvedTheme];
     const surface = resolvedTheme === "dark" ? DARK_SURFACE : LIGHT_SURFACE;
     const root = document.documentElement;
