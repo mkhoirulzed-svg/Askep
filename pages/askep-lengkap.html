@@ -437,13 +437,9 @@
     const STORAGE_KEY = "askep-builder-v1";
 
     const STEPS = [
-      { id:1, key:"patient", title:"Data Pasien", short:"Identitas", icon:"fa-id-card", sub:"Opsional" },
-      { id:2, key:"assessment", title:"Pengkajian", short:"Pengkajian", icon:"fa-clipboard-list", sub:"Data klinis" },
-      { id:3, key:"analysis", title:"Analisis Data", short:"Analisis", icon:"fa-table-list", sub:"DS dan DO" },
-      { id:4, key:"diagnoses", title:"Diagnosis", short:"Diagnosis", icon:"fa-stethoscope", sub:"Prioritas masalah" },
-      { id:5, key:"outcomes", title:"Luaran SLKI", short:"Luaran", icon:"fa-chart-line", sub:"Target hasil" },
-      { id:6, key:"interventions", title:"Intervensi SIKI", short:"Intervensi", icon:"fa-hand-holding-medical", sub:"Rencana tindakan" },
-      { id:7, key:"review", title:"Review & Unduh", short:"Hasil", icon:"fa-file-arrow-down", sub:"DOCX dan PDF" }
+      { id:1, key:"input", title:"Input Data", short:"Input", icon:"fa-clipboard-list", sub:"Identitas dan pengkajian" },
+      { id:2, key:"ai", title:"Susun ASKEP", short:"Susun", icon:"fa-wand-magic-sparkles", sub:"Analisis dan rencana" },
+      { id:3, key:"review", title:"Review & Export", short:"Review", icon:"fa-file-arrow-down", sub:"Validasi dan unduh" }
     ];
 
     const DB = { sdki:[], slki:[], siki:[], relations:[] };
@@ -640,11 +636,17 @@
       localStorage.removeItem(STORAGE_KEY); state=createInitialState(); currentStep=1; activeDiagnosisId=null; renderAll(); showToast("Askep baru dibuat.");
     }
 
+    function workflowStage(){
+      if(currentStep===1||currentStep===2)return 1;
+      if(currentStep===7)return 3;
+      return 2;
+    }
     function renderNavigation(){
-      el.mobileProgress.innerHTML=STEPS.map(step=>`<button class="progress-pill ${step.id===currentStep?"active":step.id<currentStep?"done":""}" data-step-nav="${step.id}" type="button"><span class="number">${step.id<currentStep?'<i class="fa-solid fa-check"></i>':step.id}</span><span>${step.short}</span></button>`).join("");
-      el.desktopStepMenu.innerHTML=STEPS.map(step=>`<button class="sidebar-step ${step.id===currentStep?"active":step.id<currentStep?"done":""}" data-step-nav="${step.id}" type="button"><span class="sidebar-number">${step.id<currentStep?'<i class="fa-solid fa-check"></i>':step.id}</span><span class="sidebar-copy"><span class="sidebar-title">${escapeHtml(step.title)}</span><span class="sidebar-sub">${escapeHtml(step.sub)}</span></span></button>`).join("");
-      document.querySelectorAll("[data-step-nav]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.stepNav))));
-      setTimeout(()=>document.querySelector(`.progress-pill[data-step-nav="${currentStep}"]`)?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),20);
+      const stage=workflowStage();
+      el.mobileProgress.innerHTML=STEPS.map(step=>`<button class="progress-pill ${step.id===stage?"active":step.id<stage?"done":""}" data-step-nav="${step.id}" type="button"><span class="number">${step.id<stage?'<i class="fa-solid fa-check"></i>':step.id}</span><span>${step.short}</span></button>`).join("");
+      el.desktopStepMenu.innerHTML=STEPS.map(step=>`<button class="sidebar-step ${step.id===stage?"active":step.id<stage?"done":""}" data-step-nav="${step.id}" type="button"><span class="sidebar-number">${step.id<stage?'<i class="fa-solid fa-check"></i>':step.id}</span><span class="sidebar-copy"><span class="sidebar-title">${escapeHtml(step.title)}</span><span class="sidebar-sub">${escapeHtml(step.sub)}</span></span></button>`).join("");
+      document.querySelectorAll("[data-step-nav]").forEach(button=>button.addEventListener("click",()=>{const n=Number(button.dataset.stepNav);goToStep(n===1?1:n===2?3:7);}));
+      setTimeout(()=>document.querySelector(`.progress-pill[data-step-nav="${stage}"]`)?.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}),20);
     }
 
     function goToStep(step){
@@ -981,18 +983,33 @@
       return `<div class="review-table-wrap"><table class="review-table"><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?selectedIndicators(o).map(x=>`• ${escapeHtml(x)}`).join("<br>"):"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?selectedActions(s).map(x=>`• ${escapeHtml(x)}`).join("<br>"):"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table></div>`;
     }
 
+    function renderWorkflowInput(){
+      const patient=renderPatientStep().replace(/<div class="step-actions">[\\s\\S]*?<\\/div>\\s*<\\/section>/,"</section>");
+      const assessment=renderAssessmentStep().replace(/<div class="step-actions">[\\s\\S]*?<\\/div>\\s*<\\/section>/,"</section>");
+      return patient+assessment+'<div class="btn-row single"><button class="btn btn-primary native-click" data-go-stage="2" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Lanjut: Susun ASKEP</button></div>';
+    }
+    function renderAIStage(){
+      return '<section class="section-card"><div class="section-head"><div class="section-heading"><div class="eyebrow">Tahap 2 dari 3</div><h2 class="section-title">Susun ASKEP</h2><p class="section-desc">Pusat proses penyusunan otomatis. Integrasi AI klinis akan dikembangkan pada tahap berikutnya.</p></div></div><div class="info-card"><i class="fa-solid fa-wand-magic-sparkles"></i><p>Draft pengkajian tersimpan. Pada fase ini AI belum menghasilkan analisis otomatis; fitur manual SDKI, SLKI, dan SIKI tetap tersedia.</p></div><div class="btn-row"><button class="btn btn-secondary" data-go-legacy="4" type="button">Diagnosis SDKI</button><button class="btn btn-secondary" data-go-legacy="5" type="button">Luaran SLKI</button><button class="btn btn-secondary" data-go-legacy="6" type="button">Intervensi SIKI</button><button class="btn btn-primary" data-go-stage="3" type="button">Review & Export</button></div></section>';
+    }
     function renderStep(){
-      const renderer=[null,renderPatientStep,renderAssessmentStep,renderAnalysisStep,renderDiagnosisStep,renderOutcomeStep,renderInterventionStep,renderReviewStep][currentStep];
-      el.stepContainer.innerHTML=renderer();
+      if(currentStep===1)el.stepContainer.innerHTML=renderWorkflowInput();
+      else if(currentStep===3)el.stepContainer.innerHTML=renderAIStage();
+      else if(currentStep===7)el.stepContainer.innerHTML=renderReviewStep();
+      else {
+        const renderer={4:renderDiagnosisStep,5:renderOutcomeStep,6:renderInterventionStep}[currentStep];
+        el.stepContainer.innerHTML=renderer?renderer():'';
+      }
       bindStepEvents();
-      if(currentStep===4) renderSdkISearch("");
-      if(currentStep===5) renderSlkiSearch("");
-      if(currentStep===6) renderSikiSearch("");
-      if(currentStep===7) buildPrintDocument();
+      if(currentStep===4)renderSdkISearch("");
+      if(currentStep===5)renderSlkiSearch("");
+      if(currentStep===6)renderSikiSearch("");
+      if(currentStep===7)buildPrintDocument();
     }
 
     function bindStepEvents(){
       el.stepContainer.querySelectorAll("[data-go-step]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goStep))));
+      el.stepContainer.querySelectorAll("[data-go-stage]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goStage)===2?3:7)));
+      el.stepContainer.querySelectorAll("[data-go-legacy]").forEach(button=>button.addEventListener("click",()=>goToStep(Number(button.dataset.goLegacy))));
       el.stepContainer.querySelectorAll("[data-bind]").forEach(input=>input.addEventListener("input",()=>{setPath(state,input.dataset.bind,input.value);scheduleSave();renderSummary();}));
       el.stepContainer.querySelectorAll("[data-dynamic-bind]").forEach(input=>input.addEventListener("input",()=>{const [collection,index,key]=input.dataset.dynamicBind.split(".");state.assessment[collection][Number(index)][key]=input.value;scheduleSave();}));
       el.stepContainer.querySelectorAll(".accordion-trigger").forEach(button=>button.addEventListener("click",()=>button.closest(".accordion-item").classList.toggle("open")));
