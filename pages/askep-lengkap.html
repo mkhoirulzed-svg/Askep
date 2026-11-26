@@ -469,6 +469,7 @@
         diagnoses:[],
         aiClinicalAnalysis:null,
         aiQualityReview:null,
+        evaluations:[],
         exportTemplate:"standard",
         meta:{ createdAt:now.toISOString(), updatedAt:now.toISOString(), currentStep:1 }
       };
@@ -988,6 +989,7 @@
       return `<section class="section-card">${stepHeader(7,"Review dan unduh","Periksa kembali seluruh isi. Gunakan tombol Edit untuk kembali ke bagian tertentu tanpa kehilangan data.")}
         ${!hasContent?'<div class="review-note"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada diagnosis. Dokumen tetap dapat dilihat, tetapi tabel rencana keperawatan akan kosong.</div>':""}
         ${renderReviewContent()}
+        ${renderEvaluationSection()}
         <div class="review-section"><div class="review-head"><div><div class="review-title">AI Quality Check</div><div class="review-sub">Periksa konsistensi pengkajian, analisis, SDKI, SLKI dan SIKI sebelum ekspor.</div></div></div><div class="btn-row single"><button class="btn btn-soft" data-run-ai-quality-review type="button"><i class="fa-solid fa-shield-check"></i> ${state.aiQualityReview?"Periksa Ulang dengan AI":"Periksa Konsistensi dengan AI"}</button></div>${renderAIQualityReview()}</div>
         <div class="review-section"><div class="review-title">Format Ekspor</div><div class="review-sub">Pilih struktur dokumen untuk DOCX, PDF, dan Cetak.</div><select class="field-select" data-export-template style="margin-top:8px"><option value="standard" ${state.exportTemplate==="standard"?"selected":""}>Standar Askep</option><option value="bab" ${state.exportTemplate==="bab"?"selected":""}>Format BAB I–V</option><option value="table" ${state.exportTemplate==="table"?"selected":""}>Format Tabel Ringkas</option></select><div class="review-sub" style="margin-top:8px">${state.exportTemplate==="bab"?"BAB I Pengkajian · BAB II Analisis · BAB III Diagnosis · BAB IV Rencana · BAB V Evaluasi":"Format akan diterapkan pada judul/struktur ekspor; isi klinis tidak diubah."}</div></div>
         <div class="download-grid">
@@ -1001,6 +1003,9 @@
       </section>`;
     }
 
+    function evaluationTemplateFor(diagnosis){return {s:"S: Pasien mengatakan ...\\n",o:"O: Hasil observasi/pemeriksaan ...\\n",a:`A: ${diagnosis.statement||diagnosis.title} — ...\\n`,p:"P: Rencana tindak lanjut ...\\n"};}
+    function ensureEvaluation(diagnosis){let item=state.evaluations.find(x=>x.diagnosisId===diagnosis.id);if(!item){item={diagnosisId:diagnosis.id,fields:evaluationTemplateFor(diagnosis)};state.evaluations.push(item);}return item;}
+    function renderEvaluationSection(){if(!state.diagnoses.length)return '<div class="review-section"><div class="review-title">Evaluasi Keperawatan</div><div class="empty-state">Tambahkan diagnosis terlebih dahulu untuk membuat template evaluasi.</div></div>';return `<div class="review-section"><div class="review-head"><div><div class="review-title">Evaluasi Keperawatan</div><div class="review-sub">Template SOAP per diagnosis. Edit manual berdasarkan hasil evaluasi pasien yang sebenarnya.</div></div></div><div class="review-note"><i class="fa-solid fa-clipboard-check"></i> Template hanya kerangka dokumentasi. Isi berdasarkan data aktual; jangan biarkan placeholder bila belum diisi.</div>${state.diagnoses.map((d,index)=>{const item=ensureEvaluation(d);return `<article class="care-card"><div class="care-head"><div class="care-copy"><span class="care-code">Diagnosis ${index+1}</span><div class="care-title">${escapeHtml(d.statement||d.title)}</div></div></div><div class="inline-editor">${["s","o","a","p"].map(key=>`<div class="field"><label class="field-label">${key.toUpperCase()} — ${({s:"Subjektif",o:"Objektif",a:"Assessment",p:"Planning"})[key]}</label><textarea class="field-textarea" data-evaluation-field="${escapeAttribute(d.id)}:${key}" rows="3">${escapeHtml(item.fields[key]||"")}</textarea></div>`).join("")}</div></article>`;}).join("")}</div>`;}
     function renderAIQualityReview(){
       const result=state.aiQualityReview;if(!result)return '<div class="empty-state">Belum ada pemeriksaan. AI akan memberikan temuan dan saran; tidak mengubah isi Askep.</div>';
       const items=Array.isArray(result.checks)?result.checks:[];
@@ -1142,6 +1147,7 @@
       el.stepContainer.querySelectorAll("[data-intervention-field]").forEach(input=>input.addEventListener("input",()=>{const [id,key]=input.dataset.interventionField.split(":");const d=activeDiagnosis(),s=d?.interventions.find(x=>x.id===id);if(s){s[key]=input.value;scheduleSave();}}));
       el.stepContainer.querySelectorAll("[data-intervention-action]").forEach(input=>input.addEventListener("change",()=>{const [id,index]=input.dataset.interventionAction.split(":");const s=activeDiagnosis()?.interventions.find(x=>x.id===id);if(s){s.actions[Number(index)].checked=input.checked;scheduleSave();}}));
 
+      el.stepContainer.querySelectorAll("[data-evaluation-field]").forEach(input=>input.addEventListener("input",()=>{const [diagnosisId,key]=input.dataset.evaluationField.split(":");const item=state.evaluations.find(x=>x.diagnosisId===diagnosisId);if(item){item.fields[key]=input.value;scheduleSave();}}));
       el.stepContainer.querySelector("[data-export-template]")?.addEventListener("change",event=>{state.exportTemplate=event.target.value;scheduleSave();buildPrintDocument();renderAll();showToast("Format ekspor diperbarui.");});
       el.stepContainer.querySelector("[data-edit-menu]")?.addEventListener("click",showEditMenu);
       el.stepContainer.querySelector("[data-download-docx]")?.addEventListener("click",downloadDocx);
@@ -1276,6 +1282,7 @@
       <h2>${escapeHtml(headings[2])}</h2>${state.analysisRows.length?`<table><thead><tr><th>No.</th><th>Data subjektif</th><th>Data objektif</th><th>Etiologi</th><th>Masalah</th></tr></thead><tbody>${state.analysisRows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.subjective||"-")}</td><td>${escapeHtml(r.objective||"-")}</td><td>${escapeHtml(r.etiology||"-")}</td><td>${escapeHtml(r.suspectedProblem||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada analisis data.</p>"}
       <h2>${escapeHtml(headings[3])}</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Etiologi</th><th>Data pendukung</th><th>Alasan prioritas</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${escapeHtml(d.etiology||"-")}</td><td><b>DS:</b><br>${escapeHtml(d.subjectiveDataText||"-")}<br><br><b>DO:</b><br>${escapeHtml(d.objectiveDataText||"-")}</td><td>${escapeHtml(d.priorityReason||"-")}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada diagnosis.</p>"}
       <h2>${escapeHtml(headings[4])}</h2>${state.diagnoses.length?`<table><thead><tr><th>Prioritas</th><th>Diagnosis</th><th>Luaran & target</th><th>Indikator</th><th>Intervensi</th><th>Rencana tindakan</th></tr></thead><tbody>${state.diagnoses.map((d,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(d.statement||d.title)}</td><td>${d.outcomes.length?d.outcomes.map(o=>`<b>${escapeHtml(o.code?`${o.code} — ${o.title}`:o.title)}</b><br>${escapeHtml(o.expectation)} setelah ${escapeHtml(o.duration)}${o.manualTarget?`<br>${escapeHtml(o.manualTarget)}`:""}`).join("<hr>"):"-"}</td><td>${d.outcomes.length?d.outcomes.map(o=>selectedIndicators(o).length?`<ul>${selectedIndicators(o).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>`<b>${escapeHtml(s.code?`${s.code} — ${s.title}`:s.title)}</b><br>${escapeHtml(s.frequency||"")}${s.note?`<br>${escapeHtml(s.note)}`:""}`).join("<hr>"):"-"}</td><td>${d.interventions.length?d.interventions.map(s=>selectedActions(s).length?`<ul>${selectedActions(s).map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul>`:"-").join("<hr>"):"-"}</td></tr>`).join("")}</tbody></table>`:"<p>Belum ada rencana asuhan keperawatan.</p>"}
+      <h2>Evaluasi Keperawatan</h2>${state.diagnoses.length?state.diagnoses.map(d=>{const item=ensureEvaluation(d);return `<h3>${escapeHtml(d.statement||d.title)}</h3><p>${escapeHtml(item.fields.s||"").replace(/\\n/g,"<br>")}</p><p>${escapeHtml(item.fields.o||"").replace(/\\n/g,"<br>")}</p><p>${escapeHtml(item.fields.a||"").replace(/\\n/g,"<br>")}</p><p>${escapeHtml(item.fields.p||"").replace(/\\n/g,"<br>")}</p>`;}).join(""):"<p>Belum ada diagnosis.</p>"}
       <div style="margin-top:28px;text-align:right"><p>${escapeHtml(state.patient.room||"")}${state.patient.assessmentDate?`, ${escapeHtml(formatDateID(state.patient.assessmentDate))}`:""}</p><p style="margin-top:52px">${escapeHtml(state.patient.nurseName||"(........................................)")}</p></div>`;
     }
 
@@ -1321,6 +1328,8 @@
           x.interventions.map(s=>selectedActions(s).map(v=>`• ${v}`).join("\n")||"-").join("\n\n")||"-"
         ])];
         children.push(makeDocxTable(careRows,[7,18,20,18,17,20],true));
+        children.push(new Paragraph({text:"Evaluasi Keperawatan",heading:HeadingLevel.HEADING_2}));
+        state.diagnoses.forEach(d=>{const item=ensureEvaluation(d);children.push(new Paragraph({text:d.statement||d.title,heading:HeadingLevel.HEADING_3}));["s","o","a","p"].forEach(key=>children.push(new Paragraph({text:item.fields[key]||""})));});
         children.push(new Paragraph({text:`\n${state.patient.room||""}${state.patient.assessmentDate?`, ${formatDateID(state.patient.assessmentDate)}`:""}`,alignment:AlignmentType.RIGHT}));
         children.push(new Paragraph({text:`\n\n\n${state.patient.nurseName||"(........................................)"}`,alignment:AlignmentType.RIGHT}));
         const doc=new Document({sections:[{properties:{},children}]});
