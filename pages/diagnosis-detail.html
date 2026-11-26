@@ -75,23 +75,5 @@
   </nav>
 
   <script src="../scripts/diagnosis-detail.js" defer></script>
-  <!-- Temporary mobile debug badge for copy-protection testing -->
-  <script>
-    setInterval(() => {
-      let d = document.getElementById("dbgBadge");
-      if (!d) {
-        d = document.createElement("div");
-        d.id = "dbgBadge";
-        d.style.cssText = "position:fixed;bottom:76px;left:8px;z-index:999999;background:#000;color:#0f0;font:11px monospace;padding:6px 8px;border-radius:6px;pointer-events:none";
-        document.body.appendChild(d);
-      }
-      const el = document.querySelector(".copy-text") || document.body;
-      d.textContent =
-        "mode=" + document.body.dataset.copyProtection +
-        " | sel=" + getComputedStyle(el).userSelect +
-        " | sw=" + (navigator.serviceWorker?.controller ? "on" : "off");
-    }, 1000);
-  </script>
-  
 </body>
 </html>
