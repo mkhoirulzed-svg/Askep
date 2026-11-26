@@ -1267,6 +1267,7 @@
     function buildPrintDocument(){
       const identityRows=Object.entries({"Nama / inisial":state.patient.name,"Umur":state.patient.age,"Jenis kelamin":state.patient.gender,"Nomor RM":state.patient.medicalRecord,"Ruangan":state.patient.room,"Diagnosis medis":state.patient.medicalDiagnosis,"Tanggal pengkajian":formatDateID(state.patient.assessmentDate),"Perawat":state.patient.nurseName}).filter(([,v])=>cleanString(v));
       const ds=collectSubjectiveData(),od=collectObjectiveData();
+      const headingMap={standard:["Identitas Pasien","Pengkajian Keperawatan","Analisis Data","Diagnosis dan Prioritas","Rencana Asuhan Keperawatan"],bab:["BAB I — Identitas","BAB II — Pengkajian","BAB III — Analisis Data","BAB IV — Diagnosis","BAB V — Rencana Asuhan"],table:["Identitas","Pengkajian (DS/DO)","Analisis","Diagnosis","Rencana Asuhan"]};
       const headings=(headingMap[state.exportTemplate]||headingMap.standard);
 
       el.printDocument.innerHTML=`<h1>ASUHAN KEPERAWATAN</h1><p style="text-align:center;margin:0">Dokumen rencana asuhan keperawatan</p>
