@@ -32,11 +32,89 @@
       .global-guide-dropdown-header{padding:10px 12px 8px}.global-guide-dropdown-title{margin:0;color:var(--text,#0f172a);font-size:14px;font-weight:800}.global-guide-dropdown-subtitle{margin:3px 0 0;color:var(--muted,#64748b);font-size:10px;line-height:1.5}.global-guide-dropdown-divider{height:1px;margin:5px 6px;background:var(--border,#e2e8f0)}
       .global-guide-menu-list{display:flex;flex-direction:column;gap:3px}.global-guide-menu-item{position:relative;display:flex;align-items:center;min-height:50px;gap:12px;padding:9px 10px;overflow:hidden;border-radius:13px;color:var(--text,#0f172a);text-decoration:none}.global-guide-menu-item:hover,.global-guide-menu-item:focus-visible,.global-guide-menu-item.current{background:var(--primary-light,#eff6ff)}
       .global-guide-menu-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:var(--primary-light,#eff6ff);color:var(--primary,#2563eb);font-size:14px}.global-guide-menu-content{min-width:0;flex:1}.global-guide-menu-label{display:block;font-size:13px;font-weight:700;line-height:1.3}.global-guide-menu-description{display:block;margin-top:2px;color:var(--muted,#64748b);font-size:9px;line-height:1.45}.global-guide-menu-chevron{flex:0 0 auto;color:var(--muted,#64748b);font-size:10px}
+            .global-guide-upgrade-item{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fde68a;margin-bottom:4px}
+      .global-guide-upgrade-item .global-guide-menu-icon{background:#fef3c7;color:#b45309}
+      .global-guide-upgrade-item .global-guide-menu-label{color:#b45309}
+      .global-guide-upgrade-item .global-guide-menu-description{color:#92400e}
+      html[data-resolved-theme="dark"] .global-guide-upgrade-item{background:linear-gradient(135deg,#422006,#3b2b0a);border-color:#854d0e}
+      html[data-resolved-theme="dark"] .global-guide-upgrade-item .global-guide-menu-label{color:#fcd34d}
+      html[data-resolved-theme="dark"] .global-guide-upgrade-item .global-guide-menu-description{color:#fde68a}
       .global-guide-floating{position:fixed;top:max(16px,env(safe-area-inset-top));right:16px;z-index:1500}
       html[data-resolved-theme="dark"] .global-guide-dropdown{border-color:var(--border);background:var(--card);color:var(--text)}
       @media(max-width:380px){.global-guide-dropdown{position:fixed;top:72px;right:16px;left:16px;width:auto}}
     `;
     document.head.appendChild(style);
+  }
+
+  const PREMIUM_API_BASE = "https://askep.mkhoirulzed.workers.dev";
+  let upgradeEligibilityPromise = null;
+
+  async function isFreeOrGuest() {
+    if (upgradeEligibilityPromise) return upgradeEligibilityPromise;
+    upgradeEligibilityPromise = (async () => {
+      try {
+        const scripts = [
+          "https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js",
+          "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"
+        ];
+        for (const src of scripts) {
+          if (document.querySelector('script[src="' + src + '"]')) continue;
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = src; script.async = true;
+            script.onload = resolve; script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+        const config = {
+          apiKey: "AIzaSyChTj0cPYydn-VRaCnYXX4lBKiGmcIIb8Q",
+          authDomain: "sdki-a3960.firebaseapp.com",
+          projectId: "sdki-a3960",
+          storageBucket: "sdki-a3960.firebasestorage.app",
+          messagingSenderId: "577189478908",
+          appId: "1:577189478908:web:efe83142bb88bbc5b07279",
+          measurementId: "G-845T8J7J98"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(config);
+        const auth = firebase.auth();
+        const user = await new Promise(resolve => {
+          let unsub = null;
+          const timeout = setTimeout(() => { unsub?.(); resolve(null); }, 8000);
+          unsub = auth.onAuthStateChanged(value => {
+            clearTimeout(timeout); unsub?.(); resolve(value || null);
+          });
+        });
+        if (!user) return true;
+        const token = await user.getIdToken();
+        const response = await fetch(PREMIUM_API_BASE + "/api/account/status", {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (!response.ok) return true;
+        const data = await response.json();
+        return data?.success !== true || data?.premium !== true;
+      } catch (error) {
+        console.warn("[ASKEP Upgrade Menu] Status akun belum terverifikasi:", error);
+        return true;
+      }
+    })();
+    return upgradeEligibilityPromise;
+  }
+
+  async function syncUpgradeMenu() {
+    if (!(await isFreeOrGuest())) {
+      document.getElementById("globalUpgradeMenuItem")?.remove();
+      document.getElementById("homeUpgradeMenuItem")?.remove();
+      return;
+    }
+    const list = document.querySelector(".guide-menu-list,.global-guide-menu-list");
+    if (!list || list.querySelector("#globalUpgradeMenuItem,#homeUpgradeMenuItem")) return;
+    const root = isRootPage();
+    const item = document.createElement("a");
+    item.id = list.classList.contains("guide-menu-list") ? "homeUpgradeMenuItem" : "globalUpgradeMenuItem";
+    item.href = root ? "pages/premium.html" : "premium.html";
+    item.className = (list.classList.contains("guide-menu-list") ? "guide-menu-item" : "global-guide-menu-item") + " global-guide-upgrade-item native-click";
+    item.innerHTML = '<span class="global-guide-menu-icon guide-menu-icon"><i class="fa-solid fa-crown" aria-hidden="true"></i></span><span class="global-guide-menu-content guide-menu-content"><span class="global-guide-menu-label guide-menu-label">Upgrade</span><span class="global-guide-menu-description guide-menu-description">Buka semua fitur ASKEP Premium.</span></span><span class="global-guide-menu-chevron"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>';
+    list.insertBefore(item, list.firstElementChild);
   }
 
   function menuItem(file, icon, label, description) {
@@ -136,8 +214,10 @@
 
   function init() {
     mountMenu();
+    syncUpgradeMenu();
     const observer = new MutationObserver(() => {
       if (!existingMenuPresent()) mountMenu();
+      syncUpgradeMenu();
     });
     observer.observe(document.body, { childList: true, subtree: true });
     window.setTimeout(() => observer.disconnect(), 8000);
