@@ -105,6 +105,13 @@
         </div>
       </section>
 
+
+      <section id="premiumBox" class="premium-card hidden" aria-live="polite">
+        <div class="premium-head"><div class="premium-icon"><i class="fa-solid fa-crown"></i></div><div><div class="premium-eyebrow">Status langganan</div><h2 id="premiumTitle">Askep Free</h2></div><span id="premiumBadge" class="premium-badge">FREE</span></div>
+        <p id="premiumDescription">Nikmati fitur dasar Askep. Fitur Premium akan tersedia sesuai paket akun.</p>
+        <div id="premiumMeta" class="premium-meta"></div>
+      </section>
+
       <section id="formBox" class="form-card hidden">
         <div class="section-heading">
           <div>
@@ -322,6 +329,11 @@ const summaryEmail = document.getElementById("summaryEmail");
 const summaryProfession = document.getElementById("summaryProfession");
 const summaryWorkplace = document.getElementById("summaryWorkplace");
 const summaryLocation = document.getElementById("summaryLocation");
+const premiumBox = document.getElementById("premiumBox");
+const premiumTitle = document.getElementById("premiumTitle");
+const premiumBadge = document.getElementById("premiumBadge");
+const premiumDescription = document.getElementById("premiumDescription");
+const premiumMeta = document.getElementById("premiumMeta");
 
 const toast = document.getElementById("toast");
 const toastText = document.getElementById("toastText");
@@ -403,6 +415,24 @@ function fillForm(data = {}){
   setValue(gender, data.gender || "");
   setValue(education, data.education || "");
   setValue(bio, data.bio || "");
+}
+
+function renderPremium(data = {}){
+  if(!premiumBox) return;
+  const plan = String(data.plan || data.premiumPlan || "free").toLowerCase();
+  const status = String(data.subscriptionStatus || data.premiumStatus || (data.isPremium ? "active" : "free")).toLowerCase();
+  const until = data.premiumUntil || data.expiresAt || null;
+  const premium = (plan === "premium" || data.isPremium === true) && status === "active";
+  premiumBox.classList.remove("hidden");
+  premiumTitle.textContent = premium ? "Askep Premium" : "Askep Free";
+  premiumBadge.textContent = premium ? "PREMIUM" : "FREE";
+  premiumBadge.classList.toggle("active", premium);
+  premiumDescription.textContent = premium ? "Akun ini memiliki akses Premium." : "Akun Free. Fitur Premium akan diaktifkan setelah upgrade resmi.";
+  if(until){
+    let dateText = "Tanggal berakhir: ";
+    try{ dateText += new Date(until.seconds ? until.seconds*1000 : until).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}); }catch(_){ dateText += "—"; }
+    premiumMeta.textContent = dateText;
+  }else premiumMeta.textContent = premium ? "Masa aktif: permanen" : "Paket: Free";
 }
 
 function fillSummary(data = {}){
@@ -491,12 +521,14 @@ async function loadProfile(){
 
     fillForm(data);
     fillSummary(data);
+    renderPremium(data);
   }catch(err){
     console.error(err);
     showToast("Gagal memuat profil", "fa-circle-exclamation");
 
     fillForm({});
     fillSummary({});
+    renderPremium({});
   }
 }
 
